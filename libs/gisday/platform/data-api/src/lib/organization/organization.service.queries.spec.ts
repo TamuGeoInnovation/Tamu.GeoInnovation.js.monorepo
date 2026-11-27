@@ -1,7 +1,14 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Asset, Event, Organization, Speaker } from '../entities/all.entity';
-import { answering, buildingTransactionFinds, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import {
+  answering,
+  buildingTransactionFinds,
+  loadedSeason,
+  queryCheckingDataSource,
+  queryCheckingRepository,
+  recordWrites
+} from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
 import { OrganizationService } from './organization.service';
@@ -36,10 +43,18 @@ describe('OrganizationService queries, built by typeorm', () => {
     // A copied organization is saved through the entity's own repository.
     Organization.useDataSource(dataSource);
 
-    const seasons = { findOne: async () => loadedSeason(), findOneActive: async () => loadedSeason() } as unknown as SeasonService;
+    const seasons = {
+      findOne: async () => loadedSeason(),
+      findOneActive: async () => loadedSeason()
+    } as unknown as SeasonService;
 
     orgRepo = queryCheckingRepository(dataSource, Organization);
-    service = new OrganizationService(orgRepo, queryCheckingRepository(dataSource, Event), seasons, null as unknown as AssetsService);
+    service = new OrganizationService(
+      orgRepo,
+      queryCheckingRepository(dataSource, Event),
+      seasons,
+      null as unknown as AssetsService
+    );
   });
 
   it("lists a season's organizations by name", async () => {

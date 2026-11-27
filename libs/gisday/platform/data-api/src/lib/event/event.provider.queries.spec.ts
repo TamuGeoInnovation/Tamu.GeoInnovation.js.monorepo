@@ -33,7 +33,7 @@ describe('EventProvider queries, built by typeorm', () => {
     );
   });
 
-  it("counts the RSVPs of an event whose capacity, like every event on the site today, is null", async () => {
+  it('counts the RSVPs of an event whose capacity, like every event on the site today, is null', async () => {
     const event = Object.assign(new Event(), { guid: 'e-1', name: 'A session', capacity: null, requiresRsvp: null });
     eventRepo.findOne = async () => event;
 

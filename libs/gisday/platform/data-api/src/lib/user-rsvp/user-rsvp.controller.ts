@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotImplementedException,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { siteHost } from '../_base/site-of-request';
@@ -19,7 +8,10 @@ import { RsvpDashboardProvider } from './rsvp-dashboard.provider';
 
 @Controller('rsvps')
 export class UserRsvpController {
-  constructor(private readonly provider: UserRsvpProvider, private readonly dashboard: RsvpDashboardProvider) {}
+  constructor(
+    private readonly provider: UserRsvpProvider,
+    private readonly dashboard: RsvpDashboardProvider
+  ) {}
 
   @UseGuards(JwtGuard)
   @Get('/user/event/:guid')

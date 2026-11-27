@@ -171,24 +171,30 @@ export class EventProvider extends SeasonScopedProvider<Event> {
       const existingEvent = await this.eventRepo.findOne({
         where: {
           guid
-        }
+        },
+        // Its tags and speakers, so an update that does not send them keeps them (#3862).
+        relations: { tags: true, speakers: true }
       });
 
       if (!existingEvent) {
         throw new NotFoundException();
       }
 
-      // `UpdateEventDto` declares both as required and TypeScript enforces that at every call site
-      // it can see -- but it is an interface, so `ValidationPipe` has no metadata to check a
-      // request against and an HTTP caller can omit them. Doing so threw a TypeError here, which
-      // the catch below reported as 422 "Could not insert new Event": wrong reason, wrong verb.
-      const tags = (event.tags ?? []).map((t) => {
-        return this.tagRepo.create({ guid: t });
-      });
-      const speakers = (event.speakers ?? []).map((t) => this.speakerRepo.create({ guid: t }));
-      // Its judging (#3183): the competition, whether closed, and its judges, who must be among its speakers as sent.
+      // `UpdateEventDto` declares both as required, but it is an interface, so `ValidationPipe` has no metadata to check a
+      // request against and an HTTP caller can omit them. Omitting them threw a TypeError here, then emptied them; an update
+      // changes only what it is sent (#3862), so each left out keeps the event's own.
+      const tags = event.tags === undefined ? existingEvent.tags : event.tags.map((t) => this.tagRepo.create({ guid: t }));
+      const speakers =
+        event.speakers === undefined
+          ? existingEvent.speakers
+          : event.speakers.map((t) => this.speakerRepo.create({ guid: t }));
+      // Its judging (#3183): the competition, whether closed, and its judges, who must be among its speakers, as sent or as
+      // it has them.
       const { judges, ...fields } = event;
-      const judging = judgingOf({ ...fields, judges }, event.speakers ?? []);
+      const judging = judgingOf(
+        { ...fields, judges },
+        event.speakers ?? (existingEvent.speakers ?? []).map((speaker) => speaker.guid)
+      );
 
       const newEnt = this.eventRepo.create({
         ...existingEvent,

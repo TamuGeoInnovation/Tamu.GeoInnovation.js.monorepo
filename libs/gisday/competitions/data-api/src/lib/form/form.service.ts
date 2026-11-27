@@ -103,7 +103,12 @@ export class FormService extends BaseService<CompetitionForm> {
       throw new BadRequestException('Form must have exactly one discriminator question');
     }
 
-    const window = scoringWindow(season);
+    // Only the settings it is sent (#3862): one left out keeps the season's, rather than turning submissions off or
+    // clearing the scoring window. The window is checked as it will be, the sent moments over the kept ones.
+    const window = scoringWindow({
+      scoringOpensAt: season?.scoringOpensAt !== undefined ? season.scoringOpensAt : competitionSeason.scoringOpensAt,
+      scoringClosesAt: season?.scoringClosesAt !== undefined ? season.scoringClosesAt : competitionSeason.scoringClosesAt
+    });
     // Cannot be undefined: the season was found by this form's guid, and the same query loads the form.
     const competitionForm = competitionSeason.form!;
 
@@ -111,7 +116,8 @@ export class FormService extends BaseService<CompetitionForm> {
       competitionForm.model = model;
       // A form sent without its source keeps the one it has, as it did when the missing source was simply not saved.
       competitionForm.source = form.source ?? competitionForm.source;
-      competitionSeason.allowSubmissions = season?.allowSubmissions === true;
+      competitionSeason.allowSubmissions =
+        season?.allowSubmissions === undefined ? competitionSeason.allowSubmissions : season.allowSubmissions === true;
       competitionSeason.scoringOpensAt = window.scoringOpensAt;
       competitionSeason.scoringClosesAt = window.scoringClosesAt;
 

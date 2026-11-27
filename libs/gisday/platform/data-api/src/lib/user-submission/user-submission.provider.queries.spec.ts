@@ -1,7 +1,13 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Asset, Event, Season, SeasonDay, Submission, SubmissionType } from '../entities/all.entity';
-import { answering, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import {
+  answering,
+  loadedSeason,
+  queryCheckingDataSource,
+  queryCheckingRepository,
+  recordWrites
+} from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { ContactService } from '../contact/contact.service';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
@@ -88,7 +94,11 @@ describe('UserSubmissionProvider queries, built by typeorm', () => {
 
   it('adds a submission to the season the body names', async () => {
     await expect(
-      provider.insertUserSubmission('auth0|entrant', { title: 'A poster', submissionType: 'poster', season: { guid: 's-1' } as Season })
+      provider.insertUserSubmission('auth0|entrant', {
+        title: 'A poster',
+        submissionType: 'poster',
+        season: { guid: 's-1' } as Season
+      })
     ).resolves.toMatchObject({ accountGuid: 'auth0|entrant' });
   });
 
@@ -120,7 +130,10 @@ describe('UserSubmissionProvider queries, built by typeorm', () => {
   it('previews the final reminder of several submissions', async () => {
     answering(submissions, 'findOne', loadedSubmission({ reviewed: true, acceptance: true }));
 
-    await expect(provider.previewReminders([GUID], REVIEWER)).resolves.toMatchObject({ groups: [{ count: 1 }], skipped: [] });
+    await expect(provider.previewReminders([GUID], REVIEWER)).resolves.toMatchObject({
+      groups: [{ count: 1 }],
+      skipped: []
+    });
   });
 
   it('sends the final reminder to several submissions', async () => {
@@ -134,7 +147,11 @@ describe('UserSubmissionProvider queries, built by typeorm', () => {
   });
 
   it('deletes a submission with its files', async () => {
-    answering(submissions, 'findOne', loadedSubmission({ files: [Object.assign(new Asset(), { guid: 'a-1', path: null })] }));
+    answering(
+      submissions,
+      'findOne',
+      loadedSubmission({ files: [Object.assign(new Asset(), { guid: 'a-1', path: null })] })
+    );
 
     await expect(provider.deleteUserSubmission(GUID, 'auth0|entrant')).resolves.toBeDefined();
   });

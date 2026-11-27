@@ -3,12 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import {
-  SignageSubmission,
-  StormwaterSubmission,
-  SidewalkSubmission,
-  ManholeSubmission
-} from '../entities/all.entity';
+import { SignageSubmission, StormwaterSubmission, SidewalkSubmission, ManholeSubmission } from '../entities/all.entity';
 
 /**
  * Read-only access to the archived competition submissions.

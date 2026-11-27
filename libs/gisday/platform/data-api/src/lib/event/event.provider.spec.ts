@@ -180,9 +180,13 @@ describe('EventProvider', () => {
      * the global `ValidationPipe` has no decorator metadata to work from, so nothing enforces that
      * at runtime. A request omitting either threw a TypeError on `.map()`, which the catch reported
      * as 422 "Could not insert new Event" -- wrong status reason and wrong verb, on an update.
+     *
+     * Then it treated them as empty, which emptied the event's tags and speakers (#3862). An update left without them
+     * now keeps the event's own, as the shared base update keeps whatever it is not sent.
      */
-    it('treats omitted tags and speakers as empty rather than crashing', async () => {
-      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(existing);
+    it('keeps the tags and speakers an update leaves out, rather than crashing or emptying them', async () => {
+      const withRelations = { ...existing, tags: [{ guid: 't-1' }], speakers: [{ guid: 's-1' }] } as unknown as Event;
+      vi.spyOn(eventRepo, 'findOne').mockResolvedValue(withRelations);
       const save = vi.fn().mockResolvedValue({ guid: 'e-1' });
       vi.spyOn(eventRepo, 'create').mockReturnValue({ save } as never);
 
@@ -191,8 +195,8 @@ describe('EventProvider', () => {
       });
 
       const passed = (eventRepo.create as Mock).mock.calls[0][0];
-      expect(passed.tags).toEqual([]);
-      expect(passed.speakers).toEqual([]);
+      expect(passed.tags).toEqual([{ guid: 't-1' }]);
+      expect(passed.speakers).toEqual([{ guid: 's-1' }]);
     });
 
     it('clears tags when an empty list is supplied', async () => {

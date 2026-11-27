@@ -177,7 +177,11 @@ export const IMPACT_TOP = 10;
  * The windows in which an account counts as created for a season, tried against 2025's participants (decided 2A on
  * #3238). `days` are the season's GIS Day days and `previousDays` the season before's; with none, its year's November.
  */
-export function impactAccountWindows(year: number, days: Array<string>, previousDays: Array<string>): Array<ImpactAccountWindow> {
+export function impactAccountWindows(
+  year: number,
+  days: Array<string>,
+  previousDays: Array<string>
+): Array<ImpactAccountWindow> {
   const first = (d: Array<string>, fallback: string) => [...d].sort()[0] ?? fallback;
   const last = (d: Array<string>, fallback: string) => [...d].sort().reverse()[0] ?? fallback;
   const dayAfter = (date: string) => {
@@ -308,14 +312,37 @@ export function impactReport(rows: ImpactRows): ImpactReport {
     'speakers',
     IMPACT_DEFINITIONS.speakers,
     [
-      { key: 'on-a-session', definition: 'Speaker records on at least one of the season’s sessions', value: rows.speakers.length, rows: rows.speakers },
-      { key: 'on-an-active-session', definition: 'Speaker records on at least one active session', value: onActive.length, rows: onActive },
-      { key: 'by-email', definition: 'People on at least one session, a speaker copied twice counted once (by email)', value: distinct(rows.speakers, byEmail), rows: rows.speakers },
-      { key: 'active-by-email', definition: 'People on at least one active session, each once (by email)', value: distinct(onActive, byEmail), rows: onActive },
+      {
+        key: 'on-a-session',
+        definition: 'Speaker records on at least one of the season’s sessions',
+        value: rows.speakers.length,
+        rows: rows.speakers
+      },
+      {
+        key: 'on-an-active-session',
+        definition: 'Speaker records on at least one active session',
+        value: onActive.length,
+        rows: onActive
+      },
+      {
+        key: 'by-email',
+        definition: 'People on at least one session, a speaker copied twice counted once (by email)',
+        value: distinct(rows.speakers, byEmail),
+        rows: rows.speakers
+      },
+      {
+        key: 'active-by-email',
+        definition: 'People on at least one active session, each once (by email)',
+        value: distinct(onActive, byEmail),
+        rows: onActive
+      },
       {
         key: 'not-organizers',
         definition: 'People on at least one session who are not organizers, each once (by email)',
-        value: distinct(rows.speakers.filter((s) => !s.isOrganizer), byEmail),
+        value: distinct(
+          rows.speakers.filter((s) => !s.isOrganizer),
+          byEmail
+        ),
         rows: rows.speakers.filter((s) => !s.isOrganizer)
       }
     ],
@@ -329,11 +356,21 @@ export function impactReport(rows: ImpactRows): ImpactReport {
     'organizations',
     IMPACT_DEFINITIONS.organizations,
     [
-      { key: 'organizations', definition: 'Distinct organizations of the counted speakers', value: distinct(people.filter((s) => normal(s.organization)), (s) => normal(s.organization)) },
+      {
+        key: 'organizations',
+        definition: 'Distinct organizations of the counted speakers',
+        value: distinct(
+          people.filter((s) => normal(s.organization)),
+          (s) => normal(s.organization)
+        )
+      },
       {
         key: 'organizations-and-universities',
         definition: 'Distinct organizations of the counted speakers, a speaker with none counted by their university',
-        value: distinct(people.filter((s) => normal(groupOf(s))), (s) => normal(groupOf(s)))
+        value: distinct(
+          people.filter((s) => normal(groupOf(s))),
+          (s) => normal(groupOf(s))
+        )
       },
       {
         key: 'both',
@@ -350,8 +387,16 @@ export function impactReport(rows: ImpactRows): ImpactReport {
   const checkInOptions = [
     { key: 'all', definition: 'Every check-in to the season’s sessions', rows: rows.checkIns },
     { key: 'active-sessions', definition: 'Check-ins to active sessions', rows: activeCheckIns },
-    { key: 'not-outside-time', definition: 'Check-ins made during their session', rows: rows.checkIns.filter((c) => !c.outsideSessionTime) },
-    { key: 'not-organizers', definition: 'Check-ins by people who are not organizers', rows: rows.checkIns.filter((c) => !c.organizer) },
+    {
+      key: 'not-outside-time',
+      definition: 'Check-ins made during their session',
+      rows: rows.checkIns.filter((c) => !c.outsideSessionTime)
+    },
+    {
+      key: 'not-organizers',
+      definition: 'Check-ins by people who are not organizers',
+      rows: rows.checkIns.filter((c) => !c.organizer)
+    },
     {
       key: 'during-not-organizers',
       definition: 'Check-ins made during their session, by people who are not organizers',
@@ -370,25 +415,53 @@ export function impactReport(rows: ImpactRows): ImpactReport {
 
   // 4. Research presentations and posters
   const ofType = (...types: Array<string>) => rows.submissions.filter((s) => types.includes(normal(s.type)));
-  const research = (measure: 'researchPresentations' | 'researchPosters', types: Array<Array<string>>, labels: Array<string>) =>
+  const research = (
+    measure: 'researchPresentations' | 'researchPosters',
+    types: Array<Array<string>>,
+    labels: Array<string>
+  ) =>
     choose(
       measure,
       IMPACT_DEFINITIONS[measure],
       types.flatMap((t, i) => [
         { key: labels[i], definition: `Submissions of type ${t.join(' or ')}`, value: byLevel(ofType(...t)) },
-        { key: `${labels[i]}-accepted`, definition: `Accepted submissions of type ${t.join(' or ')}`, value: byLevel(ofType(...t).filter((s) => s.accepted)) },
-        { key: `${labels[i]}-reviewed`, definition: `Reviewed submissions of type ${t.join(' or ')}`, value: byLevel(ofType(...t).filter((s) => s.reviewed)) }
+        {
+          key: `${labels[i]}-accepted`,
+          definition: `Accepted submissions of type ${t.join(' or ')}`,
+          value: byLevel(ofType(...t).filter((s) => s.accepted))
+        },
+        {
+          key: `${labels[i]}-reviewed`,
+          definition: `Reviewed submissions of type ${t.join(' or ')}`,
+          value: byLevel(ofType(...t).filter((s) => s.reviewed))
+        }
       ]),
       REPORTED_2025[measure]
     );
-  const presentations = research('researchPresentations', [['presentation'], ['presentation', 'paper']], ['all', 'presentations-and-papers']);
-  const posters = research('researchPosters', [['poster'], ['poster', 'cartography']], ['posters', 'posters-and-cartography']);
+  const presentations = research(
+    'researchPresentations',
+    [['presentation'], ['presentation', 'paper']],
+    ['all', 'presentations-and-papers']
+  );
+  const posters = research(
+    'researchPosters',
+    [['poster'], ['poster', 'cartography']],
+    ['posters', 'posters-and-cartography']
+  );
 
   // 5. Trail challenge
   const trailOptions = [
     { key: 'all', definition: 'Every trail submission', rows: rows.trail },
-    { key: 'not-discarded', definition: 'Trail submissions not discarded in review', rows: rows.trail.filter((t) => normal(t.status) !== 'discarded') },
-    { key: 'verified', definition: 'Verified trail submissions', rows: rows.trail.filter((t) => normal(t.status) === 'verified') }
+    {
+      key: 'not-discarded',
+      definition: 'Trail submissions not discarded in review',
+      rows: rows.trail.filter((t) => normal(t.status) !== 'discarded')
+    },
+    {
+      key: 'verified',
+      definition: 'Verified trail submissions',
+      rows: rows.trail.filter((t) => normal(t.status) === 'verified')
+    }
   ];
   const trail = choose(
     'trail',
@@ -426,13 +499,23 @@ export function impactReport(rows: ImpactRows): ImpactReport {
       sessions: 'Active sessions (shown on the site), by the GIS Day day they are on'
     },
     participants: participants.value as ImpactReport['participants'],
-    speakers: { speakers: speakers.value as number, organizations: organizations.value as number, topOrganizations: impactTop(people.map((s) => s.organization ?? '')) },
-    checkIns: { total: checkIns.value as number, topSessions: impactTop((checkIns.rows as Array<ImpactCheckInRow>).map((c) => c.sessionTitle)) },
+    speakers: {
+      speakers: speakers.value as number,
+      organizations: organizations.value as number,
+      topOrganizations: impactTop(people.map((s) => s.organization ?? ''))
+    },
+    checkIns: {
+      total: checkIns.value as number,
+      topSessions: impactTop((checkIns.rows as Array<ImpactCheckInRow>).map((c) => c.sessionTitle))
+    },
     researchPresentations: presentations.value as ImpactReport['researchPresentations'],
     researchPosters: posters.value as ImpactReport['researchPosters'],
     trail: {
       submissions: trailRows.length,
-      students: distinct(trailRows.filter((t) => t.personType === 'student'), (t) => t.person),
+      students: distinct(
+        trailRows.filter((t) => t.personType === 'student'),
+        (t) => t.person
+      ),
       competitors: distinct(trailRows, (t) => t.person)
     },
     sessions: {
@@ -482,7 +565,8 @@ function impactMeasures(report: ImpactReport): Array<[string, number]> {
 }
 
 /** The report's rows as a CSV file: the first row is the header, and the file ends with a line break, as it always has. */
-const csv = ([header, ...rows]: Array<Array<string | number | null | undefined>>) => toCsv(header as Array<string>, rows) + '\r\n';
+const csv = ([header, ...rows]: Array<Array<string | number | null | undefined>>) =>
+  toCsv(header as Array<string>, rows) + '\r\n';
 
 /**
  * Two seasons compared (#3238): `measures`, one row per measure with the earlier and later season's numbers, the
@@ -511,7 +595,9 @@ export function impactCsv(earlier: ImpactReport, later: ImpactReport): { measure
     const counts = new Map<string, { name: string; a?: number; b?: number }>();
 
     of(a).forEach((e) => counts.set(normal(e.name), { name: e.name, a: e.count }));
-    of(b).forEach((e) => counts.set(normal(e.name), { ...(counts.get(normal(e.name)) ?? { name: e.name }), name: e.name, b: e.count }));
+    of(b).forEach((e) =>
+      counts.set(normal(e.name), { ...(counts.get(normal(e.name)) ?? { name: e.name }), name: e.name, b: e.count })
+    );
 
     return [...counts.values()]
       .sort((x, y) => (y.b ?? -1) - (x.b ?? -1) || (y.a ?? -1) - (x.a ?? -1) || x.name.localeCompare(y.name))

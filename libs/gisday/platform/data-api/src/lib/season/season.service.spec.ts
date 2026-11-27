@@ -342,7 +342,9 @@ describe('SeasonService', () => {
       vi.spyOn(seasonRepo, 'findOne').mockResolvedValue(seasonWithDays([]));
     });
 
-    it('saves every moment, each a date or empty for open', async () => {
+    // Each moment it is sent, a date or empty for open; one left out keeps the season's (#3862), where it used to be
+    // written as empty, which reopened that competition.
+    it('saves each moment it is sent, each a date or empty for open, and nothing else', async () => {
       await service.setSubmissionDeadlines('season-1', {
         posterSubmissionsCloseAt: closes,
         posterFilesCloseAt: filesClose,
@@ -352,12 +354,7 @@ describe('SeasonService', () => {
       expect(seasonRepo.update).toHaveBeenCalledWith('season-1', {
         posterSubmissionsCloseAt: new Date(closes),
         posterFilesCloseAt: new Date(filesClose),
-        presentationSubmissionsCloseAt: null,
-        presentationFilesCloseAt: null,
-        paperSubmissionsCloseAt: null,
-        paperFilesCloseAt: null,
-        cartographySubmissionsCloseAt: null,
-        cartographyFilesCloseAt: null
+        presentationSubmissionsCloseAt: null
       });
     });
 

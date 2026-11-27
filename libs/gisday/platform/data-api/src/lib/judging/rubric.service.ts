@@ -104,7 +104,15 @@ export class RubricService {
     await this.rubrics.manager.transaction(async (m) => {
       await m
         .getRepository(Rubric)
-        .update(guid, { name: value.name.trim(), description: value.description?.trim() || null });
+        // A description left out keeps the rubric's own (#3862); sent empty, it clears it, as before. The body's type says
+        // it is always there, but a request can leave it out.
+        .update(guid, {
+          name: value.name.trim(),
+          description:
+            (body as { description?: unknown }).description === undefined
+              ? rubric.description
+              : value.description?.trim() || null
+        });
       await replaceCriteria(m, guid, value.criteria);
     });
 

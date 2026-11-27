@@ -28,7 +28,11 @@ describe('UserRsvpProvider queries, built by typeorm (the rest)', () => {
   beforeEach(() => {
     ({ statements } = recordWrites(dataSource, [[UserRsvp, [loadedRsvp()]]]));
     rsvpRepo = queryCheckingRepository(dataSource, UserRsvp);
-    provider = new UserRsvpProvider(rsvpRepo, queryCheckingRepository(dataSource, Event), queryCheckingRepository(dataSource, RsvpType));
+    provider = new UserRsvpProvider(
+      rsvpRepo,
+      queryCheckingRepository(dataSource, Event),
+      queryCheckingRepository(dataSource, RsvpType)
+    );
   });
 
   it("looks up a user's RSVP for an event", async () => {
