@@ -1,6 +1,28 @@
 # Laptop: current tasks
 
 
+## Batch g53 (gisday: #3862, the other eight partial-update routes; 26 November 2026, 11:30 PM Central, from `work (gisday)`) (Medium) - **now**
+
+Thanks for #3861: a real, visible bug, found and fixed. Your g52 report file is empty on the branch (0 bytes), so please write it again.
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; **never wait for a fix to merge, stack on it.**
+
+**#3862** (home's g238 found it, report `home/reports/2026-11-26-g238.md`): eight API update routes wipe any field the caller leaves out:
+- places: `links`, `visibilitySettings`;
+- submission-deadlines;
+- competition forms: `allowSubmissions`, the scoring window;
+- competition-settings: sessions, `finalistsNotifiedAt`;
+- events: tags, speakers, with an existing spec that codifies the wipe;
+- speakers: `isOrganizer`, `isActive`;
+- rubrics: `description`;
+- judging: `comment`.
+
+The season route's gap is yours from #3861, already fixed.
+
+1. Branch `fix/3862-partial-updates-keep-fields`. **Merge `fork/fix/3861-season-update-saves-year` into it first**, and say in the body it merges after #3861's pull request.
+2. Each route updates only what it's sent: merge the body over the stored record, as the shared base update already does. Use that base where it fits, rather than a second way.
+3. A round-trip spec per route, red first: create with every field, update one, read every field back. Change the events spec that codifies the wipe.
+4. `no-visible-change` (no page sends part of a record). `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-competitions-data-api,gisday-nest`. `.pr-body.md` with `Closes #3862`. Report `reports/<date>-g53.md`.
 ## Batch g52 replaced: fix #3862 instead of the form-side hunt (26 November 2026, 10:55 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The form-side hunt (g52) is withdrawn.** Home's g238 found that every form and caller already sends the whole record, so there's nothing for it to find. Instead, fix what home found in the API: **#3862**. Eight update routes wipe any field left out, and `PATCH seasons/:guid` with `active: true` and no `days` leaves no active season. The routes and lines are in `home/reports/2026-11-26-g238.md`.
