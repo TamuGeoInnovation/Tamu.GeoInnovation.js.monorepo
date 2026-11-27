@@ -140,7 +140,10 @@ describe('EsriMapService portal item renderers', () => {
         { provide: ActivatedRoute, useValue: {} },
         { provide: SearchService, useValue: {} },
         { provide: EnvironmentService, useValue: { value: () => undefined } },
-        { provide: HttpClient, useValue: { get: () => of({ layers: [{ id: 3, layerDefinition: { drawingInfo: { renderer: itemRenderer } } }] }) } },
+        {
+          provide: HttpClient,
+          useValue: { get: () => of({ layers: [{ id: 3, layerDefinition: { drawingInfo: { renderer: itemRenderer } } }] }) }
+        },
         { provide: LayerSourcesService, useValue: {} }
       ]
     });
@@ -518,5 +521,48 @@ describe('EsriMapService clicking a map that is still drawing', () => {
     await settle();
 
     expect(lastEmitted()).toEqual([building.attributes]);
+  });
+});
+
+/**
+ * A map-server source whose service holds a layer that is neither a feature layer nor a group (#3804, after #3817).
+ * Such a layer cleans to undefined, and the feature and group defaults are for those two kinds only. It used to throw on
+ * `cleaned.type`, which failed every layer of the service; it is now made from the source's `native` alone, as any
+ * other source's layer is.
+ */
+describe('EsriMapService a map service with a layer of another kind', () => {
+  let service: EsriMapService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: EsriModuleProviderService, useValue: { require: () => Promise.resolve([]) } },
+        { provide: Router, useValue: {} },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: SearchService, useValue: {} },
+        { provide: EnvironmentService, useValue: { value: () => undefined } },
+        { provide: HttpClient, useValue: {} },
+        { provide: LayerSourcesService, useValue: {} }
+      ]
+    });
+
+    service = TestBed.inject(EsriMapService);
+  });
+
+  it('resolves its layers rather than failing on the one it has no defaults for', async () => {
+    const source = {
+      id: 'made-up-map-service',
+      type: 'map-server',
+      url: 'https://example.test/arcgis/rest/services/Made_Up/MapServer',
+      native: {}
+    } as unknown as LayerSource;
+    const raster = { id: 0, name: 'Made-up raster', type: 'Raster Layer', parentLayerId: -1, subLayerIds: null };
+
+    await expect(
+      service.resolveUnloadedLayers({
+        source,
+        layers: [raster] as unknown as Parameters<typeof service.resolveUnloadedLayers>[0]['layers']
+      })
+    ).resolves.toHaveLength(1);
   });
 });

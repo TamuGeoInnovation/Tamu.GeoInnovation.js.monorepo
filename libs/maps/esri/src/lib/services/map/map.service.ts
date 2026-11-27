@@ -638,9 +638,12 @@ export class EsriMapService {
         // We need to unpack them and merge them to the `cleaned` auto-castable layer props.
         if (args.source.type === 'map-server') {
           // Read as before: a map-server source without `native` throws here, as it did before strict null checks.
-          if (cleaned.type === 'feature') {
+          // A portal layer that is neither a feature layer nor a group cleans to undefined (#3817), and these
+          // defaults are only for those two, so it skips them and is made from `native` alone, as every other
+          // source's is. It used to throw on `cleaned.type`, failing the whole service's layers (#3804).
+          if (cleaned?.type === 'feature') {
             Object.assign(cleaned, args.source.native!.defaultFeatureLayerProperties);
-          } else if (cleaned.type === 'group') {
+          } else if (cleaned?.type === 'group') {
             Object.assign(cleaned, args.source.native!.defaultGroupLayerProperties);
           }
         }
