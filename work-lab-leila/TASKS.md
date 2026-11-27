@@ -1,5 +1,42 @@
 # work-lab-leila: current tasks
 
+## Batch g228 (gisday: #3748, then are these old GIS Day issues still true?; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**Rules for every GIS Day batch from now on (the maintainer, 26 November):**
+- **Announce every step, before and after,** in `STATUS.md` and a one-line commit, with the time from PowerShell (`DIRECTOR.md`). Reread `TASKS.md` before each step: answers and changes arrive there.
+- **Merge the latest `development` into any branch before its check.** Today's lock moved every package to its latest.
+- **Leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone** until #3788 merges.
+- **Never delete dead code.** If you find any, list it in the report as "potentially parked", with what it is and the last commit that has it. The maintainer decides.
+- **An issue that's already fixed or no longer makes sense:** say so in the report with the evidence, and don't build for it. Questions go under **Questions for the director**, with options and a recommendation.
+- **Each branch ends with `.pr-body.md`, drafted from the template, as its last commit,** first line `Title: <title>`. Push it to the fork. I open the pull requests.
+- **A visible change carries before and after screenshots** in `docs/screenshots/<slug>/`, and a release entry in `docs/releases/unreleased/` with `app: gisday`.
+
+**1. #3748: the VGI map's GeoJSON layers fail to build in a season with no submissions.** Branch `fix/3748-vgi-geojson-geometry-type`.
+- Each `GeoJSONLayer` in `libs/gisday/competitions/ngx/core/src/lib/pages/public/map/components/map.component.ts` states `geometryType: 'point'`. Check each layer's real geometry from the service first: don't assume point.
+- A spec, red first, asserting each layer definition carries its geometry type.
+- `no-visible-change`: there is nothing to draw in an empty season. The body says the console errors are gone, with a capture of the console before and after, signed in locally (txgisday-dev only).
+- `scripts/check-in-volume.sh <branch> gisday-competitions-ngx-core,gisday-angular`.
+
+**2. Are these still true?** Read only. Check each against today's `development`, the issue's own words and its comments:
+
+| Issue | What it says |
+| --- | --- |
+| #440 | Filter speakers by event type |
+| #541 | Separate in-person from Zoom headcounts |
+| #1038 | Development reports into the production Google Analytics property (GIS Day) |
+| #2097 | Production's database has a leftover `organization_links` table (read the code and the migrations only; touch no database) |
+| #2672 | Logout on UCGIS GIS Day leaves the visitor signed in to Tradewing |
+| #3300 | Drop `sessions_filter_backfill` once #1836 has settled on production |
+| #1511 | The development database restored from production, and TypeORM migrations for schema changes |
+
+For each, one of:
+- **already done**, with the commit or PR;
+- **still true**, with what building it would take, small, medium or large;
+- **no longer makes sense**, and why.
+
+**Questions for the director** for anything that needs the maintainer. Don't build any of these.
+
+Report `reports/2026-11-26-g228.md`, and say "branch ready: fix/3748-vgi-geojson-geometry-type".
 ## Batch s-lab-4 (security: the release tier for ArcGIS 5.2.9 with amCharts 5.20.8, #3757; 26 November 2026, 4:57 PM Central, from `work (security)`) (High) - **now**
 
 The laptop built and checked `chore/arcgis-5.2` (on the fork), but its release tier was running at a pace that ends about 7 PM. You run it instead. Every map draws from ArcGIS, so this is the check that clears it.
