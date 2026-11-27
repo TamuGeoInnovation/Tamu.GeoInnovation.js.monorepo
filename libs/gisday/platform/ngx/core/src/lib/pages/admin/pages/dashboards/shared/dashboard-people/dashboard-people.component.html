@@ -2,7 +2,7 @@
 <p class="error">The people could not be read.</p>
 } @else if (people() === null) {
 <p>Reading the people...</p>
-} @else if (people().length === 0) {
+} @else if (people()?.length === 0) {
 <p>{{ emptyText() }}</p>
 } @else {
 <div class="dashboard-people-actions">
