@@ -1,6 +1,14 @@
 # Laptop: current tasks
 
 
+## g51 changed: delete, don't park (26 November 2026, 10:10 PM Central, from `work (gisday)`)
+
+**The maintainer, just now:** actual dead code is deleted; only features that might come back are parked (`DIRECTOR.md`, "Dead code is deleted, features are parked"). The seven pipes and `CoordinateConverter` are general helpers nothing uses, not features, so in g51:
+- **delete them outright: no `docs/parked-code.md` row and no tag;**
+- add them to #1899's done list in the report, and keep `Closes #3826`;
+- `check-parked-code.mjs` should then pass on the branch;
+- the rest of g51 (stacked on your two strict branches, the builds) is unchanged.
+
 ## Batch g51 (gisday: #3826, park the unused pipes and CoordinateConverter; 26 November 2026, 9:50 PM Central, from `work (gisday)`) (Medium) - **after g50**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #3826`) and is pushed. **New (the maintainer, 26 November): never wait for a fix to merge.** When your work depends on another open branch, merge that branch into yours and carry on. The pull request names the dependency.
