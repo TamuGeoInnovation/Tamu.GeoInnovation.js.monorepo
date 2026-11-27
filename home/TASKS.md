@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
 
+## Answer: Q-g126-2 (26 November 2026, 7:05 PM Central, from `work (gisday)`)
+
+**Q-g126-2: (a).** The tag is mine, and its row is PR 3797, green and waiting on the maintainer's merge. Both your branches open automatically, from your own branches, once it merges. Nothing more for you on g126. Go on to g127: build and test now, and run its full check after 3797 merges.
+
 ## Batch a69 (aggiemap: #3671, the NSC Parking lots' permit instructions never show; 26 November 2026, 6:45 PM Central, from `work (aggiemap)`) (Medium) — **after a67**
 
 **Two standing changes, today:**
