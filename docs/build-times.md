@@ -664,6 +664,31 @@ planner change (after), neither with the lodash or event definitions changes.
 these builds are not recorded as a result**: the machine was busy, and one set's desktop first paint
 ranged from 0.39 s to 1.15 s. To be re-taken on a quiet machine with the lodash timings.
 
+### Maintenance and service parking load only their own spaces (#3824)
+
+Two production builds served from the home machine on 26 November 2026, 8:27 to 9:00 PM US Central, ArcGIS
+5.1, headless Chromium at 1280 by 720, each load in a fresh browser against production's services:
+`development` at `86c9013d9` (before) and the change (after), all the before loads first. Measured as #1897
+measured: "finished drawing" is the first moment the map probe's `drawing` stayed false for two seconds, counted
+from the start of the page load. The machine was quiet: CPU at 5% before starting, and no other container but an
+idle database.
+
+|                                                     |  Before |  Before |  Before |  Before |  After |  After |  After |  After |
+| --------------------------------------------------- | ------: | ------: | ------: | ------: | -----: | -----: | -----: | -----: |
+| Maintenance Parking: spaces loaded                  |  44,980 |  44,980 |  44,980 |  44,980 |    427 |    427 |    427 |    427 |
+| Maintenance Parking: layers settled (`ready`)       |   4.4 s |   3.6 s |   3.6 s |   3.6 s |  3.7 s |  3.3 s |  3.6 s |  3.7 s |
+| Maintenance Parking: finished drawing               | 140.7 s |  89.0 s |  90.4 s | 115.6 s | 19.0 s | 17.8 s | 16.3 s | 22.0 s |
+| Service and Loading Zones: spaces loaded            |  44,980 |  44,980 |  44,980 |  44,980 |    427 |    427 |    427 |    427 |
+| Service and Loading Zones: layers settled (`ready`) |  12.9 s |   3.3 s |   3.2 s |   3.4 s |  3.3 s |  3.6 s |  3.2 s |  3.3 s |
+| Service and Loading Zones: finished drawing         | 161.6 s | 107.4 s | 104.2 s | 125.8 s | 20.9 s | 19.2 s | 18.1 s | 17.0 s |
+
+**What it shows.** Both maps finish drawing five to seven times sooner, in under half a minute where they took
+one and a half to nearly three, with the same 427 spaces drawn: the before and after images in
+`docs/screenshots/3824-parking-space-filters/` show the same points. As with #1897, the layers settle as fast
+either way; the wait was the 44,555 spaces fetched and never drawn. The fourth load of each map is the one
+photographed. `rns-spaces-layer`, which the probe also reports at 44,980, is the main map's reserved-space labels,
+switched off (`visible: false`), so it fetches nothing here.
+
 ### Accessible and motorcycle parking load only their own spaces (#1897)
 
 Two production builds served from this machine on 18 October 2026, ArcGIS 5.1.27, headless Chromium at

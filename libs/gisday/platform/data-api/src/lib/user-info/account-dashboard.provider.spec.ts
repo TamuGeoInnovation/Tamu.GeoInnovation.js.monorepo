@@ -1,13 +1,14 @@
 import type { Mock } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { Management } from 'auth0';
 
 import type { Auth0UserCreated, Auth0UserProfile, ManagementService } from '@tamu-gisc/common/nest/auth';
 
 import { Organization, Season, University } from '../entities/all.entity';
 import { queryCheckingDataSource, queryCheckingRepository } from '../_base/query-checking-data-source';
 import { DashboardProfilesService } from '../dashboards/dashboard-profiles.service';
-import { AccountDashboardProvider, HAS_GISDAY_PROFILE } from './account-dashboard.provider';
+import { AccountDashboardProvider, AccountsRateLimitedException, HAS_GISDAY_PROFILE } from './account-dashboard.provider';
 
 const account = (id: string, created: string, profile: object): Auth0UserCreated => ({
   created,
@@ -134,5 +135,55 @@ describe('AccountDashboardProvider (#2892)', () => {
 
   it('answers 404 for a season that does not exist', async () => {
     await expect(provider.getSeason('missing')).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  // When Auth0 rate-limits the management API, the dashboard answered 500 and its page said only that the accounts could
+  // not be read (#3747). It answers 503 with how long to wait, which Auth0 itself says.
+  describe('when Auth0 rate-limits it (#3747)', () => {
+    const limited = (headers: Record<string, string>) =>
+      new Management.TooManyRequestsError({ message: 'Too Many Requests' }, {
+        headers: new Headers(headers),
+        status: 429
+      } as unknown as ConstructorParameters<typeof Management.TooManyRequestsError>[1]);
+
+    async function refusal(headers: Record<string, string>) {
+      ms.getUsersCreatedBetween.mockRejectedValue(limited(headers));
+
+      return provider.getSeason('s-2026').then(
+        () => null,
+        (err) => err
+      );
+    }
+
+    it('answers 503, not 500, with the wait Auth0 asks for', async () => {
+      const err = await refusal({ 'retry-after': '12' });
+
+      expect(err).toBeInstanceOf(AccountsRateLimitedException);
+      expect(err.getStatus()).toBe(503);
+      expect(err.retryAfter).toBe(12);
+      expect(err.message).toMatch(/temporarily unavailable/i);
+    });
+
+    it('reads the wait from when Auth0 resets its limit, and keeps it within a minute', async () => {
+      const inSeconds = (s: number) => String(Math.floor(Date.now() / 1000) + s);
+
+      expect((await refusal({ 'x-ratelimit-reset': inSeconds(20) })).retryAfter).toBeGreaterThanOrEqual(19);
+      expect((await refusal({ 'x-ratelimit-reset': inSeconds(20) })).retryAfter).toBeLessThanOrEqual(21);
+      expect((await refusal({ 'x-ratelimit-reset': inSeconds(3600) })).retryAfter).toBe(60);
+      expect((await refusal({})).retryAfter).toBe(30);
+    });
+
+    it('keeps nothing, so the next try reads Auth0 again', async () => {
+      await refusal({ 'retry-after': '1' });
+      ms.getUsersCreatedBetween.mockResolvedValue(accounts);
+
+      await expect(provider.getSeason('s-2026')).resolves.toMatchObject({ accounts: 3 });
+    });
+
+    it('still answers 500 for any other failure', async () => {
+      ms.getUsersCreatedBetween.mockRejectedValue(new Error('boom'));
+
+      await expect(provider.getSeason('s-2026')).rejects.toThrow('boom');
+    });
   });
 });
