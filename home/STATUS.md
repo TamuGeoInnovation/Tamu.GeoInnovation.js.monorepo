@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **g238** stopped after step 1 (29 routes read; 8 lose an omitted field, none reachable from the site): waiting on Q-g238-1, since 10:57 PM Central. Next: #3851 (AggieMap).
+- **Batch a76**: #3851: by the code, an option change redraws after clearing (currentResult$ re-emits on every travel option); proving it in a browser before changing anything, 10:59 PM Central, 26 November.
 
 ## Finished
 - **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
