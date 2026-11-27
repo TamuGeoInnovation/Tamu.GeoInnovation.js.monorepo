@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a68 (#3673, a lot's copied link reopens nothing)**, started 6:50 PM Central. Now (7:12 PM): red proven on Break / Summer and NSC ('opened nothing'); the reader finds the lot and dies on its missing geometry. Fixing in the shared EventService with a MapServer find for the geometry.
+- **Batch a68 (#3673, a lot's copied link reopens nothing)**, started 6:50 PM Central. Now (7:25 PM): fixed; smoke test and unit tests red then green; before/after images and release entry done. Running check-in-volume (ts-events-ngx, maps-esri, aggiemap-angular).
 
 ## Finished
 - **Batch g46 (#3593, strictNullChecks in the GIS Day app)** (report `laptop/reports/2026-11-26-g46.md`): **blocked, not branch ready.** 0 errors in the app's own files; 134 in libraries it imports fail its build, 11 of them GIS Day templates. Q-g46-1.
