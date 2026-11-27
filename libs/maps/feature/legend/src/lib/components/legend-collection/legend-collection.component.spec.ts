@@ -144,4 +144,41 @@ describe('LegendCollectionComponent', () => {
     expect(component.visibleChildGroups).toHaveLength(1);
     expect(component.hasChildren).toBe(true);
   });
+
+  /**
+   * #2421: UES Operations' legend listed every layer, drawn or not. A legend without visibility toggles lists what the map
+   * draws (#1871), but only its top-level layers were held to that; a group listed every child, switched on or off.
+   */
+  describe('the children of a group (#2421)', () => {
+    const group = () =>
+      ({
+        title: 'Domestic Cold Water',
+        layer: { id: 'domestic-cold-water', visible: true },
+        children: [
+          { title: 'Fire Hydrants', layer: { id: 'fire-hydrants', visible: true } },
+          { title: 'Well Sites', layer: { id: 'well-sites', visible: false } }
+        ]
+      }) as unknown as __esri.ActiveLayerInfo;
+
+    it('leaves out a child switched off, in a legend without visibility toggles', () => {
+      fixture.componentRef.setInput('group', group());
+
+      expect(component.visibleChildGroups.map((child) => child.title)).toEqual(['Fire Hydrants']);
+    });
+
+    it('keeps every child where the legend toggles them, so one switched off collapses rather than goes', () => {
+      fixture.componentRef.setInput('group', group());
+      fixture.componentRef.setInput('allowVisibilityToggle', true);
+
+      expect(component.visibleChildGroups.map((child) => child.title)).toEqual(['Fire Hydrants', 'Well Sites']);
+    });
+
+    it('has nothing to list when every child is off', () => {
+      const off = group();
+      (off.children as unknown as Array<{ layer: { visible: boolean } }>).forEach((child) => (child.layer.visible = false));
+      fixture.componentRef.setInput('group', off);
+
+      expect(component.hasChildren).toBe(false);
+    });
+  });
 });

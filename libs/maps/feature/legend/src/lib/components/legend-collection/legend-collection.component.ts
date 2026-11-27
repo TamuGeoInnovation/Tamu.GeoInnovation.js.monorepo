@@ -104,6 +104,13 @@ export class LegendCollectionComponent {
       return this.childGroups.filter((child) => child.layer?.visible === true);
     }
 
+    // A legend without visibility toggles lists what the map draws (#1871). That held for top-level layers only, so a
+    // group listed every child, on or off: UES Operations' legend listed every layer (#2421). A legend that toggles
+    // keeps them, so a child switched off from its title collapses rather than leaves.
+    if (!this.allowVisibilityToggle()) {
+      return this.childGroups.filter((child) => child.layer?.visible !== false);
+    }
+
     return this.childGroups;
   }
 
