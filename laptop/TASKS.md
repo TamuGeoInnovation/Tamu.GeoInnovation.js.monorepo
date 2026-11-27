@@ -1,6 +1,10 @@
 # Laptop: current tasks
 
 
+## Batch g51 withdrawn for now: bugs first (26 November 2026, 10:25 PM Central, from `work (gisday)`)
+
+The maintainer wants a first pass through bugs only, not enhancements or cleanup. **g51 (#3826) is withdrawn for now** and comes back after the bug pass. g50 (#3827) and g52 (the form-side bug hunt) stay.
+
 ## Batch g52 (gisday: find more bugs shaped like #3827, on the form side; 26 November 2026, 10:05 PM Central, from `work (gisday)`) (Medium) - **after g51**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; dead code is deleted and features are parked, never asked about; never wait for a fix to merge, stack on it. Each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed.
