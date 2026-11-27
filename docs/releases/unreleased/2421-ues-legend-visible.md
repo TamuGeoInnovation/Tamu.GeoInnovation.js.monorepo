@@ -10,10 +10,8 @@ testOnDev: |
 The legend in **UES Operations** listed every layer it knew of, drawn or not, so it could not be read as a key to the
 map, and it showed symbols for layers switched off
 ([#2421](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2421)). It now lists what the map
-draws: a layer joins the legend when it is switched on and leaves it when it is switched off.
-
-The same was true of any legend without on-and-off controls of its own that shows a group of layers, so the **Move-In**
-map's legend no longer lists Accessible Parking until the accessible-parking choice turns it on.
+draws: a layer joins the legend when it is switched on and leaves it when it is switched off. No other map's legend
+changes: the event maps' legends have on-and-off controls of their own, and AggieMap's lists no groups of layers.
 
 | Before: the start of a legend of 137 entries, every layer listed                                                                     | After: the two layers the map draws                                                                            |
 | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
