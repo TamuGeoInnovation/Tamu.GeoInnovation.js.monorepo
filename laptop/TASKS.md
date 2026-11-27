@@ -1,5 +1,66 @@
 # Laptop: current tasks
 
+
+## Batch a68 (aggiemap: #3673, a lot's copied link reopens nothing; 26 November 2026, 6:20 PM Central, from `work (aggiemap)`) (Medium) — **after s11 and g46**
+
+**Finish s11 first.** This sits behind it; do not drop what you are on.
+
+**Two standing changes, today:**
+- **Announce every step, before and after** (`DIRECTOR.md`, 26 November): a one-line push when a step starts and when it
+  ends, time read from PowerShell, with `STATUS.md`'s **Running now** updated in the same commit.
+- **Today's lock has every package at its latest.** If your branch predates this afternoon, **merge `development` in
+  before running a check** — otherwise the check installs a lock that no longer matches trunk.
+
+### What it is
+
+[#3673](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3673). The event parking maps have a
+copy-link control on a selected lot. The link it produces does not reopen the lot:
+
+```
+/break-summer/map/d?feature=Break-Summer+Parking+Lots:26118
+```
+
+draws the map, with nothing selected. The feature is never found, so nothing is highlighted and no popup opens. The
+control's whole purpose is sharing a specific lot with somebody, so what it hands out is a link that looks right and
+does nothing.
+
+### The likely cause, which is worth disproving before you fix anything
+
+The parking layers are **joined** services, so their fields arrive prefixed: `GIS.TS.ParkingLots.LotType`,
+`GIS.TS.ParkingLots.*`. A deep link built or resolved against an unprefixed field name finds nothing. **Both halves can
+be wrong independently** — the link could be written with the wrong field, or written right and resolved wrong.
+
+So:
+
+1. **Say which half is broken.** Compare the `feature=` value the copy control produces against what the resolver looks
+   up. If the number `26118` is a valid identifier in the layer, the writer is fine and the reader is broken; if it is
+   not, the writer is.
+2. **Ask the service, don't assume.** Query the layer and say what its identifier field is actually called and whether
+   `26118` exists in it. CLAUDE.md's rule here is blunt and it has been earned four times: a rename that looks like a
+   fix and changes nothing a visitor sees is worse than the bug.
+3. **Check whether other event maps share the control.** If the fix belongs in a shared place, put it there — don't fix
+   one event's definitions and leave the rest. The copied-field component is shared; the question is whether the deep
+   link handling is.
+
+### Then
+
+4. **A regression test, proven red first**, and quote the failure. A test that asserts the link resolves to the right
+   feature, not that a popup appeared — a popup can open for the wrong reason.
+5. **Before and after images** into `docs/screenshots/3673-lot-copied-link/`, and a release-notes entry in
+   `docs/releases/unreleased/3673-<slug>.md` with its *What to test on dev* row. The row needs a real dev link
+   somebody can click.
+
+### Do not
+
+**Do not delete anything that looks dead.** The maintainer's instruction today: dead code is **marked as potentially
+parked and he decides**, never removed. If the copy control turns out to be unused, say so and stop — that is a finding,
+not a deletion.
+
+**Branch** `fix/3673-lot-copied-link` from today's `development`. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and
+give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not** committed. **Open no pull
+request** — I open it.
+
+**Report** `laptop/reports/2026-11-26-a68.md`. Questions `Q-a68-<n>`.
 ## Batch g46 (gisday: #3593's last step, strictNullChecks in the GIS Day app; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (Medium) - **after s11**
 
 **Rules for every GIS Day batch from now on (the maintainer, 26 November):**

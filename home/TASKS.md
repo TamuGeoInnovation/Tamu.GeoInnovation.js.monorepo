@@ -4,6 +4,55 @@
 
 **Q-g126-1: (a).** Capture Admin > Dashboards > Accounts from the local build, with the auth guard and the dashboard API stubbed in the browser: the real component, stubbed data and permissions, no sign-in. Show both states: counts present, and "temporarily unavailable" after a stubbed 429. The PR body says exactly how each image was made, and that the data is stubbed. Carry on with g126.
 
+
+## Batch a67 (aggiemap: #3615, a typed coordinate is never placed on the map; 26 November 2026, 6:20 PM Central, from `work (aggiemap)`) (Medium) — **after g126**
+
+**Two standing changes, today:**
+- **Announce every step, before and after** (`DIRECTOR.md`, 26 November): a one-line push when a step starts and when it
+  ends, time read from PowerShell, with `STATUS.md`'s **Running now** updated in the same commit.
+- **Today's lock has every package at its latest**, so branch from today's `development`; if you reuse anything older,
+  merge `development` in **before** running a check.
+
+### What it is
+
+[#3615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3615), and it is visitor-facing.
+Typing **`30.6, -96.3`** — latitude first, the right way round — into the desktop map's "Find Building or Parking" box
+at `/map/d`:
+
+- the box says **No results found for "30.6, -96.3"**;
+- the console logs **`ERROR Error: Could not resolve geometry type.`**, from `TripPoint.toEsriGraphic`, called from the
+  reference search's result handler.
+
+I confirmed the code path is still live on today's `development`: `search.component.ts` calls `parseLatLon(value)` and
+then `setSelected(...)`, with a `// TODO: no any` sitting right at the handoff.
+
+### What to do
+
+1. **Reproduce it first**, on a local production build, and say what you saw. The issue has images; take your own
+   "before" anyway, because you will need it.
+2. **Find where the geometry is lost.** The error comes from `TripPoint.toEsriGraphic`, so the question is what
+   `setSelected` is handing it and what shape that function expects. The `// TODO: no any` is a hint that the type was
+   never right here.
+3. **A regression test, proven red first.** `parseLatLon` already has tests; the gap is between the search resolving a
+   coordinate and the map placing it. Quote the red failure.
+4. **Before and after images**, into `docs/screenshots/3615-coordinate-search/`, plus a release-notes entry in
+   `docs/releases/unreleased/3615-<slug>.md` with its *What to test on dev* row. Run
+   `node scripts/collate-release-notes.mjs --check` before pushing.
+
+### Worth knowing
+
+- **Both orders are worth trying.** `30.6, -96.3` is latitude first; `-96.3, 30.6` is longitude first. If one works and
+  the other does not, that is a different bug from neither working, and the report should say which.
+- `search.component.ts` is shared by the phone's search too (`SearchMobileComponent` extends it), so check the phone
+  path is not made worse. The laptop found that inheritance the hard way in a31 — an import search could not see it.
+- **Do not delete anything that looks dead.** The maintainer's instruction today: dead code is **marked as potentially
+  parked and he decides**. Say what you found and stop.
+
+**Branch** `fix/3615-coordinate-search` from today's `development`. `check-in-volume.sh`, then **`pre-pr-check.sh`**,
+and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not** committed. **Open no
+pull request.**
+
+**Report** `home/reports/2026-11-26-a67.md`. Questions `Q-a67-<n>`.
 ## Batch g126 (gisday: #3747 and #3680, two bugs found yesterday; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (High) - **now**
 
 **Rules for every GIS Day batch from now on (the maintainer, 26 November):**

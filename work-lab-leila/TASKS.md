@@ -1,5 +1,57 @@
 # work-lab-leila: current tasks
 
+
+## Batch a66 (aggiemap: #3693, viewEvent shares one handle between subscribers; 26 November 2026, 6:20 PM Central, from `work (aggiemap)`) (Medium) — **after g228 and s-lab-4**
+
+**a64 and a65 are accepted and the build is cleared.** The release tier passed on `57efe8b6b`: 1,068 passed, 70
+skipped, 1 flaky, nothing failed, and the bus check ran for the first time and passed. Confirming the three things I
+asked for rather than assuming them is what made that report worth reading.
+
+**Two standing changes, today:**
+- **Announce every step, before and after** (`DIRECTOR.md`, 26 November): a one-line push when a step starts and when
+  it ends, with the time read from PowerShell, and `STATUS.md`'s **Running now** updated in the same commit.
+- **Today's lock has every package at its latest.** Your branch comes from `development` today, so this is fine — but
+  **merge `development` in before any check** if you ever branch from something older.
+
+### Why this is yours
+
+You found it, in a53: writing `watchAsObservable` you kept the handle in one variable as `viewEvent` does, then wrote
+a two-subscriber test nothing asked for and watched the first unsubscribe remove the **second** subscriber's handle.
+You filed it as [#3693](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3693).
+
+**It is still there on today's `development`** — I checked `libs/maps/esri/src/lib/view-event.ts`:
+
+```ts
+let handle: esri.Handle | undefined;
+const add = (handler) => { handle = on.call(view, name, handler); };
+const remove = () => { handle?.remove(); handle = undefined; };
+```
+
+One `handle` in closure scope, shared by every subscriber. The `handle?.remove()` guard covers the handle that never
+arrived; it does **not** cover two subscribers. **13 call sites.**
+
+### What to do
+
+1. **Fix it the way you fixed `watchAsObservable`:** take the handle `fromEventPattern` passes to `remove`, so each
+   subscription removes its own.
+2. **The two-subscriber test must fail first.** Quote the failure — your `expected 1 to be 2` is the shape. Keep the
+   handle-never-arrived case too.
+3. **Say whether any of the 13 call sites has two subscribers today.** If one does, that is a live fault with a visible
+   result, and it needs images and a release-notes entry rather than `no-visible-change`. **If none does, say so
+   plainly** — a latent fault fixed before it bit anyone is the better outcome and should be stated as one.
+4. **Check `watchAsObservable` and `viewEvent` now read the same way.** They are documented as a pair; if one takes the
+   handle from `remove` and the other does not, the next person copies whichever they find first.
+
+### Do not
+
+**Do not delete anything that looks dead.** The maintainer's instruction today: dead code is **marked as potentially
+parked and he decides**, never removed. If you find some, say so in the report and stop.
+
+**Branch** `fix/3693-viewevent-handle-per-subscriber` from today's `development`. `check-in-volume.sh`, then
+**`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not**
+committed. **Open no pull request** — I open it.
+
+**Report** `work-lab-leila/reports/2026-11-26-a66.md`. Questions `Q-a66-<n>`.
 ## Batch g228 (gisday: #3748, then are these old GIS Day issues still true?; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **Rules for every GIS Day batch from now on (the maintainer, 26 November):**
