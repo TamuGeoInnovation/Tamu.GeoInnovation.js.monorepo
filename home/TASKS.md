@@ -10,6 +10,71 @@
 
 PR 3797 has merged, so the register check passes again: merge `development` in, then run the full check.
 
+
+## Batch a73 (aggiemap: #3687, park the bus UI the retired API fed; 26 November 2026, 9:35 PM Central, from `work (aggiemap)`) (Medium) — **after a72**
+
+**The maintainer's decision, in his words:** *"I want to keep the current things that work for busses alive and active.
+I want to mark the things that are fed by the dead API as parked so that we can come back to them when the API is
+available again and we don't forget that they existed."*
+
+**Standing, today:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running
+now** in the same commit, answers in `TASKS.md`, branch from today's `development` — which now carries #3805, so
+`check-parked-code` should no longer be your only red.
+
+### Park these
+
+The UI that `BusService`'s retired endpoints fed. `parked/bus-api` holds the service half (#3704); **the rendering half
+exists nowhere**, which is the whole reason for this.
+
+| Component | Lines |
+| --- | --- |
+| `libs/maps/feature/trip-planner/.../trip-planner-mode-switch/components/bus-switch` | 175 |
+| `libs/aggiemap/ngx/ui/shared/.../transportation/components/bus-timetable` | 101 |
+| `libs/aggiemap/ngx/ui/mobile/.../components/bus-timetable-bottom` | 105 |
+
+**Plus whatever becomes unreachable with them.** `BusStop` is referenced only by `bus-switch` and `bus.service.ts`;
+`TimetableRow` also by `trip-planner.service.ts`. **Read the member graph, not the imports** — #3657's closure turned
+out far larger than the three methods its issue named, and `bus.service.ts` still has 562 lines after it.
+
+### Keep these working, and prove it
+
+`/map/d/bus` and the phone's bus list: `bus-list`, `bus-list-header`, `bus-route`, `sidebar-bus-list`,
+`bus-list-bottom`, and the `bus-stop` popup. They draw from the GIS service, not the retired API.
+
+**`bus.spec.ts` staying green is the gate on this batch.** It passed **25 of 25** on 26 November — 23 routes, a route
+expanding with its stops drawn, the same choice removing them — its first run ever against a build carrying #2758. Run
+it against your local build before and after, and quote both.
+
+**The one thing to resolve by reading rather than assuming:** my grep says `bus-timetable`'s selector appears in one
+other template and `bus-timetable-bottom`'s in none. **If the template using `bus-timetable` is part of the live route
+list, then it is not dead and it stays** — say which template it is and what it does. Do not delete a component because
+this batch listed it; delete it because you followed it to a dead endpoint. If any of the three turns out to be live,
+report that and park the rest.
+
+### The order — #3717 merged tonight, so it is row first, then tag
+
+1. **#3687 is the issue**, already labelled `parked` and widened to this set. No new issue needed.
+2. **One row in [`docs/parked-code.md`](docs/parked-code.md)** covering all three components, in the same pull request
+   as the deletion. The condition for its return is #3704's: **Transportation Services' bus data is reachable again.**
+   Name the tag `parked/bus-timetable-ui`.
+3. **Do not create the tag.** I tag the merge commit's first parent after it merges —
+   `git tag -a parked/bus-timetable-ui "$(git rev-parse <merge>^)"`. Tagging first is what #3717 removed.
+4. **The tag message is the part that matters**, so write it into the report for me to use: what the UI did, how it was
+   reached, and what a future reader needs. What is preserved is the working out, not code to paste back.
+
+### Also
+
+- **Before and after images.** Removing a component that renders nothing should change no pixel — prove that, and if a
+  host element's spacing shifts, it is a visible change and needs the images in the notes.
+- **Release-notes entry** only if anything visible changes. If nothing does, the `no-visible-change` label.
+- **Say what `bus.service.ts` has left** after the closure, and whether any of it is now reachable only from the live
+  route list. Do not delete it — that is a finding for the maintainer.
+
+**Branch** `chore/3687-park-bus-timetable-ui` from today's `development`. `check-in-volume.sh`, then
+**`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not**
+committed. **Open no pull request** — I open it.
+
+**Report** `home/reports/2026-11-26-a73.md`. Questions `Q-a73-<n>`.
 ## g128: the issue to close (26 November 2026, from `work (gisday)`)
 
 g128 closes **#3807** ("Park the question-type API with the initial survey"). Put `Closes #3807` and "Part of #3713" in its `.pr-body.md`.
