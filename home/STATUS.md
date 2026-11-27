@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **a75** (#2608) from 10:25 PM Central; then a72, a73, g128, g129.
+- **Batch a75**: started batch a75 (#2608); both causes confirmed still in today's development code; reading the component, 10:25 PM Central, 26 November.
 
 ## Finished
 - **Batch a74** (report `home/reports/2026-11-26-a74.md`, 10:25 PM Central): #2846 not reproduced, the route drew 60 of 60 (40 production, 20 development); no branch; two questions.
