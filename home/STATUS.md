@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **g127** (`chore/3796-park-season-day-writes`): done but for its full check, which waits for PR 3797 (or 3805) to merge; then push and branch ready. **g128** held until PR 3803 merges. Otherwise idle since 7:52 PM Central.
+- **Batch a70**: started batch a70 (#3808); step 1: per-map captures of what a visitor sees today, 7:54 PM Central, 26 November.
 
 ## Finished
 - **Batch a69** (report `home/reports/2026-11-26-a69.md`, 7:52 PM Central): branch ready `fix/3671-nsc-permit-instructions` at `bfcd92a6f`; one line, red first; no-visible-change (#2520), spec render as test artifact; #3808 filed by the director.
