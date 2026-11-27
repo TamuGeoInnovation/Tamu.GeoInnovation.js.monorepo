@@ -155,7 +155,7 @@ it. What stays forbidden:
 
 How (the full reasons are in `docs/gisday-local.md`, "Sign in at gisday.local.test, not localhost"):
 
-1. **The settings file:** `C:\TAMU\gisday-localuth0-dev.local.env` holds the test admin
+1. **The settings file:** `C:\TAMU\gisday-local\auth0-dev.local.env` holds the test admin
    (`claude-test-admin@txgisday-dev.test`) and its password, for **txgisday-dev** only.
    - **Every machine has the same copy.** `scripts/gisday-auth0-dev.ps1` sets a new password each time it runs, so
      running it on one machine breaks the others' copies.
