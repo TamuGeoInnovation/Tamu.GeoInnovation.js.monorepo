@@ -1,6 +1,15 @@
 # work-lab-leila: current tasks
 
 
+## Batch g239 (gisday: bug hunt, the API's 500s on bad input; 27 November 2026, 3:30 PM Central, from `work (gisday)`) (High) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never wait for a fix to merge, stack on it; dead code is deleted and features are parked, never asked about. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed. Anything that isn't a bug, list in the report; don't build it.
+
+#3747 and #990 were the same shape: **a request the API didn't expect became a 500**, with no message saying why. Find the rest in `libs/gisday/platform/data-api` and `libs/gisday/competitions/data-api`:
+
+1. For every route, read what it does with a missing or malformed body, query or param: `body.x.y` without a guard, `findOne` on a guid that doesn't exist, an `await` of something that throws (Auth0, the file system, another service), `JSON.parse`, `new Date` on junk. Each must answer a 4xx naming the problem (400, 404, 422), or a 503 for a dependency that's down, **never a 500**.
+2. Prove each suspect through Nest's real routing with a spec: send the bad request and expect the right code. Red first. One branch per issue, or one branch for a family of the same fix in one controller.
+3. Report `reports/<date>-g239.md`: a table of routes checked, each ok or the issue filed.
 ## Batch g238 moved to home (26 November 2026, 10:30 PM Central, from `work (gisday)`)
 
 The API-side #3827 hunt moved to home, which is free now. Carry on with g237.
