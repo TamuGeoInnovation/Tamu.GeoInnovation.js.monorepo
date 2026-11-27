@@ -1260,7 +1260,9 @@ export class EsriMapService {
    * behind the side panel.
    */
   public fit(target: esri.GoToTarget2D, options?: esri.GoToOptions2D): Promise<void> {
-    const view = this._modules.view;
+    // `currentView` rather than `_modules.view`: #3804 turned strict null checks on here, and this reads the view the
+    // same way every other post-`makeMap` caller does.
+    const view = this.currentView;
     const container = view.container as HTMLElement;
     const covered = coveredEdges(
       container.getBoundingClientRect(),
