@@ -41,6 +41,21 @@ chat's and said so only in its own window; and a `Still there?` was up for one m
   watcher (the background task's id) and says Remote Control is on for the chat. Saying "I am a listener" without both
   is the 23 October failure. Remote Control is what lets the maintainer look in from another machine.
 
+## Never wait for a fix to merge: stack on it (26 November 2026, the maintainer)
+
+**When work depends on another open branch, merge that branch into yours (in your worktree) and carry on.** That covers
+a check that fails only because of something another open branch fixes, and code that has to land after someone
+else's change. Then run the check, push, and say in `.pr-body.md` which pull request yours depends on and must merge
+after. Once that one merges, your diff shrinks back to your own change.
+
+**Never park finished work waiting for a fix to merge,** and never hold a batch "until PR N merges" when stacking would do.
+On 26 November, 20 finished branches sat unopened for three hours behind one green docs pull request (3797), because
+the director waited for it to merge instead of merging its branch into theirs. The maintainer: "Can't we use worktrees
+so that you continue making work on top of fixes?"
+
+A real hold is only for work that can't be built at all until something else exists. Even then, say what it waits
+for, and do something else meanwhile.
+
 ## Announce every step, before and after (26 November 2026, the maintainer's 1A)
 
 On 26 November all three machines were working, and for most of the afternoon it was impossible to tell. Three things went wrong:
