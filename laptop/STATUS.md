@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g46
+Last batch done: a68
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch a68 (#3673, a lot's copied link reopens nothing)**, started 6:50 PM Central. Now (7:34 PM): first check failed 5 existing specs (fakes with no geometry); fix narrowed, whole ts-events-ngx suite 362/362; check running again.
+- Nothing. Listening.
 
 ## Finished
+- **Batch a68 (#3673, a lot's copied link)** (report `laptop/reports/2026-11-26-a68.md`): **branch pushed: `fix/3673-lot-copied-link`** (`e4a37426d`). Writer fine; the lot services return no geometry (#2520), so the reader now asks MapServer `find`. Smoke and unit red then green. Check fails only on repo-wide check-parked-code (PR 3797). Q-a68-1, Q-a68-2.
 - **Batch g46 (#3593, strictNullChecks in the GIS Day app)** (report `laptop/reports/2026-11-26-g46.md`): **blocked, not branch ready.** 0 errors in the app's own files; 134 in libraries it imports fail its build, 11 of them GIS Day templates. Q-g46-1.
 - **Batch s11 (#3788, remove the queued VGI export and bull)** (report `laptop/reports/2026-11-26-s11.md`): **branch ready: `chore/3788-remove-bull`** (`d5b257039`). Guard test passes before and after; the lock loses 16 packages. Full check: everything passes but `check-parked-code`, a repo-wide failure PR 3797 fixes.
 - **Batch s10 (#3757, ArcGIS 5.2.9 with amCharts 5.20.8)** (report `laptop/reports/2026-11-26-s10.md`): **branch ready: `chore/arcgis-5.2`** (`32440fdd0`). One amCharts copy; full check exit 0; pre-pr-check exit 0. Release tier stopped as told (454 of 1,139; failures are timeouts and the local banner); the lab runs it. Q-s10-1.
