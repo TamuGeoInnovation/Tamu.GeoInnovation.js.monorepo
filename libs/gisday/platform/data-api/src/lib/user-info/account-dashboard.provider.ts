@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { LessThan, Repository } from 'typeorm';
+import { Management } from 'auth0';
 
 import { ManagementService } from '@tamu-gisc/common/nest/auth';
 
@@ -12,6 +13,29 @@ import { AccountDashboard, accountRowKey, accountRows, seasonWindow } from './dt
 
 /** An account has a GIS Day profile once its owner completes My Details, which writes `app_metadata.gisday`. */
 export const HAS_GISDAY_PROFILE = '_exists_:app_metadata.gisday';
+
+/**
+ * Auth0 is limiting how often its accounts can be read (#3747): a 503 that says how many seconds to wait, which the
+ * controller sends as Retry-After and the dashboard page shows. It was a 500, and the page said only that the accounts
+ * could not be read.
+ */
+export class AccountsRateLimitedException extends ServiceUnavailableException {
+  constructor(public readonly retryAfter: number) {
+    super(
+      `The account counts are temporarily unavailable: the sign-in service is busy. Try again in ${retryAfter} seconds.`
+    );
+  }
+}
+
+/** How long Auth0 asks to wait, in whole seconds from 1 to 60: its Retry-After, or when its limit resets, or 30. */
+function waitFrom(err: Management.TooManyRequestsError): number {
+  const headers = (err.rawResponse as { headers?: Headers } | undefined)?.headers;
+  const retryAfter = Number(headers?.get('retry-after'));
+  const reset = Number(headers?.get('x-ratelimit-reset'));
+  const seconds = retryAfter > 0 ? retryAfter : reset > 0 ? reset - Date.now() / 1000 : 30;
+
+  return Math.min(60, Math.max(1, Math.round(seconds)));
+}
 
 interface SeasonAccounts {
   at: number;
@@ -80,7 +104,9 @@ export class AccountDashboardProvider {
       }),
       this.ms.countUsersCreatedBetween(from, window.to),
       this.people.organizationNames()
-    ]);
+    ]).catch((err) => {
+      throw err instanceof Management.TooManyRequestsError ? new AccountsRateLimitedException(waitFrom(err)) : err;
+    });
 
     const people = accounts.map((a) => personOf(a.profile, a.created, organizations));
     const read: SeasonAccounts = {

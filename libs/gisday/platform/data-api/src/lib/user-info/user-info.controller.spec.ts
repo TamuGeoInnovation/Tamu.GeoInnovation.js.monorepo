@@ -169,11 +169,14 @@ describe('UserInfoController, the accounts dashboard when Auth0 rate-limits it (
     await app?.close();
   });
 
-  it.each(['dashboard/season/s-2026', 'dashboard/season/s-2026/row/esri'])('/users/%s answers 503 with Retry-After', async (path) => {
-    const response = await fetch(`${url}/users/${path}`);
+  it.each(['dashboard/season/s-2026', 'dashboard/season/s-2026/row/esri'])(
+    '/users/%s answers 503 with Retry-After',
+    async (path) => {
+      const response = await fetch(`${url}/users/${path}`);
 
-    expect(response.status).toBe(503);
-    expect(response.headers.get('retry-after')).toBe('12');
-    expect((await response.json()).message).toMatch(/temporarily unavailable/i);
-  });
+      expect(response.status).toBe(503);
+      expect(response.headers.get('retry-after')).toBe('12');
+      expect((await response.json()).message).toMatch(/temporarily unavailable/i);
+    }
+  );
 });
