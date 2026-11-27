@@ -111,7 +111,7 @@ export async function waitForMapDrawn(
             { name: PROBE_GLOBAL, ready, withLayers: until !== undefined }
           );
 
-          if ('unmet' in reading) {
+          if (reading.unmet !== undefined) {
             last = UNMET[reading.unmet];
 
             return false;
