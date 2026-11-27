@@ -7,6 +7,81 @@ g128 closes **#3807** ("Park the question-type API with the initial survey"). Pu
 
 
 
+
+## Batch a72 (aggiemap: #3369's diagnostic — a timeout that says which condition ran out; 26 November 2026, 8:45 PM Central, from `work (aggiemap)`) (Medium) — **now**
+
+**a71 is accepted, and it is the best-evidenced change of the night.** 141, 89, 90 and 116 seconds down to 19, 18, 16
+and 22, and 162, 107, 104 and 126 down to 21, 19, 18 and 17 — four cold loads each, before and after, on a quiet
+machine, with the spaces loaded dropped from 44,980 to 427 and the before-and-after images showing the same points. That
+is what #1897's claim looked like when it was made, and now two more maps have it.
+
+Three things you did that were not asked for and that I want repeated:
+
+- **Deriving the filter from the renderers** rather than from the data — unique-value on `Spc_Type`, symbols for `Serv`
+  and `Loading` only, **no default symbol** — and saying so. The failure mode in step 2 was a filter that fits today's
+  data and drops a type the symbology draws, and "no default" is the sentence that rules it out.
+- **Making the widened spec read a generated file** that another spec writes from the definitions, the
+  `declared-layers` pattern, instead of a longer named list. The red reading — *"Expected 427, Received 44980"* on
+  Maintenance and Service while Accessible and Motorcycle passed — is exactly the proof #3824 asked for.
+- **Asking about `media-parking` and `rns-spaces-layer` and excluding both with a reason.** `visible: false` and
+  fetching nothing is the kind of detail that would otherwise have become somebody's wasted hour.
+
+**Your stated limit goes in the pull request body, not just the report.** "The four services are a named list; a new
+service republishing the same data would need adding" is the honest boundary of the guard, and it belongs where a
+reviewer will read it. I will carry it over when I open it.
+
+**Standing, today:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running
+now** in the same commit, answers in `TASKS.md`, branch from today's `development`.
+
+### What this is
+
+Part of [#3369](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3369), and deliberately not
+all of it. That issue asks for three things; this batch is **only the first**, which is the one that stops a slow draw
+being misread as a broken map.
+
+**The fault.** `waitForMapDrawn` in `test/smoke/aggiemap/map-probe.ts` polls a function that returns a bare boolean:
+
+```ts
+if (probe?.drawing !== false || (ready && probe.ready !== true)) {
+  return null;
+}
+```
+
+So when it times out, all a reader gets is the spec's own `message`. **"Not ready", "still drawing" and "the layer is
+missing" are indistinguishable.** #3369 records what that costs: muster failed three times with *"never finished
+drawing both layers ... Timeout 90000ms exceeded"*, and the failure screenshot showed the map **fully drawn with both
+layers in the legend** — the order assertion had never run. It read as an ordering fault and was a timing one.
+
+I confirmed the code is unchanged on today's `development`, and that today's release tier passed without these
+failures — which is why this is worth doing now rather than under pressure.
+
+### What to do
+
+1. **Make the timeout say which condition was unmet at the last reading**: not ready, ready but still drawing, drawn but
+   `until` not satisfied, or the probe absent altogether. The last of those matters — a missing
+   `window.__tamuGiscMapProbe` means the deployed build is older than the probe, and that currently reads as a map that
+   never finished drawing.
+2. **Keep each spec's `message`.** It says *which map*; this adds *what was wrong*. Both, not one instead of the other.
+3. **Where `until` is given, say what it last saw** — the layers it was offered, or their count — so a layer-order
+   timeout shows whether the layers were even there. That is the muster case specifically.
+4. **Prove it red first**, which here means proving the message: a test that times out against a map that is drawn but
+   fails `until` must name that, and the same against a page with no probe must name that instead. Two fixtures, not
+   one.
+5. **Do not change any timeout.** Budgets are #3369's second part and are not in this batch. This change must alter no
+   pass or fail, only what a failure says — say so in the report and quote a run that confirms it.
+
+### Do not
+
+**Do not delete anything that looks dead** — marked as potentially parked, the maintainer decides.
+
+**Do not touch the application.** #3369's third part — why these event maps keep updating for 20 to 60 seconds after
+their data has arrived — is the valuable one and the one most likely to swallow a night. Not here.
+
+**Branch** `test/3369-drawing-timeout-reason` from today's `development`. `check-in-volume.sh`, then
+**`pre-pr-check.sh`**, and give me its last line; `check-parked-code` may still be the only red, which is fine — say so.
+Body text in the report with a `Title:` line, `.pr-body.md` **not** committed. **Open no pull request** — I open it.
+
+**Report** `home/reports/2026-11-26-a72.md`. Questions `Q-a72-<n>`.
 ## Answer: Q-a70-1, and a70 accepted (26 November 2026, 8:20 PM Central, from `work (aggiemap)`)
 
 **a70 is accepted.** You did the four steps in the order they were given and the order paid for itself: capturing first
