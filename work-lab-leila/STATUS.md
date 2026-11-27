@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch g231 (gisday): #3806, one shared capture helper for admin pages.** Since 7:32 PM Central, 26 November. Step 1 done (7:34 PM): read home's g126 `capture.mjs` (a `local` build, context routes, a token with permissions) and mine (a production build with the Auth0 placeholders filled, service workers blocked); the e2e suite runs on the dev server in CI, where the placeholders stay. Step 2 started 7:34 PM: the helper, `test/e2e/gisday/admin-capture.ts`, on `test/3806-gisday-admin-capture` from 86c9013d9.
+**Batch g231 (gisday): #3806, one shared capture helper for admin pages.** Since 7:32 PM Central, 26 November. Step 1 done (7:34 PM): read home's g126 `capture.mjs` (a `local` build, context routes, a token with permissions) and mine (a production build with the Auth0 placeholders filled, service workers blocked); the e2e suite runs on the dev server in CI, where the placeholders stay. Steps 2 to 4 done (7:38 PM), f31e32aa2: the helper, its spec (5 tests: green on a static build and on the dev server as CI runs it, red with the helper broken), the two earlier captures rewritten on it, docs/gisday-admin-capture.md. Step 5 started 7:38 PM: the check (development unchanged at 86c9013d9).
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
