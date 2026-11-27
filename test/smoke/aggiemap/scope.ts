@@ -31,6 +31,7 @@ export const CORE_SPECS = [
   'development-only.spec.ts',
   'esri-runtime.spec.ts',
   'gis-hosts.spec.ts',
+  'map-probe-timeout.spec.ts',
   'mobile.spec.ts',
   'paint.spec.ts',
   'retired.spec.ts',
