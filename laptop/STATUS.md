@@ -33,10 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing. Listening.
+- **Batch g52 (replaced: #3862, partial updates keep fields)**, started 11:23 PM Central. I missed the 10:55 PM replacement and ran the form-side hunt (found #3861, branch ready). Now: branch fix/3862-partial-updates-keep-fields stacked on #3861, reading home's g238 lines.
 
 ## Finished
-- **Batch g52 (form-side bugs shaped like #3827)** (report `laptop/reports/2026-11-26-g52.md`): every admin Edit form checked; one new bug, **#3861** (Update Season ignores the year), **branch ready: `fix/3861-season-update-saves-year`** (`b8db04306`), check Exit 0.
+- **g52's withdrawn form-side hunt** (report `laptop/reports/2026-11-26-g52.md`): every admin Edit form checked; one new bug, **#3861** (Update Season ignores the year), **branch ready: `fix/3861-season-update-saves-year`** (`b8db04306`), check Exit 0.
 - **Batch g50 (#3827, an event save erases its attendance)** (report `laptop/reports/2026-11-26-g50.md`): **branch ready: `fix/3827-event-save-keeps-attendance`** (`c198b0333`). Fixed in the form; DB NULL/NULL -> 12/15 kept; check Exit 0; read-only production query in the report.
 - **Batch g49 (signed-in walk of GIS Day)** (report `laptop/reports/2026-11-26-g49.md`): filed #3827 (High: an admin event save erases attendance), #3828 (Low: admin VGI map on an empty season), #3829 (Low: amCharts multiple Roots). Everything else ok.
 - **Batch g48 (#3804, five shared libraries strict)** (report `laptop/reports/2026-11-26-g48.md`): **branch ready, all five** (location, geometry-esri, pipes, mobile-tile, device). Each 0 own errors and 0 under the app flag; checks fail only on repo-wide check-parked-code (PR 3797). maps-esri +2: a real latent fault surfaced.
