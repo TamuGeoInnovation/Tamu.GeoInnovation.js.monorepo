@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewContainerRef,
-  OnDestroy,
-  inject,
-  viewChild
-} from '@angular/core';
+import { Component, OnInit, ViewContainerRef, OnDestroy, inject, viewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -21,9 +14,9 @@ import { TileService } from '../../services/tile.service';
 export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   private service = inject(TileService);
 
-  private readonly _container = viewChild('container', { read: ViewContainerRef });
+  private readonly _container = viewChild.required('container', { read: ViewContainerRef });
 
-  private _$destroy: Subject<boolean> = new Subject();
+  private _$destroy: Subject<void> = new Subject();
 
   public ngOnInit() {
     // A click even is registered on the TileComponent.
@@ -41,7 +34,7 @@ export class TileSubmenuContainerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._$destroy.next(undefined);
+    this._$destroy.next();
     this._$destroy.complete();
   }
 }
