@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g52
+Last batch done: g53
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g53 (#3862, eight partial-update routes)**, started 11:24 PM Central, in `C:/TAMU/wt-3862`. Now (11:52 PM): first check failed two strict-lint errors of mine (fixed); running it again.
+- Nothing. Listening.
 
 ## Finished
+- **Batch g53 (#3862, eight partial-update routes)** (report `laptop/reports/2026-11-26-g53.md`): **branch ready: `fix/3862-partial-updates-keep-fields`** (`96e5dc79e`), stacked on #3861. Eight round-trip specs red then green; check Exit 0.
 - **g52's withdrawn form-side hunt** (report `laptop/reports/2026-11-26-g52.md`): every admin Edit form checked; one new bug, **#3861** (Update Season ignores the year), **branch ready: `fix/3861-season-update-saves-year`** (`b8db04306`), check Exit 0.
 - **Batch g50 (#3827, an event save erases its attendance)** (report `laptop/reports/2026-11-26-g50.md`): **branch ready: `fix/3827-event-save-keeps-attendance`** (`c198b0333`). Fixed in the form; DB NULL/NULL -> 12/15 kept; check Exit 0; read-only production query in the report.
 - **Batch g49 (signed-in walk of GIS Day)** (report `laptop/reports/2026-11-26-g49.md`): filed #3827 (High: an admin event save erases attendance), #3828 (Low: admin VGI map on an empty season), #3829 (Low: amCharts multiple Roots). Everything else ok.
