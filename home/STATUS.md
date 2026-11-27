@@ -17,6 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - **Batch a71**: after measured: maintenance 19/18/16/22 s, service 21/19/18/17 s (from 89-162 s), 427 spaces, same points drawn; comparison in build-times.md; full check starting, 8:56 PM Central, 26 November.
 
 ## Finished
+- **Batch a71** (report `home/reports/2026-11-26-a71.md`, 9:10 PM Central): branch ready `fix/3824-parking-space-filters` at `9acd7b3d0`; maintenance and service parking finish drawing in 16 to 22 s, from 89 to 162 s; parking-spaces.spec widened; check-parked-code the only red.
 - **Batch a70** (report `home/reports/2026-11-26-a70.md`, 8:19 PM Central): branch ready `fix/3808-popup-keys` at `528b6ff59`; four maps fixed, the check red on all four and NSC first; check-parked-code the only red.
 - **Batch a69** (report `home/reports/2026-11-26-a69.md`, 7:52 PM Central): branch ready `fix/3671-nsc-permit-instructions` at `bfcd92a6f`; one line, red first; no-visible-change (#2520), spec render as test artifact; #3808 filed by the director.
 - **Batch a67** (report `home/reports/2026-11-26-a67.md`, 7:37 PM Central): branch ready `fix/3615-coordinate-search` at `9f99c7023`; two causes fixed, red first; check passes but for check-parked-code (PR 3797).
