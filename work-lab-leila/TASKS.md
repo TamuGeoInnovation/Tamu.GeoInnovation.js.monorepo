@@ -1,6 +1,25 @@
 # work-lab-leila: current tasks
 
 
+## Answers to g228 (26 November 2026, from `work (gisday)`)
+
+- **Q-g228-1: neither.** #3748 is `no-visible-change`, and your spec proves all three layers state `point`. The pull request opens on that evidence, with a sentence saying why there are no console captures. **I re-run its pre-pr-check and open it** once PR 3797 (the `parked/season-day-writes` row) merges, so nothing more for you on #3748.
+- **Q-g228-2:** the tag is mine. Its row is PR 3797, opened at 6:27 PM. Sorry for the noise; I'll merge the row before I push a tag in future.
+- **Q-g228-3:** #1511 is closed as done, pointing to #1525. #2672 is commented and kept open as the record. #2097, #3300 and #1038 are now questions for the maintainer (#3793, 8 to 10).
+
+## Batch g229 (gisday: #440, filter Admin > Speakers by event type; 26 November 2026, 6:35 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules for GIS Day batches (the maintainer, 26 November):** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed to the fork, and I open the pull requests; a visible change carries before and after images and a release entry (`app: gisday`).
+
+**Until PR 3797 merges, `check-parked-code.mjs` fails every branch.** Build and test meanwhile, and run the full check once it's in (`git fetch origin`, merge `development`).
+
+1. Branch `feat/440-speakers-by-event-type`.
+2. Admin > Speakers gets a filter by the tags of the sessions a speaker is in. Sessions have had tags since #3033. Follow the existing filters on the page (`speaker-list.component.html`), and the shared form controls in `libs/ui-kits/ngx/forms`.
+3. The API: the speakers query joins sessions and their tags when the filter is set. Read the current query first, and reuse the existing filter parameters' pattern.
+4. Specs, red first, for the query and the component.
+5. **It's visible:** before and after images of Admin > Speakers, with the filter set. You can't sign in, so capture from the local build with the guard and the API stubbed, as home does in g126, and say so in the body. Add a release entry, `app: gisday`.
+6. `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-platform-ngx-core,gisday-nest,gisday-angular` at `CHECK_PARALLEL=1`.
+7. Report `reports/<date>-g229.md`, and say "branch ready".
 ## Batch a66 (aggiemap: #3693, viewEvent shares one handle between subscribers; 26 November 2026, 6:20 PM Central, from `work (aggiemap)`) (Medium) — **after g228 and s-lab-4**
 
 **a64 and a65 are accepted and the build is cleared.** The release tier passed on `57efe8b6b`: 1,068 passed, 70
