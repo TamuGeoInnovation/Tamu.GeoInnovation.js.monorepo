@@ -10,9 +10,10 @@ export class HamburgerTriggerComponent implements OnChanges {
   /**
    * Describes the visible status. On value update, the internal
    * trigger state is also updated to initiate animation transition
-   * between states.
+   * between states. Unset until bound, and null while the `async` pipe
+   * every caller binds it through has no value yet.
    */
-  public readonly active = input<boolean>(undefined);
+  public readonly active = input<boolean | null | undefined>(undefined);
 
   /**
    * Event emitted when the hamburger nav element is clicked on by client.

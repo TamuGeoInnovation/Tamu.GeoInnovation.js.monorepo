@@ -94,4 +94,24 @@ describe('SearchResultSelectionService', () => {
     expect(graphic.geometry['y']).toBe(30.6168);
     expect(graphic.geometry['type']).toBe('point');
   });
+
+  // A coordinate typed into the search, latitude first, reaches here as the text itself, as SearchComponent hands it on.
+  // It had no geometry, so drawing it threw "Could not resolve geometry type." and nothing was placed (#3615).
+  it('places a typed coordinate on the map, at that latitude and longitude', () => {
+    const typed = selection({
+      selection: '30.6, -96.3',
+      result: { name: '30.6, -96.3', breadcrumbs: { source: undefined, value: '30.6, -96.3' } }
+    });
+    const service = build(typed);
+
+    expect(() => service.show(typed)).not.toThrow();
+    expect(calls.length).toBe(1);
+
+    const graphic = (calls[0]['graphics'] as Array<{ geometry: Record<string, unknown> }>)[0];
+
+    expect(graphic.geometry['type']).toBe('point');
+    expect(graphic.geometry['x']).toBe(-96.3);
+    expect(graphic.geometry['y']).toBe(30.6);
+    expect(graphic.geometry['spatialReference']).toEqual({ wkid: 4326 });
+  });
 });

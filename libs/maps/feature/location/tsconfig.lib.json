@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../../dist/out-tsc",
+    "strictNullChecks": true,
     "target": "es2015",
     "declaration": true,
     "declarationMap": true,
