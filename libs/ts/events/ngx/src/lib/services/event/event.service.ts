@@ -581,11 +581,9 @@ export class EventService {
       return false;
     }
 
-    // Found, but a feature with no geometry cannot be selected or zoomed to, and selecting it threw (#3673).
-    feature.geometry ??= await this.geometryFromMapService(layer, objectId);
-
+    // Found, but a feature with no geometry cannot be selected or zoomed to (#3673): its map service is asked for it.
     if (!feature.geometry) {
-      return false;
+      feature.geometry = await this.geometryFromMapService(layer, objectId);
     }
 
     this.showFeature(feature, source, objectId);
@@ -598,7 +596,7 @@ export class EventService {
    * without one (#3673). Transportation's joined lot layers, which Break / Summer and New Student Conference draw, return
    * every lot's attributes and no geometry from `query`, whatever is asked (#2520), while `find` and `identify` on the
    * same MapServer return it. Only a map service has `find`, so any other layer gives `null`, as does a lookup that
-   * fails: the caller then treats the feature as not found, as before.
+   * fails: the feature then goes on without one, as it did before.
    */
   private async geometryFromMapService(layer: esri.FeatureLayer, objectId: number): Promise<esri.Geometry | null> {
     if (!/\/MapServer$/i.test(layer.url ?? '') || !layer.objectIdField) {

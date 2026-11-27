@@ -741,12 +741,13 @@ describe('EventService, a link to a lot whose service answers without geometry (
     expect(selected[0].geometry).toBe(FOUND_GEOMETRY);
   });
 
-  it('selects nothing, and does not throw, when the layer is not a map service', async () => {
+  // A guard, not the regression: a layer that is not a map service has no `find`, and its feature goes on as before.
+  it('does not ask find when the layer is not a map service, and selects the lot as before', async () => {
     const find = vi.fn();
 
     const selected = await openLink(geometrylessLayer('https://example.test/arcgis/rest/services/Lots/FeatureServer'), find);
 
     expect(find).not.toHaveBeenCalled();
-    expect(selected).toEqual([]);
+    expect(selected.map((graphic) => graphic.attributes[OID_FIELD])).toEqual([26116]);
   });
 });
