@@ -59,11 +59,11 @@ export class MapLocationComponent implements OnInit, OnDestroy {
     blocked: 'location_disabled'
   };
 
-  private _track: TrackLocation;
-  private _position: GeolocationPosition;
+  private _track: TrackLocation | undefined;
+  private _position: GeolocationPosition | undefined;
   private _centreOnNextPosition = false;
-  private _layer: Promise<{ layer: esri.GraphicsLayer; dot: esri.Graphic; accuracy: esri.Graphic }>;
-  private _destroy$: Subject<boolean> = new Subject();
+  private _layer: Promise<{ layer: esri.GraphicsLayer; dot: esri.Graphic; accuracy: esri.Graphic }> | undefined;
+  private _destroy$: Subject<void> = new Subject();
 
   public ngOnInit(): void {
     geolocationPermission()
@@ -82,7 +82,7 @@ export class MapLocationComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this._stop();
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 
