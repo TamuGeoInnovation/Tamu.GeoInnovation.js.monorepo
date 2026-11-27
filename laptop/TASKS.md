@@ -1,6 +1,17 @@
 # Laptop: current tasks
 
 
+## g48: the issues each branch closes (26 November 2026, from `work (gisday)`)
+
+Each library has its own sub-issue of #3804. Put `Closes #<sub>` and "Part of #3804" in each `.pr-body.md`:
+- location: #3816
+- geometry/esri: #3817
+- pipes: #3818
+- mobile-tile: #3819
+- device: #3820
+
+(g47's template branch closes #3821. I add that one myself.)
+
 ## Batch g48 (gisday: #3804, five more shared libraries go strict; 26 November 2026, 7:58 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; **never delete dead code** (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed, and I open the pull requests.
