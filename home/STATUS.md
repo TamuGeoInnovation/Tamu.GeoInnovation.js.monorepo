@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a71**: filters from the symbology (Spc_Type IN Loading, Serv: 427 of 44,980); parking-spaces.spec widened to every such layer via a generated list; generating it, 8:44 PM Central, 26 November.
+- **Batch a71**: generated list finds the four layers; running the widened parking-spaces.spec on production (no filters deployed) for the red, 8:45 PM Central, 26 November.
 
 ## Finished
 - **Batch a70** (report `home/reports/2026-11-26-a70.md`, 8:19 PM Central): branch ready `fix/3808-popup-keys` at `528b6ff59`; four maps fixed, the check red on all four and NSC first; check-parked-code the only red.
