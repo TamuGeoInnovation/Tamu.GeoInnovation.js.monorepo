@@ -1,19 +1,19 @@
 # Unreleased
 
-Nothing yet. The one AggieMap entry of this cycle moved into
-[24 November 2026 (second release)](2026-11-24-2.md), and the period's five GIS Day entries into
+Nothing yet. The nineteen AggieMap entries of this cycle moved into
+[26 November 2026](2026-11-26.md), and the period's thirteen GIS Day entries into
 [GIS Day, unreleased](gisday-unreleased.md).
 
-**The latest release notes are [24 November 2026 (second release)](2026-11-24-2.md)**, built from
-`50b125bf5`, carrying the remote campuses' new names. Earlier the same day,
-[24 November 2026](2026-11-24.md) from `61dc13b89` carried three weeks of work and was cleared by the
-`release` tier. Before those: [13 November 2026](2026-11-13.md) from `68d7b974c`, promoted at the marketing
-team's request **before its release tier ran**; [11 November 2026 (second release)](2026-11-11-2.md) from
-`94348414a`; and [10 November 2026](2026-11-10.md) from `3254b114e`.
+**The latest release notes are [26 November 2026](2026-11-26.md)**, built from `57efe8b6b` and the first
+release cleared by a green release tier. Before it: [24 November 2026 (second release)](2026-11-24-2.md) from
+`50b125bf5`, carrying the remote campuses' new names; [24 November 2026](2026-11-24.md) from `61dc13b89`,
+three weeks of work; [13 November 2026](2026-11-13.md) from `68d7b974c`, promoted at the marketing team's
+request **before its release tier ran**; and [11 November 2026 (second release)](2026-11-11-2.md) from
+`94348414a`.
 
 **This file is AggieMap's.** GIS Day is released on its own path and its changes collect in
-[GIS Day, unreleased](gisday-unreleased.md), not here - 15 of this cycle's 20 pull requests were GIS Day's,
-and 180 of the cycle before it. See [Releasing GIS Day](README.md#releasing-gis-day).
+[GIS Day, unreleased](gisday-unreleased.md), not here - 36 of this cycle's 156 pull requests were GIS Day's.
+See [Releasing GIS Day](README.md#releasing-gis-day).
 
 This file collects what merges from here until the next release. **A pull request with a user-visible
 result adds its own file to [`unreleased/`](unreleased/README.md), in that pull request**, with its
@@ -34,7 +34,7 @@ Nothing yet.
 production. A pull request with a visible result adds its own row; at release, the rows move into the
 dated notes as what was tested, and this table empties.
 
-**Nothing waiting:** the rows moved into the [second 24 November notes](2026-11-24-2.md).
+**Nothing waiting:** the rows moved into the [26 November notes](2026-11-26.md).
 
 ---
 

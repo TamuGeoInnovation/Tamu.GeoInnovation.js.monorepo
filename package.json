@@ -50,7 +50,6 @@
     "@jimp/js-jpeg": "~2.2.0",
     "@jimp/js-png": "~2.2.0",
     "@jimp/plugin-resize": "~2.2.0",
-    "@nestjs/bull": "^12.0.2",
     "@nestjs/common": "12.6.3",
     "@nestjs/core": "12.6.3",
     "@nestjs/passport": "^12.0.2",
@@ -62,7 +61,6 @@
     "angulartics2": "^14.1.0",
     "auth0": "~7.9.0",
     "axios": "^1.21.1",
-    "bull": "^4.16.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "clipboard": "^2.0.4",
@@ -149,9 +147,6 @@
     },
     "auth0": {
       "undici-types": "6.29.0"
-    },
-    "bull": {
-      "uuid": "11.1.1"
     },
     "deepmerge": "npm:@oss-cve-patches/deepmerge@4.3.2",
     "form-data": "$form-data",
