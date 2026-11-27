@@ -34,7 +34,9 @@ describe('Deleting an owner with its logo or photo, as typeorm writes it (#2205)
     });
 
   const deletes = (statements: Array<{ sql: string; parameters: Array<unknown> }>) =>
-    statements.filter((s) => /^\s*DELETE/i.test(s.sql)).map((s) => ({ sql: s.sql.replace(/\s+/g, ' ').trim(), parameters: s.parameters }));
+    statements
+      .filter((s) => /^\s*DELETE/i.test(s.sql))
+      .map((s) => ({ sql: s.sql.replace(/\s+/g, ' ').trim(), parameters: s.parameters }));
 
   const cases: Array<[string, () => { owner: unknown; table: string; run: (assets: AssetsService) => Promise<unknown> }]> = [
     [
@@ -42,7 +44,10 @@ describe('Deleting an owner with its logo or photo, as typeorm writes it (#2205)
       () => ({
         owner: [Sponsor, [Object.assign(new Sponsor(), { guid: 'o-1', name: 'REL CHECK', logos: [asset('a-1')] })]],
         table: 'sponsors',
-        run: (assets) => new SponsorProvider(dataSource.getRepository(Sponsor), assets, null as unknown as SeasonService).deleteEntities('o-1')
+        run: (assets) =>
+          new SponsorProvider(dataSource.getRepository(Sponsor), assets, null as unknown as SeasonService).deleteEntities(
+            'o-1'
+          )
       })
     ],
     [
@@ -51,16 +56,29 @@ describe('Deleting an owner with its logo or photo, as typeorm writes it (#2205)
         owner: [Place, [Object.assign(new Place(), { guid: 'o-1', name: 'A place', logos: [asset('a-1')] })]],
         table: 'places',
         run: (assets) =>
-          new PlaceService(dataSource.getRepository(Place), dataSource.getRepository(PlaceLink), assets, null as unknown as SeasonService).deleteEntities('o-1')
+          new PlaceService(
+            dataSource.getRepository(Place),
+            dataSource.getRepository(PlaceLink),
+            assets,
+            null as unknown as SeasonService
+          ).deleteEntities('o-1')
       })
     ],
     [
       'an organization and its logo',
       () => ({
-        owner: [Organization, [Object.assign(new Organization(), { guid: 'o-1', name: 'An organization', logos: [asset('a-1')] })]],
+        owner: [
+          Organization,
+          [Object.assign(new Organization(), { guid: 'o-1', name: 'An organization', logos: [asset('a-1')] })]
+        ],
         table: 'organizations',
         run: (assets) =>
-          new OrganizationService(dataSource.getRepository(Organization), dataSource.getRepository(Event), null as unknown as SeasonService, assets).deleteEntities('o-1')
+          new OrganizationService(
+            dataSource.getRepository(Organization),
+            dataSource.getRepository(Event),
+            null as unknown as SeasonService,
+            assets
+          ).deleteEntities('o-1')
       })
     ],
     [

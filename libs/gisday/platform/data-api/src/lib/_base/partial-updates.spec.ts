@@ -187,6 +187,8 @@ describe('Partial updates keep what they are not sent (#3862)', () => {
       created: new Date('2026-11-20T00:00:00.000Z'),
       comment: 'A made-up comment'
     });
+    // Saved as the database answers it, with when it was changed.
+    assessments.save.mockImplementation(async (x: object) => ({ ...x, updated: new Date('2026-11-26T00:00:00.000Z') }));
     const rubrics = {
       rubricFor: vi.fn(async () => ({
         guid: 'rb-1',

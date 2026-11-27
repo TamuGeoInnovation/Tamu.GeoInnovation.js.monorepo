@@ -11,7 +11,12 @@ describe('WaybackCompetitionProvider queries, built by typeorm', () => {
   let provider: WaybackCompetitionProvider;
 
   beforeAll(async () => {
-    dataSource = await queryCheckingDataSource([SignageSubmission, StormwaterSubmission, SidewalkSubmission, ManholeSubmission]);
+    dataSource = await queryCheckingDataSource([
+      SignageSubmission,
+      StormwaterSubmission,
+      SidewalkSubmission,
+      ManholeSubmission
+    ]);
   });
 
   beforeEach(() => {

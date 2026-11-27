@@ -276,18 +276,17 @@ describe('SpeakerProvider', () => {
     });
 
     /**
-     * Current behaviour, recorded rather than endorsed. Omitting the flags clears them, because
-     * `undefined === 'true'` is false and the coerced value overwrites the spread of `existing`.
-     * The admin form always sends them, so this does not bite there -- but a partial update from
-     * anywhere else silently demotes an organizer.
+     * Omitting the flags cleared them, because `undefined === 'true'` is false and the coerced value overwrote the spread
+     * of `existing`: recorded here as current behaviour, not endorsed. The admin form always sends them, but a partial
+     * update from anywhere else silently demoted an organizer. A flag left out now keeps the speaker's own (#3862).
      */
-    it('clears the organizer flag when the field is omitted', async () => {
+    it('keeps the organizer flag when the field is omitted', async () => {
       vi.spyOn(speakerRepo, 'findOne').mockResolvedValue(existing());
       vi.spyOn(speakerRepo, 'save').mockImplementation((e) => Promise.resolve(e as never));
 
       await provider.updateWithInfo('s-1', { firstName: 'B' });
 
-      expect((speakerRepo.save as Mock).mock.calls[0][0].isOrganizer).toBe(false);
+      expect((speakerRepo.save as Mock).mock.calls[0][0].isOrganizer).toBe(existing().isOrganizer);
     });
 
     it('leaves existing images alone when no replacement file is supplied', async () => {

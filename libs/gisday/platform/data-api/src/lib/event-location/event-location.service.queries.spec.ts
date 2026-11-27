@@ -23,7 +23,15 @@ describe('EventLocationService queries, built by typeorm', () => {
 
   // A location as the API loads it.
   const loadedLocation = () =>
-    Object.assign(new EventLocation(), { guid: 'l-1', building: 'Eller', room: null, checkInZone: null, place: null, season: null, events: [] });
+    Object.assign(new EventLocation(), {
+      guid: 'l-1',
+      building: 'Eller',
+      room: null,
+      checkInZone: null,
+      place: null,
+      season: null,
+      events: []
+    });
 
   beforeAll(async () => {
     dataSource = await queryCheckingDataSource();

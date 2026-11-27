@@ -11,12 +11,19 @@ function student(classification: string): Auth0UserProfile {
 
 describe('RSVP dashboard person types (#2878)', () => {
   describe('studentLevelOf()', () => {
-    it.each(['Senior', 'junior', 'Freshman', 'Sophomore', 'Undergraduate', 'undergrad', 'U3', 'BS Geography', 'fourth year'])(
-      'reads %p as undergraduate',
-      (text) => {
-        expect(studentLevelOf(text)).toBe('undergraduate');
-      }
-    );
+    it.each([
+      'Senior',
+      'junior',
+      'Freshman',
+      'Sophomore',
+      'Undergraduate',
+      'undergrad',
+      'U3',
+      'BS Geography',
+      'fourth year'
+    ])('reads %p as undergraduate', (text) => {
+      expect(studentLevelOf(text)).toBe('undergraduate');
+    });
 
     it.each(['Graduate', 'grad student', 'PhD', 'Ph.D.', 'Ph D candidate', "Master's", 'MS', 'G2', 'Doctoral', 'Postdoc'])(
       'reads %p as graduate',
@@ -42,14 +49,20 @@ describe('RSVP dashboard person types (#2878)', () => {
     });
 
     it('takes academia and industry as they are stored', () => {
-      expect(personTypeOf({ app_metadata: { gisday: { attendeeType: 'academia' } } } as unknown as Auth0UserProfile)).toBe('academia');
-      expect(personTypeOf({ app_metadata: { gisday: { attendeeType: 'industry' } } } as unknown as Auth0UserProfile)).toBe('industry');
+      expect(personTypeOf({ app_metadata: { gisday: { attendeeType: 'academia' } } } as unknown as Auth0UserProfile)).toBe(
+        'academia'
+      );
+      expect(personTypeOf({ app_metadata: { gisday: { attendeeType: 'industry' } } } as unknown as Auth0UserProfile)).toBe(
+        'industry'
+      );
     });
 
     it('counts a profile with no type, or one that could not be read, as Not given', () => {
       expect(personTypeOf({ app_metadata: {} } as unknown as Auth0UserProfile)).toBe('not-given');
       expect(personTypeOf(null)).toBe('not-given');
-      expect(personTypeOf({ app_metadata: { gisday: { attendeeType: 'someone' } } } as unknown as Auth0UserProfile)).toBe('not-given');
+      expect(personTypeOf({ app_metadata: { gisday: { attendeeType: 'someone' } } } as unknown as Auth0UserProfile)).toBe(
+        'not-given'
+      );
     });
   });
 

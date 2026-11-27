@@ -17,10 +17,12 @@ function answering(dataSource: DataSource, rows: Array<[EntityTarget<ObjectLiter
   const findOne = manager.findOne.bind(manager);
 
   manager.find = (async (entity: EntityTarget<ObjectLiteral>, options?: never) => (
-    await find(entity, options), rows.find(([e]) => e === entity)?.[1] ?? []
+    await find(entity, options),
+    rows.find(([e]) => e === entity)?.[1] ?? []
   )) as typeof manager.find;
   manager.findOne = (async (entity: EntityTarget<ObjectLiteral>, options: never) => (
-    await findOne(entity, options), rows.find(([e]) => e === entity)?.[1][0] ?? null
+    await findOne(entity, options),
+    rows.find(([e]) => e === entity)?.[1][0] ?? null
   )) as typeof manager.findOne;
 }
 
