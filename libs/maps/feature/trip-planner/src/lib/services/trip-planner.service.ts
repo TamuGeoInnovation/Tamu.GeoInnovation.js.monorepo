@@ -65,7 +65,7 @@ import {
   attributeOf
 } from '../core/trip-planner-core';
 
-import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
+import { BusService } from '../services/transportation/bus/bus.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
 
@@ -1481,29 +1481,9 @@ export class TripPlannerService implements OnDestroy {
 
             const features_length = features.length;
             // Overwrite total travel time to be the relative time of the last item in the features array.
-            // This ensures it applies the additional time padding such as bus linger time and traffic multipliers.
             if (features_length > 0 && features[0].attributes.relativeTime != null) {
               res.result.routeResults[0].directions.totalDriveTime = features[features_length - 1].attributes.relativeTime;
               res.result.routeResults[0].directions.totalTime = features[features_length - 1].attributes.relativeTime;
-            }
-
-            if (modeSwitches && modeSwitches.length > 0) {
-              const anyHasResultLinger = modeSwitches.filter((ms) => {
-                return ms && ms.results && ms.results.bus;
-              });
-
-              if (anyHasResultLinger.length > 0) {
-                const totalLinger = modeSwitches.reduce((acc, curr) => {
-                  if (curr.results && curr.results.bus) {
-                    return acc + curr.results.bus.linger_minutes;
-                  } else {
-                    return acc;
-                  }
-                }, 0);
-
-                res.result.routeResults[0].directions.totalDriveTime += totalLinger;
-                res.result.routeResults[0].directions.totalTime += totalLinger;
-              }
             }
 
             const timeMode = this._TravelOptions.getValue().time_mode || 'now';
@@ -1969,14 +1949,6 @@ export class TripPlannerService implements OnDestroy {
           });
 
           this.busService.removeAllFromMap();
-
-          const bus_features = result.result.directions.features.filter((feature) => feature.attributes.bus != null);
-          // Only show buses if we are viewing the bus mode and the time mode is now (don't have historical or projected data for buses)
-          if (bus_features.length > 0 && result.timeMode === 'now') {
-            bus_features.forEach((feature) => {
-              this.busService.toggleMapRoute(feature.attributes.bus.route_number, ['buses']);
-            });
-          }
 
           // this.aggregateDirections(result.result.directions)
           //   .then((res: esri.DirectionsFeatureSet) => {
@@ -2721,23 +2693,6 @@ export interface TripModeSwitch {
    * segment.
    */
   route?: esri.Graphic[];
-
-  /**
-   * The result of determination calculations, if any, based on the requested travel mode.
-   *
-   * For example, bus modes will typically include some bus scheduling properties that will be used
-   * for UI display or further calculations.
-   */
-  results?: {
-    bus?: {
-      route_number: string;
-      linger_minutes: number;
-      timetable: TimetableRow[];
-      stop_count: number;
-      stops_list: unknown[];
-    };
-    relativeTime?: number;
-  };
 }
 
 /**
