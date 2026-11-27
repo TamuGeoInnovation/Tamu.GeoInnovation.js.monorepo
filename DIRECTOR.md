@@ -76,6 +76,43 @@ so that you continue making work on top of fixes?"
 A real hold is only for work that can't be built at all until something else exists. Even then, say what it waits
 for, and do something else meanwhile.
 
+## Dead code is parked, not brought back for approval (26 November 2026, the maintainer)
+
+**Parking *is* the decision. Once the maintainer has said he wants dead code parked rather than deleted, every piece of
+dead code found afterwards gets parked — in the same change that removes it — without being brought back as a question.**
+
+His words, after being asked three times in one evening about things he had already decided to park: *"stop asking me to
+review things that are parked over and over after I already told you I wanted them parked and not deleted."*
+
+**What this replaced.** On 26 November he said "do not delete dead code, instead mark it as potentially parked and let me
+decide". The director read that as a per-item approval gate and turned every find into a numbered decision — the
+bus-switch component, three popup keys, a listener's "potentially parked" list, then the *scope* of a parking he had
+already approved in one sentence. He meant: do not delete it silently. He did not mean: ask me each time.
+
+**So, for a listener:** when you find dead code, park it as part of the change you are already making — the issue, the
+row in [`docs/parked-code.md`](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/blob/development/docs/parked-code.md),
+the deletion, and the tag message written into your report for the director to tag with. Do not list it under
+"potentially parked" for somebody else to rule on. Say in your report what you parked and why.
+
+**For a director:** do not queue a decision for something already decided, and do not re-ask a decision to confirm its
+scope. If the maintainer's sentence covers the case, act on it and say which reading you took.
+
+**The only two things still worth asking about:**
+
+1. **"Is this actually dead?"** — when reachability is genuinely unclear, or when deleting it might take a live feature
+   with it. That is a question about facts, and it is answered by reading the member graph and running the check that
+   covers the live feature, not by asking the maintainer. Ask him only if both are inconclusive.
+2. **"Park it, or delete it outright?"** — decided by one test, not by him: **does deleting it lose working out a future
+   reader would want?** 175 lines of timetable UI that exists nowhere else, yes — park it. Three definition lines
+   duplicating text already on screen, no — delete them, and say so. Only bring it to him when that test genuinely does
+   not separate the two.
+
+**What a park is, so it can be done without asking:** an annotated `parked/*` tag holding the last commit that had the
+code, a row in the register naming the tag, the condition for its return and its issue, and an issue labelled `parked`.
+The order is **row first, then tag** ([#3717](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3717)) —
+merge the row with the deletion, then tag the merge commit's first parent. The point of the record is that nobody has to
+remember the code existed; asking the maintainer to adjudicate each one defeats that by making him the memory.
+
 ## Announce every step, before and after (26 November 2026, the maintainer's 1A)
 
 On 26 November all three machines were working, and for most of the afternoon it was impossible to tell. Three things went wrong:

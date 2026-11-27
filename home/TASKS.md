@@ -68,7 +68,7 @@ report that and park the rest.
   host element's spacing shifts, it is a visible change and needs the images in the notes.
 - **Release-notes entry** only if anything visible changes. If nothing does, the `no-visible-change` label.
 - **Say what `bus.service.ts` has left** after the closure, and whether any of it is now reachable only from the live
-  route list. Do not delete it — that is a finding for the maintainer.
+  route list. Anything in it that nothing reaches goes into the same park; only bring it to me if you cannot tell.
 
 **Branch** `chore/3687-park-bus-timetable-ui` from today's `development`. `check-in-volume.sh`, then
 **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not**
@@ -146,7 +146,8 @@ failures — which is why this is worth doing now rather than under pressure.
 
 ### Do not
 
-**Do not delete anything that looks dead** — marked as potentially parked, the maintainer decides.
+**Dead code you find is parked, not brought back for approval** (`DIRECTOR.md`, 26 November): row, deletion and a tag
+message in your report. Ask only when reachability is genuinely unclear.
 
 **Do not touch the application.** #3369's third part — why these event maps keep updating for 20 to 60 seconds after
 their data has arrived — is the valuable one and the one most likely to swallow a night. Not here.
@@ -229,7 +230,8 @@ now** in the same commit, answers in `TASKS.md`, branch from today's `developmen
 
 ### Do not
 
-**Do not delete anything that looks dead** — marked as potentially parked, the maintainer decides.
+**Dead code you find is parked, not brought back for approval** (`DIRECTOR.md`, 26 November): row, deletion and a tag
+message in your report. Ask only when reachability is genuinely unclear.
 
 **Branch** `fix/3824-parking-space-filters` from today's `development`. `check-in-volume.sh`, then **`pre-pr-check.sh`**,
 and give me its last line; `check-parked-code` may still be the only red, which is fine — say so. Body text in the
@@ -425,8 +427,8 @@ turns out to be empty is the failure mode CLAUDE.md warns about four times over.
 
 ### Do not
 
-**Do not delete anything that looks dead.** The maintainer's instruction today: dead code is **marked as potentially
-parked and he decides**. Report it and stop.
+**Dead code you find is parked, not brought back for approval** (`DIRECTOR.md`, 26 November): row, deletion and a tag
+message in your report. Ask only when reachability is genuinely unclear.
 
 **Branch** `fix/3671-nsc-permit-instructions` from today's `development`. `check-in-volume.sh`, then
 **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not**
