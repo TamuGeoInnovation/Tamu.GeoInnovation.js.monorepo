@@ -166,6 +166,8 @@ export class Device {
       return this.Operations[this.identity.code].version();
     } else {
       console.log('OS Version Identification not Supported for OS');
+      // As this says above; it fell through to `undefined` before, which every caller read as no version (#3804).
+      return null;
     }
   };
 
@@ -173,7 +175,7 @@ export class Device {
    * Tests if the application is running as a PWA or added to home screen, in which case the device
    * would report as running in "standalone" mode.
    */
-  public standalone = (): boolean => {
+  public standalone = (): boolean | undefined => {
     if (this.Operations[this.identity.code]) {
       return this.Operations[this.identity.code].standalone();
     } else {
@@ -184,7 +186,9 @@ export class Device {
   private testOSVersion = (platform: RegExp, appVersion: RegExp): IDeviceOSVersion | null => {
     // From: https://stackoverflow.com/a/14223920/1865449
     if (platform.test(navigator.platform)) {
-      const version = navigator.appVersion.match(appVersion);
+      // Read as before: a platform this matches carries its version in `appVersion`, and one that did not threw here and
+      // still does (#3804).
+      const version = navigator.appVersion.match(appVersion) as RegExpMatchArray;
       return {
         major: !isNaN(parseInt(version[1], 10)) ? parseInt(version[1], 10) : 0,
         minor: !isNaN(parseInt(version[2], 10)) ? parseInt(version[2], 10) : 0,
@@ -248,8 +252,8 @@ export interface IDeviceBrowserIdentity {
 
 interface IDeviceOSOperations {
   [key: number]: {
-    version?: () => IDeviceOSVersion | null;
-    standalone?: () => boolean;
+    version: () => IDeviceOSVersion | null;
+    standalone: () => boolean;
   };
 }
 
