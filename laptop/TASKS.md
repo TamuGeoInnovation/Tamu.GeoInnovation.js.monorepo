@@ -1,6 +1,19 @@
 # Laptop: current tasks
 
 
+## Batch g50 (gisday: #3827, saving an event erases its recorded attendance; 26 November 2026, 9:40 PM Central, from `work (gisday)`) (High) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed, and I open the pull request.
+
+You found and proved it in g49: an Update that changed only the abstract left `observedAttendeeStart` and `observedAttendeeEnd` NULL. It dates from #351.
+
+1. Branch `fix/3827-event-save-keeps-attendance`.
+2. Find where the admin event form builds its update, and why the two counts are sent as null when the form has no field for them (or has one, unset). Fix it so an update changes only what the form changed: either the form carries the counts through, or the API's update ignores fields that weren't sent. **Say in the body which, and why**, and check the check-in page that *does* set the counts still works.
+3. A spec, red first, through the API: create with 12 and 15, update the abstract, and both are still 12 and 15. And one for the form if the fault is there.
+4. **It's visible** in the data, not on screen: before and after, as database readings (your g49 proof) in the body. Add a release entry, `app: gisday` ("editing an event no longer erases its attendance").
+5. `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-platform-ngx-core,gisday-nest,gisday-angular` at `CHECK_PARALLEL=1`. Report `reports/<date>-g50.md`.
+
+**Also, for the maintainer:** production events may already have lost attendance this way. Say in the report how one could tell from the data (a read-only query) whether any did. Write the query; don't run it anywhere but your local database.
 ## Status check (26 November 2026, 9:16 PM Central, from `work (gisday)`)
 
 Nothing has come from g49 since 8:52 PM ("saving made-up records"). Please push a line now saying what you're doing, or that you're blocked and on what (for example, waiting on an approval), as `DIRECTOR.md` asks. If a step is long, announce it with an estimate.
