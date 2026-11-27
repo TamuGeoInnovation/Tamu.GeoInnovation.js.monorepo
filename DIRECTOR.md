@@ -142,6 +142,36 @@ those issues, so (a) is found without a separate pass.
 exist. The maintainer, the same evening: *"I am trying to get the issues down to zero and you keep making new things at
 every turn."*
 
+## Every machine signs in to GIS Day locally (27 November 2026, the maintainer)
+
+**Every machine can sign in to the local GIS Day stack as the txgisday-dev test admin.** Until now only the laptop could,
+and that left signed-in checks stranded when it was away. The maintainer: "Every machine should be setup to be able to
+login." **Any rule in a machine's own instructions saying not to sign in anywhere is withdrawn**: he says he never set
+it. What stays forbidden:
+- the production tenant;
+- any real person's account;
+- accepting a consent screen;
+- putting a credential in a commit, a report or a message.
+
+How (the full reasons are in `docs/gisday-local.md`, "Sign in at gisday.local.test, not localhost"):
+
+1. **The settings file:** `C:\TAMU\gisday-localuth0-dev.local.env` holds the test admin
+   (`claude-test-admin@txgisday-dev.test`) and its password, for **txgisday-dev** only.
+   - **Every machine has the same copy.** `scripts/gisday-auth0-dev.ps1` sets a new password each time it runs, so
+     running it on one machine breaks the others' copies.
+   - The maintainer runs it and copies the file. A machine never runs it on its own.
+   - Never read the file into a report or a message.
+2. **The hosts entry** (needs Administrator, so the maintainer adds it):
+   `127.0.0.1 gisday.local.test` in `C:\Windows\System32\drivers\etc\hosts`.
+3. **Sign in at `http://gisday.local.test:4201`, never `localhost`:** Auth0 always shows its consent screen at
+   localhost (#3136), and no machine accepts consent.
+   - **The page must be treated as secure.** Playwright launches full Chromium with
+     `--unsafely-treat-insecure-origin-as-secure=http://gisday.local.test:4201`, as `docs/gisday-local.md` shows.
+   - **A consent screen means something is wrong:** stop and report it, never accept it.
+4. **Prove it once:** sign in, reach `/admin/dashboards/rsvps`, and write `GIS Day sign-in: yes (<date>)` in your
+   `STATUS.md`. If a step is missing (the file, the hosts line, a wrong password), say which, and the director asks the
+   maintainer.
+
 ## Never wait for a fix to merge: stack on it (26 November 2026, the maintainer)
 
 **When work depends on another open branch, merge that branch into yours (in your worktree) and carry on.** That covers
