@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch s11 (#3788, remove the queued VGI export and bull)**, started 6:01 PM Central, in `C:/TAMU/wt-3788`. Now: reading #3788 and mapping the export code.
+- **Batch s11 (#3788, remove the queued VGI export and bull)**, started 6:01 PM Central, in `C:/TAMU/wt-3788`. Now (6:02 PM): writing the guard test for GET /competitions/export/zip (mapped: 3 queued routes, processor, DTOs, BullModule in two places, REDIS_* in two env samples, gisday-local.sh's Redis container, two docs).
 
 ## Finished
 - **Batch s10 (#3757, ArcGIS 5.2.9 with amCharts 5.20.8)** (report `laptop/reports/2026-11-26-s10.md`): **branch ready: `chore/arcgis-5.2`** (`32440fdd0`). One amCharts copy; full check exit 0; pre-pr-check exit 0. Release tier stopped as told (454 of 1,139; failures are timeouts and the local banner); the lab runs it. Q-s10-1.
