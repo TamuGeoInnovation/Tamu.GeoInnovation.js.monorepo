@@ -31,13 +31,20 @@ export const MotorcycleParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     popupComponent: EventPopups.MarkdownPopupComponent,
+    // The markdown popup reads only `name` and `description`, so the fields below are composed into them; resolved into
+    // keys of their own they were never shown, and the popup said only "Motorcycle Parking Space" (#3808). A row whose
+    // field is blank is left out: on 26 November no motorcycle space had a space id, level or RNS number. `spaceType`
+    // and `notes` are "M/C" on every one, which the layer's own title already says.
+    popupDataResolutionStrategy: 'cumulative',
     popupData: {
       lotName: { field: 'LotName', collapsed: true },
       spaceType: { field: 'Spc_Type', collapsed: true },
       spaceId: { field: 'Spc_ID_Num', collapsed: true },
       garageLevel: { field: 'Garage_Lvl', collapsed: true },
       rnsNumber: { field: 'RNS_Num', collapsed: true },
-      notes: { field: 'Anno_Type', collapsed: true }
+      notes: { field: 'Anno_Type', collapsed: true },
+      name: '{attributes.lotName}',
+      description: `Space: {attributes.spaceId}\nLevel: {attributes.garageLevel}\nRNS number: {attributes.rnsNumber}`
     },
     native: {
       outFields: ['*'],
