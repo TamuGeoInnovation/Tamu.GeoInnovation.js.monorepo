@@ -82,6 +82,80 @@ Workspace-wide issues on both projects aren't counted twice.
 
 **(a) to (c) are worked without the maintainer.** **(d) to (f) get the `needs-maintainer` label, and their project Status is cleared**, which moves them into the board's "No Status" column, so **Todo shows only what the machines can close**. Don't add a Status option to do this: rewriting a single-select field's options can reset every item. And don't bring (d) or (e) to the maintainer unless he asks. His words: "I just want to fix bugs and close issues right now, not think about design decisions and have to implement things on other websites."
 
+## Sorting a backlog so Todo holds only what a machine can close (26 November 2026, the maintainer)
+
+**There is no script and no tool. It is three label-and-field decisions per issue, applied with `gh`.** Written here
+because two directors needed the same procedure within an hour, and a procedure relayed twice drifts.
+
+**Bugs only, for now.** The maintainer, 26 November: *"only bugs for now. then do [the triage] after we clear the
+bugs"*, and *"I just want to fix bugs and close issues right now, not think about design decisions and have to
+implement things on other websites."* Leave enhancements alone until he says.
+
+### The six buckets, and the one question that sorts them
+
+Ask **"what does it take to close this?"** — never what it is about. Topic grouping does not work on this list: on
+AggieMap, keyword grouping left 128 of 236 unmatched and 51 of 73 bugs had no project in their title.
+
+| | Bucket | What happens |
+| --- | --- | --- |
+| a | Already done, or no longer true | **Close now**, with the evidence in the comment |
+| b | A bug a machine can fix | Leave in **Todo**. This is the queue |
+| c | Cleanup or tests a machine can finish | Leave in **Todo** |
+| d | Needs a decision from the maintainer | `needs-maintainer`, **Status cleared** |
+| e | Nobody here can close it | `external`, **Status cleared** |
+| f | Yearly, or for a future season | `needs-maintainer`, **Status cleared** |
+
+Workspace-wide issues sitting on both projects are left out of the count, so the two directors do not both claim them.
+
+### `external` and `needs-maintainer` are different axes, and both are needed
+
+- **`external`** — *"Not ours to close: waits on the GIS team, the data, a vendor or another team."* A service that
+  returns no geometry, data with the wrong building number, a routing network that does not publish a field, a field
+  empty on every record. **The maintainer cannot fix these either**, so `needs-maintainer` would point at the wrong
+  person. He asked for this label by name: *"make a new tag for things that are external so we know what is not ours to
+  do."*
+- **`needs-maintainer`** — he decides it, or he runs it. A symbology override (`docs/map-layers.md` makes that a
+  deliberate act), cluster work, anything whose body opens with "what to decide first".
+
+An issue can be neither and still not be a bug a machine can fix — then it is (c), and it stays in Todo.
+
+### Deciding (e) without guessing
+
+**The test is who holds the thing that is wrong.** If the fault is in a published service, in the data, or in a system
+nobody here deploys, it is (e) however much of our code touches it. If our code mishandles a correct service, it is
+(b). The trap is the one `CLAUDE.md` names four times over: a rename that *looks* like a fix and changes nothing a
+visitor sees. Query the service before deciding, and if a field is missing or empty, that is (e) and it is filed for
+the GIS team.
+
+### The commands
+
+Clearing Status moves an item into the board's **No Status** column, out of Todo. **Never rewrite the Status field's
+options** — that can reset every item on the board.
+
+```bash
+R=TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo
+gh issue edit <n> -R $R --add-label external          # or needs-maintainer
+item=$(gh project item-add <project> --owner TamuGeoInnovation --url <issue url> --format json --jq .id)
+gh project item-edit --id "$item" --project-id <project node id> --field-id <status field id> --clear
+```
+
+Project 2 (Texas A&M Aggiemap): project id `PVT_kwDOAC0_c84ABSmH`, Status field `PVTSSF_lADOAC0_c84ABSmHzgAwPnk`.
+Project 3 (GIS Day Angular + NestJS): project id `PVT_kwDOAC0_c84ABTG-`, Status field `PVTSSF_lADOAC0_c84ABTG-zgAwiwM`.
+`gh project field-list <n> --owner TamuGeoInnovation --format json` prints them if they ever change.
+
+### Then work the survivors by area, not by picking issues
+
+Once Todo holds only (b) and (c), batch a listener on **one library** and let it close that cluster in sequence — each
+still its own pull request, but without relearning the code every time. AggieMap's trip planner had six of ours in one
+library (#1856, #1933, #2608, #2723, #2763, #2846). Staleness checking then comes free: the listener is already reading
+those issues, so (a) is found without a separate pass.
+
+### What this is not
+
+**Do not add a Status option, build a script, or write a new register for this.** The labels and the board already
+exist. The maintainer, the same evening: *"I am trying to get the issues down to zero and you keep making new things at
+every turn."*
+
 ## Never wait for a fix to merge: stack on it (26 November 2026, the maintainer)
 
 **When work depends on another open branch, merge that branch into yours (in your worktree) and carry on.** That covers
