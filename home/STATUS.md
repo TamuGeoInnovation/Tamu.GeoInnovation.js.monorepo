@@ -14,9 +14,11 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing: a78 done. Next g131 (GIS Day, no sign-in). g130 went to the laptop; g132 (sign-in) waits for the maintainer's own word in the home chat.
+- **a72**: re-running development's half of the comparison on an idle machine, 4:05 PM Central, 27 November.
+- GIS Day sign-in: prerequisites present; signing in held for the maintainer's own word (4:05 PM Central, 27 November).
 
 ## Finished
+- **Batch g132, steps 1 and 2** (report `home/reports/2026-11-27-g132.md`, 4:05 PM Central): all three prerequisites present; step 3 held.
 - **Batch a78** (report `home/reports/2026-11-27-a78.md`, 4:03 PM Central): #1856 and #1933 closed, not reproduced (fixed by #1854 and #2259); #1856's path gave new bug #3875, branch ready `fix/3875-mode-3-never-finishes`, check and pre-pr-check Exit 0.
 - **Batch a77** (report `home/reports/2026-11-26-a77.md`, 3:25 PM, 27 November Central): branches ready `fix/2723-stop-named-by-place` and `fix/2763-route-fit-clears-panel`; both red first, check and pre-pr-check Exit 0.
 - **#3851** (report `home/reports/2026-11-26-3851.md`, 11:02 PM Central): not reproduced; the route survives option changes because currentResult\$ redraws after the clear; no branch.
