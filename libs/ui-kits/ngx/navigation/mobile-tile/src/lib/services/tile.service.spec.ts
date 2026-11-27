@@ -92,11 +92,7 @@ describe('TileService', () => {
       service.updateSubmenu({ template: undefined, title: 'first' });
       service.updateSubmenu({ template: undefined, title: 'second' });
 
-      expect(seen).toEqual([
-        undefined,
-        { template: undefined, title: 'first' },
-        { template: undefined, title: 'second' }
-      ]);
+      expect(seen).toEqual([undefined, { template: undefined, title: 'first' }, { template: undefined, title: 'second' }]);
     });
   });
 });
