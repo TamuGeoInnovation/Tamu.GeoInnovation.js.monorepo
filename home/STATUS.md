@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing. Idle since 5:31 PM Central, 26 November.
+- **Batch g126**: started batch g126; #3680 file picker first, then #3747, 6:18 PM Central, 26 November.
 
 ## Finished
 - **Batch s90** (report `home/reports/2026-11-26-s90.md`, 5:31 PM Central): CodeQL #3776, 4 branches red first, all checks and pre-pr-check Exit 0; PRs 3783, 3784 open; common-node-fs and tools branch ready (`3ed8a3ad0`).
