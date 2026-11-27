@@ -299,9 +299,9 @@ the key names are cosmetic underneath it.
 **Not in a69.** Finish #3671 as the one-line change it is.
 ## Batch g128 (gisday: park the question-type API, the other half of #3793's 2A) (Medium)
 
-Held until PR 3803 merges.
+**Not held any more** (the maintainer, 26 November, 9:50 PM): **build it on top of #3788's branch.** Merge `fork/chore/3788-remove-bull` into your branch first, so `app.module.ts` already has #3788's change, then make yours. The pull request says it depends on PR 3803 and must merge after it. Once 3803 merges, its diff shrinks back to your own change.
 
-1. Branch `chore/3713-park-question-types` from the latest `development` (with #3788 in).
+1. Branch `chore/3713-park-question-types` from the latest `development`, then merge `fork/chore/3788-remove-bull` into it.
 2. Remove `libs/gisday/platform/data-api/src/lib/question-type/`, its export, its registration in `apps/gisday-nest/src/app/app.module.ts`, and the `QuestionType` entity, with a migration dropping its table. Generate it as `docs/gisday-migrations.md` says, read the SQL, and run it up and down locally.
 3. In `docs/parked-code.md`, add to `parked/initial-survey`'s row that it also holds the question-type API, removed by this change.
 4. `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-nest`, and `.pr-body.md` with "Part of #3713" and `no-visible-change`. **Don't close #3713**: it's the issue for bringing the survey back. Close a new small issue instead, which I'll file and name here before you finish.
