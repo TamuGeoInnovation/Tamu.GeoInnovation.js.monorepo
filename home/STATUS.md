@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a71**: after measured: maintenance 19/18/16/22 s, service 21/19/18/17 s (from 89-162 s), 427 spaces, same points drawn; comparison in build-times.md; full check starting, 8:56 PM Central, 26 November.
+- **Batch a72**: started batch a72 (#3369 part 1: a drawing timeout that names its unmet condition), 9:11 PM Central, 26 November.
 
 ## Finished
 - **Batch a71** (report `home/reports/2026-11-26-a71.md`, 9:10 PM Central): branch ready `fix/3824-parking-space-filters` at `9acd7b3d0`; maintenance and service parking finish drawing in 16 to 22 s, from 89 to 162 s; parking-spaces.spec widened; check-parked-code the only red.
