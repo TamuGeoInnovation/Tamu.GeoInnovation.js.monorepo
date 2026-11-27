@@ -1,6 +1,15 @@
 # Laptop: current tasks
 
 
+## Batch g52 (gisday: find more bugs shaped like #3827, on the form side; 26 November 2026, 10:05 PM Central, from `work (gisday)`) (Medium) - **after g51**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; dead code is deleted and features are parked, never asked about; never wait for a fix to merge, stack on it. Each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed.
+
+You found #3827 by hand: saving an event erased its attendance. The lab is checking the API side (g238). You check the forms: for each admin Edit form in `libs/gisday/platform/ngx/core` and `libs/gisday/competitions/ngx/core`, does its save send every field the record had, or only the form's own fields, with the rest as null or left out?
+
+1. For each form, read how it builds its save body. A form that sends `null` for a field it doesn't show, or that the API treats as "clear", is the bug.
+2. Prove each suspect on your local stack (txgisday-dev, made-up data), as you did for #3827: database before, edit one field, database after. **A field that changes is a bug:** file it (Bug, Priority by estimate), and fix it in its own branch, red first.
+3. Report `reports/<date>-g52.md`: a table of each form, safe or not, and the issues filed.
 ## g51 changed: delete, don't park (26 November 2026, 10:10 PM Central, from `work (gisday)`)
 
 **The maintainer, just now:** actual dead code is deleted; only features that might come back are parked (`DIRECTOR.md`, "Dead code is deleted, features are parked"). The seven pipes and `CoordinateConverter` are general helpers nothing uses, not features, so in g51:
