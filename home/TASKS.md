@@ -5,6 +5,69 @@
 
 g128 closes **#3807** ("Park the question-type API with the initial survey"). Put `Closes #3807` and "Part of #3713" in its `.pr-body.md`.
 
+
+## Batch a70 (aggiemap: #3808, the four parking maps whose popup keys nothing reads; 26 November 2026, 7:55 PM Central, from `work (aggiemap)`) (Medium) — **now**
+
+**a69 is accepted.** Putting the caption **inside** the image, with a README beside it, answers the objection I actually
+had rather than the one I wrote down — a caption in a pull request body does not travel into the release notes, and one
+burnt into the file does. Do that again whenever an image needs a qualification.
+
+**a67 and a69 are both waiting on the same merge** (PR 3805 or 3797), and I open both pull requests myself when it
+lands. Nothing for you to re-run.
+
+**Standing, today:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running
+now** updated in the same commit, answers arrive in `TASKS.md`, and branch from today's `development`.
+
+### What this is
+
+[#3808](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3808), which is your own step-5
+finding from a69, filed with your four maps. I verified `motorcycle-parking` before filing: six keys, no `name`, no
+`description`, and no `popupDataResolutionStrategy: 'cumulative'`.
+
+**This is the fifth instance of one fault**, counting #3671. That is what makes it worth one change with a check rather
+than four small ones.
+
+### The order matters, and step 1 is not the fix
+
+1. **Prove what a visitor sees today, per map, with a capture.** Four maps, four "before" images into
+   `docs/screenshots/3808-popup-keys/`. Do this first and do not skip a map because its definition looks obvious.
+
+   **The reason is #3671 itself**: its map cannot be clicked at all, so the key name was never what a visitor was
+   missing. If any of these four has the same no-geometry fault ([#2520](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2520)
+   is the register of those), then **that** is its visible bug, the keys are cosmetic underneath it, and it gets its own
+   issue rather than a rename that changes nothing. CLAUDE.md: of four popup faults in one week, two would have looked
+   like fixes and changed nothing a visitor sees.
+2. **Ask each service** whether the fields are still there and how many records carry them. `motorcycle-parking` carries
+   a `definitionExpression` for #1897 (`Spc_Type = 'M/C'`), so its query is not the plain one — say what you asked and
+   what came back. **A field that is missing or empty is a data fault for the GIS team**, filed, not renamed to another
+   empty field.
+3. **Then fix, per map, by what you found.** They are not one shape:
+   - `motorcycle-parking` has **six** fields and two slots, so something has to compose them. That is the `cumulative`
+     strategy and a template, not a rename.
+   - `media-parking` has one (`lotType`), which may simply be `description`.
+   - Say for each which you chose and why. A map that turns out to be blocked by its service is reported, not edited.
+4. **The check, last, and it must fail before your fixes.** Every `popupData` key is one the map's popup can read:
+   either a key the markdown popup reads, or any key where the source declares
+   `popupDataResolutionStrategy: 'cumulative'`. In `ts-events-ngx`, beside the unit test that keeps
+   `declared-layers.generated.json` equal to the definitions. **Quote it failing on all four first** — that is the
+   proof it would have caught #3671.
+5. **Before and after images** for every map you change, and a release-notes entry in
+   `docs/releases/unreleased/3808-<slug>.md` with its *What to test on dev* row. A map you could not change says so in
+   the row, with its reason.
+
+### Do not
+
+**Do not delete anything that looks dead.** The maintainer's instruction today: dead code is **marked as potentially
+parked and he decides**. If a key, a field or a whole popup turns out to be unused, that is a finding in the report.
+
+**Do not touch `popup.spec.ts`'s allowed failures.** #2520's entries are the record of maps that cannot be clicked; this
+change does not make any of them pass.
+
+**Branch** `fix/3808-popup-keys` from today's `development`. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give
+me its last line — `check-parked-code` may still be the only red until 3805 or 3797 merges, and that is fine; say so.
+Body text in the report with a `Title:` line, `.pr-body.md` **not** committed. **Open no pull request** — I open it.
+
+**Report** `home/reports/2026-11-26-a70.md`. Questions `Q-a70-<n>`.
 ## Answer: Q-g127-1 (26 November 2026, 7:25 PM Central, from `work (gisday)`)
 
 **Q-g127-1: (a).** Ship the season-day half on its own. Rename the branch `chore/3796-park-season-day-writes` before pushing, so its name says what it does. After PR 3797 merges: merge `development`, run the full check, push, say "branch ready", with `Closes #3796`. You were right to stop at `app.module.ts`, and right not to write the register note early.
