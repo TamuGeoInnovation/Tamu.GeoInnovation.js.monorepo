@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g238**: started batch g238 (update routes that may drop fields, #3827's shape); g127's DELETE follow-up sent to the GIS Day director as Q-g127-2, 10:52 PM Central, 26 November.
+- **g238** stopped after step 1 (29 routes read; 8 lose an omitted field, none reachable from the site): waiting on Q-g238-1, since 10:57 PM Central. Next: #3851 (AggieMap).
 
 ## Finished
 - **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
