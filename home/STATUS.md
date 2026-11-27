@@ -17,6 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - **Batch a70**: after captured on all six layers (motorcycle headed by its lot; spaces show their number; lots their type); full check starting, 8:08 PM Central, 26 November.
 
 ## Finished
+- **Batch a70** (report `home/reports/2026-11-26-a70.md`, 8:19 PM Central): branch ready `fix/3808-popup-keys` at `528b6ff59`; four maps fixed, the check red on all four and NSC first; check-parked-code the only red.
 - **Batch a69** (report `home/reports/2026-11-26-a69.md`, 7:52 PM Central): branch ready `fix/3671-nsc-permit-instructions` at `bfcd92a6f`; one line, red first; no-visible-change (#2520), spec render as test artifact; #3808 filed by the director.
 - **Batch a67** (report `home/reports/2026-11-26-a67.md`, 7:37 PM Central): branch ready `fix/3615-coordinate-search` at `9f99c7023`; two causes fixed, red first; check passes but for check-parked-code (PR 3797).
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
