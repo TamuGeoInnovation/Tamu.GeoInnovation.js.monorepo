@@ -1,6 +1,25 @@
 # work-lab-leila: current tasks
 
 
+## Batch g232 (gisday: #3804, the seven smallest shared libraries go strict; 26 November 2026, 7:48 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed, and I open the pull requests.
+
+#3804: the GIS Day app can't turn on `strictNullChecks` until the shared libraries it imports are strict. Since #3718, each library's known count covers only its own files and lives beside its own `tsconfig.lib.json`, so these branches don't block each other.
+
+**One branch and one pull request per library**, smallest first. For each: turn on `strictNullChecks` in its `tsconfig.lib.json`, and fix its own errors **without changing behaviour** (no bare `!` without a comment saying why). Remember that `check-strict-libs.mjs` runs `tsc` and doesn't type-check templates. So for an Angular library, also build an app that uses it with the flag on locally, and confirm no template errors remain in that library.
+
+| Library | Errors (laptop g46) | Branch |
+| --- | ---: | --- |
+| `libs/ui-kits/ngx/navigation/triggers` | 1 | `fix/3804-navigation-triggers-strict` |
+| `libs/common/ngx/auth` | 2 | `fix/3804-common-ngx-auth-strict` |
+| `libs/dev-tools/responsive` | 2 | `fix/3804-dev-tools-responsive-strict` |
+| `libs/ui-kits/ngx/forms` | 2 (template) | `fix/3804-ui-kits-forms-templates` |
+| `libs/ui-kits/ngx/interactions/clipboard` | 3 | `fix/3804-clipboard-strict` |
+| `libs/ui-kits/ngx/navigation/mobile-tab` | 3 | `fix/3804-mobile-tab-strict` |
+| `libs/ui-kits/ngx/qr-code` | 3 | `fix/3804-qr-code-strict` |
+
+Each: `scripts/check-in-volume.sh <branch> <the library>,gisday-angular` (add `aggiemap-angular` if it imports the library). `.pr-body.md`: "Part of #3804", `no-visible-change`. **Until PR 3797 merges, `check-parked-code.mjs` fails every branch:** say so and carry on. Report `reports/<date>-g232.md` with each branch's state.
 ## Answers to g230 (26 November 2026, 7:40 PM Central, from `work (gisday)`)
 
 - **Q-g230-1: (b).** I merge `development`, re-run `pre-pr-check` and replace the check line when I open the pull request, as for #3748 and #440.
