@@ -36,13 +36,13 @@ import * as gju from 'geojson-utils';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { parseLatLon } from '@tamu-gisc/common/utils/geometry';
-import { findNearestIndex, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
-import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
+import { getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 
 import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 import { DoorPoint, firstRoutableDoor, rankDoorsByDistance, refineStops } from './trip-planner-door-choice';
+import { nearestLot, permitChosen } from './trip-planner-parking-stop';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -62,10 +62,11 @@ import {
   TripPointOriginParams,
   TripPointGeometry,
   TripPointAttributes,
-  attributeOf
+  attributeOf,
+  featureName
 } from '../core/trip-planner-core';
 
-import { BusService, TimetableRow } from '../services/transportation/bus/bus.service';
+import { BusService } from '../services/transportation/bus/bus.service';
 import { BikeService } from '../services/transportation/bike/bike.service';
 import { ParkingService } from '../services/transportation/drive/parking.service';
 
@@ -374,20 +375,22 @@ export class TripPlannerService implements OnDestroy {
 
   public initializeHandlers() {
     viewEventFromStore<esri.ViewClickEvent>(this.mapService.store, 'click').subscribe((event) => {
-      const layer = this._map.findLayerById('buildings-layer') as esri.FeatureLayer;
-
       // Allow click coordinates only when on the trip planner route
       if (this.router.url.includes('trip')) {
-        this.mapService.featuresIntersectingPoint(layer, event.mapPoint).then(async (res) => {
+        this.mapService.featuresAtPoint(event.mapPoint).then(async (features) => {
           // Latitude and longitude, which a view in a projected reference does not give (#1875).
           const { latitude, longitude } = await toGeographic(event.mapPoint);
 
-          // If the query returns a feature in the value use the first item in that list
-          if (res.features.length > 0) {
+          // The top-most feature clicked that has a name names the stop: a Nature Rx marker over a building is the
+          // marker, and a building is still the building. Only the buildings were asked, so a click on anything else
+          // was named by its coordinates (#2723).
+          const feature = features.find((candidate) => featureName(candidate.attributes) !== undefined);
+
+          if (feature) {
             this.setStops([
               new TripPoint({
                 source: 'map-event',
-                originAttributes: res.features[0].attributes,
+                originAttributes: feature.attributes,
                 originGeometry: { latitude, longitude },
                 originParameters: {
                   type: 'map-event',
@@ -1045,7 +1048,7 @@ export class TripPlannerService implements OnDestroy {
             } else if (
               mode.determinants &&
               mode.determinants.parking_pass &&
-              this._TravelOptions.getValue().parking_pass_permit !== ''
+              permitChosen(this._TravelOptions.getValue().parking_pass_permit)
             ) {
               // Return the service stops with an added  point of the location of the nearest permitted parking lot/deck
               // based on their set parking permit preferences.
@@ -1055,37 +1058,24 @@ export class TripPlannerService implements OnDestroy {
                 switchMap((result) => {
                   const stops = this._Stops.getValue().map((stop) => stop);
 
-                  // If no result, return with existing stops
-                  if (!result) {
+                  const destination = stops[stops.length - 1].geometry;
+                  const nearest = nearestLot(result, { latitude: destination.latitude, longitude: destination.longitude });
+
+                  // No lot the permit allows: the stops as they are, rather than a trip that never finishes (#3875).
+                  if (!nearest) {
                     return of({
                       mode,
                       stops
                     });
                   }
 
-                  // The lots are the search service's JSON, not Polygon instances, so they have rings
-                  // and no centroid of their own; the shared helper handles both.
-                  const centroids = result.map((f) => {
-                    return {
-                      geometry: centroidFromPolygonGeometry(<esri.Polygon>f.geometry)
-                    };
-                  });
-
-                  const nearest = findNearestIndex(
-                    {
-                      latitude: stops[stops.length - 1].geometry.latitude,
-                      longitude: stops[stops.length - 1].geometry.longitude
-                    },
-                    centroids
-                  );
-
-                  const nearestGeometry = centroids[nearest].geometry;
+                  const nearestGeometry = nearest.centre;
 
                   // If nearby bike returns a result, compose a trip point with its location
                   // and splice it into the other stops.
                   const parkingStop = new TripPoint({
                     source: 'coordinates',
-                    originAttributes: result[nearest].attributes as TripPointAttributes,
+                    originAttributes: nearest.lot.attributes as TripPointAttributes,
                     originGeometry: { ...nearestGeometry },
                     originParameters: {
                       type: 'coordinates',
@@ -1481,29 +1471,9 @@ export class TripPlannerService implements OnDestroy {
 
             const features_length = features.length;
             // Overwrite total travel time to be the relative time of the last item in the features array.
-            // This ensures it applies the additional time padding such as bus linger time and traffic multipliers.
             if (features_length > 0 && features[0].attributes.relativeTime != null) {
               res.result.routeResults[0].directions.totalDriveTime = features[features_length - 1].attributes.relativeTime;
               res.result.routeResults[0].directions.totalTime = features[features_length - 1].attributes.relativeTime;
-            }
-
-            if (modeSwitches && modeSwitches.length > 0) {
-              const anyHasResultLinger = modeSwitches.filter((ms) => {
-                return ms && ms.results && ms.results.bus;
-              });
-
-              if (anyHasResultLinger.length > 0) {
-                const totalLinger = modeSwitches.reduce((acc, curr) => {
-                  if (curr.results && curr.results.bus) {
-                    return acc + curr.results.bus.linger_minutes;
-                  } else {
-                    return acc;
-                  }
-                }, 0);
-
-                res.result.routeResults[0].directions.totalDriveTime += totalLinger;
-                res.result.routeResults[0].directions.totalTime += totalLinger;
-              }
             }
 
             const timeMode = this._TravelOptions.getValue().time_mode || 'now';
@@ -1956,27 +1926,12 @@ export class TripPlannerService implements OnDestroy {
           // Add all graphics generated from the route segments.
           layer.addMany(graphicCollection);
 
+          // Clear of the side panel, as a bus route is (#2763).
           this.computeZoomLevel(graphicCollection).then((zoom) => {
-            this._view.goTo(
-              {
-                target: graphicCollection,
-                zoom: zoom
-              },
-              {
-                animate: true
-              }
-            );
+            this.mapService.fit({ target: graphicCollection, zoom: zoom }, { animate: true });
           });
 
           this.busService.removeAllFromMap();
-
-          const bus_features = result.result.directions.features.filter((feature) => feature.attributes.bus != null);
-          // Only show buses if we are viewing the bus mode and the time mode is now (don't have historical or projected data for buses)
-          if (bus_features.length > 0 && result.timeMode === 'now') {
-            bus_features.forEach((feature) => {
-              this.busService.toggleMapRoute(feature.attributes.bus.route_number, ['buses']);
-            });
-          }
 
           // this.aggregateDirections(result.result.directions)
           //   .then((res: esri.DirectionsFeatureSet) => {
@@ -2721,23 +2676,6 @@ export interface TripModeSwitch {
    * segment.
    */
   route?: esri.Graphic[];
-
-  /**
-   * The result of determination calculations, if any, based on the requested travel mode.
-   *
-   * For example, bus modes will typically include some bus scheduling properties that will be used
-   * for UI display or further calculations.
-   */
-  results?: {
-    bus?: {
-      route_number: string;
-      linger_minutes: number;
-      timetable: TimetableRow[];
-      stop_count: number;
-      stops_list: unknown[];
-    };
-    relativeTime?: number;
-  };
 }
 
 /**

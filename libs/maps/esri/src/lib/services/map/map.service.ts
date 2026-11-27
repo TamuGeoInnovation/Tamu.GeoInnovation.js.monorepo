@@ -21,6 +21,7 @@ import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
 import { queryPopupLayersAtClick } from './click-query';
+import { coveredEdges, goToClearOf } from './fit';
 import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
 import {
@@ -56,6 +57,9 @@ export class EsriMapService {
   // AsyncSubject allows us to control when to emit map loaded, and emit map and view instances.
   //
   private _modules: NullableMapServiceInstance = {};
+
+  /** What lies over the map for a fit to leave clear: see `coverWith`. */
+  private readonly _covers = new Set<Element>();
 
   /** Undefined before a map is made and after it is destroyed; `store` leaves those out. */
   private _store = new BehaviorSubject<MapServiceInstance | undefined>(undefined);
@@ -320,29 +324,13 @@ export class EsriMapService {
   }
 
   /**
-   * Returns a feature layer query result containing features that intersect, if any, a point
-   *
-   * @param {esri.FeatureLayer} featureLayer Feature layer used to calculate intersecting features
-   * @param {esri.Point} point Point object to test against the feature layer
-   * @returns {esri.FeatureSet} Feature set collection containing the features from feature
-   * layer that intersect the point
+   * The features at a point in every visible layer that opens a popup, top-most first, drawn or not: what a click there
+   * landed on. It asked one layer, the buildings, so a click on anything else found nothing (#2723).
    */
-  public featuresIntersectingPoint(featureLayer: esri.FeatureLayer, point: esri.Point): Promise<esri.FeatureSet> {
-    return new Promise((r, rj) => {
-      featureLayer
-        .queryFeatures({
-          geometry: point,
-          spatialRelationship: 'intersects',
-          outFields: ['*'],
-          returnGeometry: true
-        })
-        .then((res: esri.FeatureSet) => {
-          r(res);
-        })
-        .catch((err) => {
-          rj(err);
-        });
-    });
+  public featuresAtPoint(point: esri.Point): Promise<esri.Graphic[]> {
+    // `currentView` rather than `_modules.view`: #3804 turned strict null checks on here, and this reads the view the
+    // same way every other post-`makeMap` caller does.
+    return queryPopupLayersAtClick(this.currentView, point, { drawn: true });
   }
 
   /**
@@ -1232,13 +1220,40 @@ export class EsriMapService {
    *  Zooms to a collection of graphics at a specified zoom.
    */
   public zoomTo(properties: ZoomProperties) {
-    const view = <esri.MapView>this._modules.view;
-
     if (properties.zoom !== undefined) {
-      return view.goTo({ target: properties.graphics, zoom: properties.zoom });
+      return this.fit({ target: properties.graphics, zoom: properties.zoom });
     }
 
-    return view.goTo(properties.graphics);
+    return this.fit(properties.graphics);
+  }
+
+  /**
+   * Lays an element over the map, such as the side panel, for `fit` to leave clear while it is there, until the
+   * function returned is called (#2763). Where it lies is read at each fit, so a panel that slides away or changes width
+   * needs nothing more.
+   */
+  public coverWith(element: Element): () => void {
+    this._covers.add(element);
+
+    return () => this._covers.delete(element);
+  }
+
+  /**
+   * Goes to a target in the part of the map nothing lies over (`coverWith`), as `view.goTo` would go to it in the whole
+   * view (#2763). Every fit to a feature or a route goes through here: a fit to the whole view finished a long bus route
+   * behind the side panel.
+   */
+  public fit(target: esri.GoToTarget2D, options?: esri.GoToOptions2D): Promise<void> {
+    // `currentView` rather than `_modules.view`: #3804 turned strict null checks on here, and this reads the view the
+    // same way every other post-`makeMap` caller does.
+    const view = this.currentView;
+    const container = view.container as HTMLElement;
+    const covered = coveredEdges(
+      container.getBoundingClientRect(),
+      [...this._covers].map((element) => element.getBoundingClientRect())
+    );
+
+    return goToClearOf(view, target, covered, options);
   }
 
   /**

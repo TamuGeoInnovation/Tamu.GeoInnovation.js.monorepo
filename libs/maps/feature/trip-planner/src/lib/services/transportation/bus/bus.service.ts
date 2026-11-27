@@ -182,7 +182,7 @@ export class BusService {
     );
   }
 
-  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops' | 'buses')[], zoomToRoute = true): void {
+  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops')[], zoomToRoute = true): void {
     // Check if there are any existing graphics at all in the bus layer.
     const existingGraphics = this._busLayer.getValue().graphics.length > 0;
 
@@ -270,22 +270,16 @@ export class BusService {
           this._busLayer.getValue().add(route_graphic);
 
           // Zoom to bus line geometry when added, unless the caller wants to preserve the current
-          // extent (e.g. a shared bus-stop deep-link that has already zoomed to the stop).
+          // extent (e.g. a shared bus-stop deep-link that has already zoomed to the stop). Clear of the side
+          // panel, which a long route's far end finished behind (#2763).
           if (zoomToRoute) {
-            this.mapService.store
-              .pipe(
-                take(1),
-                map((instances) => instances.view)
-              )
-              .subscribe((m) => m.goTo(route_graphic));
+            this.mapService.store.pipe(take(1)).subscribe(() => this.mapService.fit(route_graphic));
           }
         }
 
         if (symbols == null || symbols.indexOf('stops') !== -1) {
           this._busLayer.getValue().addMany(stopGraphics);
         }
-
-        // 'buses' (live vehicle locations) is intentionally a no-op: the ArcGIS source has no live GPS.
       }
     );
   }
@@ -503,18 +497,6 @@ export interface TSRouteGroup {
    * Specifies display order of containing bus group.
    */
   Order: number;
-}
-
-export interface BusStop {
-  name: string;
-  point: esri.Point;
-  time?: Date;
-}
-
-export interface TimetableRow {
-  first: number;
-  last: number;
-  stops: BusStop[];
 }
 
 /**

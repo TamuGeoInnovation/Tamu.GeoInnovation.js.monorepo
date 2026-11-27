@@ -20,7 +20,12 @@ export const Connections = {
   constructionUrl: AggiemapConnections.constructionUrl,
   departmentUrl: 'https://fc-gis.tamu.edu/arcgis/rest/services/FCOR/DepartmentSearch/MapServer/1',
   tsMainUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Main/MapServer`,
-  bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`
+  bikeRacksUrl: `https://${tsgisHost}/arcgis/rest/services/TS/TS_Bicycles/MapServer/3`,
+  /**
+   * UES's operations service, which the map draws and its UES searches query (#2420). Those searches were on
+   * `ues-arc.tamu.edu/.../Yoho/UES_Operations`, which accepts no connection, so every search waited for them to time out.
+   */
+  uesOperationsUrl: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Production_UES_Operations_Map/MapServer'
 };
 
 export const Definitions = {
@@ -34,43 +39,43 @@ export const Definitions = {
     id: 'domestic-cold-water',
     layerId: 'domestic-cold-water-layer',
     name: 'Domestic Cold Water',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/1'
+    url: `${Connections.uesOperationsUrl}/1`
   },
   WELL_SITES: {
     id: 'well-sites',
     layerId: 'well-sites-layer',
     name: 'Well Sites',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/5'
+    url: `${Connections.uesOperationsUrl}/6`
   },
   FIRE_HYDRANTS: {
     id: 'fire-hydrants',
     layerId: 'fire-hydrants-layer',
     name: 'Fire Hydrants',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/6'
+    url: `${Connections.uesOperationsUrl}/7`
   },
   UES_NATURAL_GAS_METERS: {
     id: 'ues-natural-gas-meters',
     layerId: 'ues-natural-gas-meters-layer',
     name: 'UES Natural Gas Meters',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/29'
+    url: `${Connections.uesOperationsUrl}/38`
   },
   GENERATORS: {
     id: 'generator',
     layerId: 'generator-layer',
     name: 'Generators',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/38'
+    url: `${Connections.uesOperationsUrl}/51`
   },
   TRANSFORMER: {
     id: 'transformer',
     layerId: 'transformer-layer',
     name: 'Transformers',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/39'
+    url: `${Connections.uesOperationsUrl}/52`
   },
   ELECTRICAL_MANHOLES: {
     id: 'electrical-manholes',
     layerId: 'electrical-manholes-layer',
     name: 'Electrical Manholes',
-    url: 'https://ues-arc.tamu.edu/arcgis/rest/services/Yoho/UES_Operations/MapServer/41'
+    url: `${Connections.uesOperationsUrl}/54`
   },
   POINTS_OF_INTEREST: {
     id: 'poi',
@@ -133,7 +138,7 @@ const OAuthInfos = {
 export const LayerSources: LayerSource[] = [
   {
     type: 'map-server',
-    url: 'https://pgis-arc-p1.apogee.tamu.edu/arcgis/rest/services/Production_UES_Operations_Map/MapServer',
+    url: Connections.uesOperationsUrl,
     id: 'ues-map-server',
     title: 'UES Operations',
     visible: false,
@@ -823,10 +828,11 @@ export const SearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['HYDR_NUMBER', 'ASSETNUM '],
-        operators: ['LIKE', 'LIKE'],
-        wildcards: ['includes', 'includes'],
-        transformations: ['UPPER', 'UPPER']
+        // The operations service's hydrants have no ASSETNUM, and a query naming a field a layer lacks fails whole (#2420).
+        keys: ['HYDR_NUMBER'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
       }
     }
   },
@@ -841,10 +847,11 @@ export const SearchSources: SearchSource[] = [
     queryParams: {
       ...commonQueryParams,
       where: {
-        keys: ['UES_ID', 'AIM_ASSET_NUMBER'],
-        operators: ['LIKE', 'LIKE'],
-        wildcards: ['includes', 'includes'],
-        transformations: ['UPPER', 'UPPER']
+        // AIM_ASSET_NUMBER is a number on the operations service, and UPPER() of a number fails the whole query (#2420).
+        keys: ['UES_ID'],
+        operators: ['LIKE'],
+        wildcards: ['includes'],
+        transformations: ['UPPER']
       }
     }
   },
@@ -855,7 +862,9 @@ export const SearchSources: SearchSource[] = [
     featuresLocation: 'features',
     displayTemplate: '{attributes.UESID}',
     popupComponent: Popups.BaseDirectionsComponent,
-    searchActive: true,
+    // Not searched until UES says which field holds what UESID and AIMNumber held (#2420): the operations service's
+    // transformers have neither, and a query naming a field a layer lacks fails whole.
+    searchActive: false,
     queryParams: {
       ...commonQueryParams,
       where: {
