@@ -16,7 +16,14 @@ describe('UserClassProvider queries, built by typeorm', () => {
 
   // A class as the API loads it: its nullable columns come back null, not undefined.
   const loadedClass = () =>
-    Object.assign(new Class(), { guid: 'c-1', code: 'GEOG', number: '361', section: null, professorName: null, season: null });
+    Object.assign(new Class(), {
+      guid: 'c-1',
+      code: 'GEOG',
+      number: '361',
+      section: null,
+      professorName: null,
+      season: null
+    });
 
   beforeAll(async () => {
     dataSource = await queryCheckingDataSource();

@@ -1,7 +1,13 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Event, Organization, Speaker, SpeakerEdit, SpeakerEditLink, Submission, University } from '../entities/all.entity';
-import { answering, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import {
+  answering,
+  loadedSeason,
+  queryCheckingDataSource,
+  queryCheckingRepository,
+  recordWrites
+} from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { ContactService } from '../contact/contact.service';
 import { SeasonService } from '../season/season.service';
@@ -91,7 +97,16 @@ describe('SpeakerEditService queries, built by typeorm', () => {
       seasons
     );
 
-    service = new SpeakerEditService(links, edits, speakers, repo(University), speakerProvider, contact, seasons, submissions);
+    service = new SpeakerEditService(
+      links,
+      edits,
+      speakers,
+      repo(University),
+      speakerProvider,
+      contact,
+      seasons,
+      submissions
+    );
   });
 
   /** A submission as the API loads it, with its season, and one participant who is the speaker above. */

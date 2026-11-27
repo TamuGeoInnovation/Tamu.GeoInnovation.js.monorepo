@@ -44,7 +44,10 @@ export const UCGIS_MEMBER_INSTITUTIONS: ReadonlyArray<MemberInstitution> = [
   { name: 'Texas A&M University', alsoKnownAs: ['Texas A&M University, College Station'] },
   { name: 'Texas A&M University-Corpus Christi' },
   { name: 'Texas State University', alsoKnownAs: ['Texas State University, San Marcos'] },
-  { name: 'University of California, Santa Barbara', alsoKnownAs: ['University of California at Santa Barbara', 'UC Santa Barbara'] },
+  {
+    name: 'University of California, Santa Barbara',
+    alsoKnownAs: ['University of California at Santa Barbara', 'UC Santa Barbara']
+  },
   { name: 'University of Colorado Boulder', alsoKnownAs: ['University of Colorado'] },
   { name: 'University of Connecticut' },
   { name: 'University of Illinois Urbana-Champaign', alsoKnownAs: ['University of Illinois at Urbana-Champaign'] },
@@ -89,7 +92,10 @@ export const UCGIS_MEMBER_INSTITUTIONS: ReadonlyArray<MemberInstitution> = [
 
   // Members, Multi-Campus Systems
   { name: 'California State University' },
-  { name: 'University of Minnesota', alsoKnownAs: ['University of Minnesota System', 'University of Minnesota Twin Cities'] },
+  {
+    name: 'University of Minnesota',
+    alsoKnownAs: ['University of Minnesota System', 'University of Minnesota Twin Cities']
+  },
 
   // International Affiliate Members
   { name: 'University of Salzburg', alsoKnownAs: ['Paris Lodron University of Salzburg'] },
@@ -149,7 +155,9 @@ export function planMembers(
       .filter((m) => !adding.includes(m))
       .map((m) => ({
         name: m.name,
-        as: names.find((n) => [m.name, ...(m.alsoKnownAs ?? [])].some((k) => institutionKey(k) === institutionKey(n))) ?? m.name
+        as:
+          names.find((n) => [m.name, ...(m.alsoKnownAs ?? [])].some((k) => institutionKey(k) === institutionKey(n))) ??
+          m.name
       }))
   };
 }

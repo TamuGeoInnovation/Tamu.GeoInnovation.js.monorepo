@@ -41,7 +41,12 @@ describe('ContactService over HTTP', () => {
     received = [];
   });
 
-  const message = { subject: 'Hello', text: 'Body', to: 'x@example.edu', from: 'visitor@example.edu' } as IMailroomEmailOutbound;
+  const message = {
+    subject: 'Hello',
+    text: 'Body',
+    to: 'x@example.edu',
+    from: 'visitor@example.edu'
+  } as IMailroomEmailOutbound;
 
   const respond = (status: number, json: unknown) =>
     (answer = (_req, res) => {
@@ -57,7 +62,11 @@ describe('ContactService over HTTP', () => {
     expect(received).toHaveLength(1);
     expect(received[0].method).toBe('POST');
     expect(received[0].type).toMatch(/^application\/json/);
-    expect(JSON.parse(received[0].body)).toMatchObject({ to: 'gisday@example.edu', from: 'noreply@example.edu', replyTo: 'visitor@example.edu' });
+    expect(JSON.parse(received[0].body)).toMatchObject({
+      to: 'gisday@example.edu',
+      from: 'noreply@example.edu',
+      replyTo: 'visitor@example.edu'
+    });
   });
 
   it.each([400, 500])('throws InternalServerErrorException on a %i, without retrying', async (status) => {

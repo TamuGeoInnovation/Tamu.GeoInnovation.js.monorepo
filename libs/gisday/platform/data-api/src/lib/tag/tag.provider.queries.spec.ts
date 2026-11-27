@@ -38,7 +38,10 @@ describe('TagProvider queries, built by typeorm', () => {
 
   it('lists the sessions that have a tag, with their days and places', async () => {
     const build = tagRepo.findOne;
-    tagRepo.findOne = async (options) => (await build(options), Object.assign(new Tag(), { guid: 't-1', name: 'GIS', season: null }));
+    tagRepo.findOne = async (options) => (
+      await build(options),
+      Object.assign(new Tag(), { guid: 't-1', name: 'GIS', season: null })
+    );
 
     await expect(provider.getSessions('t-1')).resolves.toEqual([]);
   });

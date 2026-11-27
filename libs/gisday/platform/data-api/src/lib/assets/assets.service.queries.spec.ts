@@ -31,7 +31,12 @@ describe('AssetsService queries, built by typeorm', () => {
     const build = assetRepo.count;
     assetRepo.count = async (options) => (await build(options), 1);
 
-    const asset = Object.assign(new Asset(), { guid: 'a-1', name: 'logo.png', path: 'images/sponsors/logo.png', type: null });
+    const asset = Object.assign(new Asset(), {
+      guid: 'a-1',
+      name: 'logo.png',
+      path: 'images/sponsors/logo.png',
+      type: null
+    });
 
     await expect(service.deleteAssetFiles([asset])).resolves.toBeUndefined();
   });

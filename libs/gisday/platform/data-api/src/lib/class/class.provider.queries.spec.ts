@@ -46,7 +46,13 @@ describe('ClassProvider queries, built by typeorm', () => {
   });
 
   it('creates a class after looking for the same one, its empty values as null', async () => {
-    const created = await provider.createClass({ code: 'GEOG', number: '361', section: null, professorName: null, season: season });
+    const created = await provider.createClass({
+      code: 'GEOG',
+      number: '361',
+      section: null,
+      professorName: null,
+      season: season
+    });
 
     expect(created.code).toBe('GEOG');
   });
@@ -55,7 +61,16 @@ describe('ClassProvider queries, built by typeorm', () => {
     const build = classRepo.find;
     classRepo.find = async (options) => (
       await build(options),
-      [Object.assign(new Class(), { guid: 'c-1', code: 'GEOG', number: null, section: null, professorName: null, season: null })]
+      [
+        Object.assign(new Class(), {
+          guid: 'c-1',
+          code: 'GEOG',
+          number: null,
+          section: null,
+          professorName: null,
+          season: null
+        })
+      ]
     );
 
     const copies = await provider.copyClassesIntoSeason('s-1', ['c-1']);

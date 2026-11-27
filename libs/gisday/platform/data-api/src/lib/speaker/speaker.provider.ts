@@ -274,11 +274,14 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
       }
 
       // A speaker as saved, whose images may be left out: without a new photo they are, and stay as they are.
+      // Form data coerces a boolean to text. A flag left out keeps the speaker's own (#3862), rather than becoming false.
+      const flag = (sent: unknown, kept: boolean | undefined) =>
+        sent === undefined ? kept : sent === true || (sent as string) === 'true';
       const toSave: DeepPartial<Speaker> = {
         ...existing,
         ...incoming,
-        isOrganizer: (incoming.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
-        isActive: (incoming.isActive as unknown as string) === 'true', // form data coerces boolean to string
+        isOrganizer: flag(incoming.isOrganizer, existing.isOrganizer),
+        isActive: flag(incoming.isActive, existing.isActive),
         images: [speakerImage]
       };
 

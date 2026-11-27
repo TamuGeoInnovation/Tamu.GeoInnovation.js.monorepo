@@ -14,9 +14,13 @@ describe('UCGIS member institutions', () => {
   it('treats spellings that differ only in case, "The", "&" spacing or punctuation as one institution', () => {
     expect(institutionKey('The Ohio State University')).toBe(institutionKey('Ohio State University'));
     expect(institutionKey('Texas A & M University')).toBe(institutionKey('Texas A&M University'));
-    expect(institutionKey('Texas A&M University-Corpus Christi')).toBe(institutionKey('Texas A&M University Corpus Christi'));
+    expect(institutionKey('Texas A&M University-Corpus Christi')).toBe(
+      institutionKey('Texas A&M University Corpus Christi')
+    );
     expect(institutionKey('University of Wisconsin - Madison')).toBe(institutionKey('University of Wisconsin-Madison'));
-    expect(institutionKey('University of Massachusetts, Amherst ')).toBe(institutionKey('University of Massachusetts Amherst'));
+    expect(institutionKey('University of Massachusetts, Amherst ')).toBe(
+      institutionKey('University of Massachusetts Amherst')
+    );
   });
 
   it('adds every member to an empty list', () => {
