@@ -301,7 +301,7 @@ From Git Bash in the repository root, one at a time:
 | `scripts/gisday-local.sh restore` | progress in steps of 10 percent, then `Restored apps/gisday-nest/src/database/gisday-local.bak into gisday-nest-eh and mapped gisday_app.` A few seconds |
 | `scripts/gisday-local.sh api` | `Successfully ran target build`, then `gisday-api started`. <http://localhost:3333/api/seasons/active> answers 200 |
 | `scripts/gisday-local.sh web` | `gisday-dev started`. The first compile takes several minutes; follow it with `docker logs -f gisday-dev`. Then <http://localhost:4201> shows the site with the restored data |
-| `scripts/gisday-local.sh status` | four containers, all `Up`: `gisday-db`, `gisday-redis`, `gisday-api`, `gisday-dev` |
+| `scripts/gisday-local.sh status` | three containers, all `Up`: `gisday-db`, `gisday-api`, `gisday-dev` |
 
 Then sign in at <http://localhost:4201> with an account in the development tenant: the test admin in
 `auth0-dev.local.env`, or one the maintainer made. **Expect:** back on the site signed in, with Admin
