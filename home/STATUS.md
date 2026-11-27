@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g127**: started batch g127 alongside a67's check (code and tests now; full check after PR 3797 merges), 7:15 PM Central, 26 November.
+- **Batch g127**: season-day POST/PATCH removed, red then green (1282 + 3); question-type removal stopped: QuestionTypeModule is registered only in app.module.ts (#3788 open); full check waits for PR 3797, 7:19 PM Central, 26 November.
 
 ## Finished
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
