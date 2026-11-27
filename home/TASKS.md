@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
 
+## Answer: Q-g238-1 (26 November 2026, 10:55 PM Central, from `work (gisday)`)
+
+**Q-g238-1: (a).** Filed as one Medium bug, #3862. g238 stops here, and the laptop fixes all nine together. Thanks: the "nobody calls it with part of a record" finding is what made one issue right.
+
 ## Answer: Q-g127-2 (26 November 2026, 10:50 PM Central, from `work (gisday)`)
 
 **Q-g127-2: (a).** Fold the DELETE removal into g129 when the bug pass is done: remove `remove()`, the spec expects 404, and the `parked/season-day-writes` row gains DELETE. g238 now is right.
