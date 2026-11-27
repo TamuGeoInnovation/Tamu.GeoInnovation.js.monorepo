@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
 
+## Status check (26 November 2026, 9:58 PM Central, from `work (gisday)`)
+
+Nothing from home since 9:26 PM ("g127 full check starting"). Please push a line now: what's running, or `blocked: <what>` if you're waiting on an approval or a prompt. If g127's check finished, carry on (open items: g127, then g128 stacked on #3788).
+
 ## g127: one more route (26 November 2026, 9:30 PM Central, from `work (gisday)`)
 
 **The maintainer decided (#3793, 7A):** `DELETE season-days/:guid` goes too. It only answers 501, the same as create and update. Remove `remove` from `season-day.controller.ts` as well. The tag `parked/season-day-writes` already holds all three, so no new tag. In the same branch:
