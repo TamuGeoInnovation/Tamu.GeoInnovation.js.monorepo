@@ -16,7 +16,7 @@ import { AsyncPipe } from '@angular/common';
 export class TileNavigationComponent implements OnInit, OnDestroy {
   service = inject(TileService);
 
-  public readonly toggle = input<Observable<boolean>>(undefined);
+  public readonly toggle = input<Observable<boolean> | undefined>(undefined);
 
   /**
    * While the main control mechanism for the tile nav component is the input
@@ -52,7 +52,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
    */
   public readonly staggering = signal(false);
 
-  private _$destroy: Subject<boolean> = new Subject();
+  private _$destroy: Subject<void> = new Subject();
 
   public ngOnInit() {
     this.visible.pipe(takeUntil(this._$destroy)).subscribe((visible) => {
@@ -93,7 +93,7 @@ export class TileNavigationComponent implements OnInit, OnDestroy {
 
   // Clean up any internal manual component subscriptions.
   public ngOnDestroy() {
-    this._$destroy.next(undefined);
+    this._$destroy.next();
     this._$destroy.complete();
   }
 

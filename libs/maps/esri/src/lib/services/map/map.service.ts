@@ -57,7 +57,8 @@ export class EsriMapService {
   //
   private _modules: NullableMapServiceInstance = {};
 
-  private _store: BehaviorSubject<MapServiceInstance> = new BehaviorSubject(undefined);
+  /** Undefined before a map is made and after it is destroyed; `store` leaves those out. */
+  private _store = new BehaviorSubject<MapServiceInstance | undefined>(undefined);
 
   private _hitTest: BehaviorSubject<HitTestSnapshot> = new BehaviorSubject({ graphics: [] });
 
@@ -87,7 +88,22 @@ export class EsriMapService {
   public hitTest: Observable<HitTestSnapshot> = this._hitTest.asObservable();
 
   // Exposed observable that will be responsible for emitting values to subscribers
-  public readonly store: Observable<MapServiceInstance> = this._store.asObservable().pipe(filter((s) => s !== undefined));
+  public readonly store: Observable<MapServiceInstance> = this._store
+    .asObservable()
+    .pipe(filter((s): s is MapServiceInstance => s !== undefined));
+
+  /**
+   * The map and its view, where they are read after `makeMap` and `useView` have set them (#3804). Typed as set, as
+   * they were before strict null checks; at run time each is exactly what `_modules` holds, so a read that would have
+   * failed on undefined before fails the same way now. Code that has to cope with neither reads `_modules` itself.
+   */
+  private get currentMap(): esri.Map {
+    return this._modules.map as esri.Map;
+  }
+
+  private get currentView(): esri.MapView | esri.SceneView {
+    return this._modules.view as esri.MapView | esri.SceneView;
+  }
 
   constructor() {
     // Keep the automated-test probe pointed at this instance. Subscribed to the private subject
@@ -143,11 +159,11 @@ export class EsriMapService {
 
     // Set the value of the async subject
     this._store.next({
-      map: this._modules.map,
-      view: this._modules.view
+      map: this.currentMap,
+      view: this.currentView
     });
 
-    const layerSources: Array<LayerSource> = this.filterLayerSources(null, { params: true });
+    const layerSources: Array<LayerSource> = this.filterLayerSources(undefined, { params: true });
 
     // Filter list of layers that need to be added on map load
     await this.loadLayers(layerSources);
@@ -218,15 +234,16 @@ export class EsriMapService {
     }
     this._host.show(view);
 
-    this._store.next({ ...this._store.getValue(), view: this._modules.view });
+    // The store holds the map once `useView` has run, before any view can be swapped in; the cast keeps that, as before.
+    this._store.next({ ...(this._store.getValue() as MapServiceInstance), view: this.currentView });
 
     this.registerViewClickEventHandler();
   }
 
   private registerViewClickEventHandler() {
     // Set up a hit test wrapper that can be subscribed to anywhere in the application.
-    this._viewClickHandle = this._modules.view.on('click', (e) => {
-      const view = this._modules.view;
+    this._viewClickHandle = this.currentView.on('click', (e) => {
+      const view = this.currentView;
       const click = ++this._clicks;
 
       view.hitTest(e).then(async (res: esri.HitTestResult) => {
@@ -263,7 +280,12 @@ export class EsriMapService {
   /**
    * Makes a basemap using custom basemap options or a simple basemap string id name.
    */
-  private makeBasemap(mapProperties, layers: BaseLayerConstructors, Basemap: typeof esri.Basemap): esri.MapProperties {
+  private makeBasemap(
+    mapProperties,
+    layers: BaseLayerConstructors,
+    Basemap: typeof esri.Basemap
+    // Undefined for a basemap that is neither an id nor an object, as before: the Map is then made with its defaults.
+  ): esri.MapProperties | undefined {
     if (!mapProperties) {
       throw new Error(`No map properties were provided.`);
     }
@@ -439,18 +461,16 @@ export class EsriMapService {
         return layer;
       });
     } else if (source.type === 'vector-tile') {
-      return this.moduleProvider
-        .require(['VectorTileLayer'])
-        .then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
-          // Delete the type property as it cannot be set on layer creation, and take out the style layers to
-          // hide, which are ours rather than Esri's (#2459).
-          delete props.type;
-          const { hiddenStyleLayers, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
+      return this.moduleProvider.require(['VectorTileLayer']).then(([VectorTileLayer]: [typeof esri.VectorTileLayer]) => {
+        // Delete the type property as it cannot be set on layer creation, and take out the style layers to
+        // hide, which are ours rather than Esri's (#2459).
+        delete props.type;
+        const { hiddenStyleLayers, ...rest } = props as StyleLayerChanges & Record<string, unknown>;
 
-          const layer = new VectorTileLayer(rest as esri.VectorTileLayerProperties);
-          applyStyleLayerChanges(layer, { hiddenStyleLayers });
-          return layer;
-        });
+        const layer = new VectorTileLayer(rest as esri.VectorTileLayerProperties);
+        applyStyleLayerChanges(layer, { hiddenStyleLayers });
+        return layer;
+      });
     } else if (source.type === 'csv') {
       return this.moduleProvider.require(['CSVLayer']).then(([CSVLayer]: [typeof esri.CSVLayer]) => {
         // Delete the type property as it cannot be set on layer creation.
@@ -509,15 +529,15 @@ export class EsriMapService {
         });
       });
     } else if (source.type === 'map-server') {
-      if (source.auth) {
+      const auth = source.auth;
+
+      if (auth) {
         // Identity manager should have AuthInfos registered to it at this point. Query the identity manager
         // to fetch the associated access token to make a raw GET request for the layer's JSON source.
         return this.moduleProvider
           .require(['IdentityManager'])
           .then(([IdentityManager]: [esri.IdentityManager]) => {
-            return IdentityManager.getCredential(
-              source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl
-            );
+            return IdentityManager.getCredential(credentialUrl(auth));
           })
           .then((cred) => {
             return this.resolveLayerFromJsonp(source, { f: 'pjson', token: cred.token });
@@ -526,6 +546,10 @@ export class EsriMapService {
         return this.resolveLayerFromJsonp(source, { f: 'pjson' });
       }
     }
+
+    // A source type none of the branches above makes resolves undefined, as it always has (the end of an async function).
+    // Said here rather than in the return type, which callers across the map libraries take as a layer (#3804).
+    return undefined as unknown as esri.Layer;
   }
 
   /**
@@ -553,12 +577,13 @@ export class EsriMapService {
    * @param {LayerSource} source
    */
   public findLayerOrCreateFromSource(source: LayerSource): Promise<esri.Layer | Array<esri.Layer>> {
-    const map: esri.Map = this._modules.map;
+    const map: esri.Map = this.currentMap;
 
     if (this.layerExists(source.id)) {
       return new Promise((r, rj) => {
         try {
-          r(map.findLayerById(source.id));
+          // layerExists has just found it on this map.
+          r(map.findLayerById(source.id) as esri.Layer);
         } catch (err) {
           rj(err);
         }
@@ -612,10 +637,15 @@ export class EsriMapService {
         // `map-server` layer source type can have additional native properties for different kinds of layers.
         // We need to unpack them and merge them to the `cleaned` auto-castable layer props.
         if (args.source.type === 'map-server') {
-          if (cleaned.type === 'feature') {
-            Object.assign(cleaned, args.source.native.defaultFeatureLayerProperties);
-          } else if (cleaned.type === 'group') {
-            Object.assign(cleaned, args.source.native.defaultGroupLayerProperties);
+          // Read as before: a map-server source without `native` throws here, as it did before strict null checks.
+          // A portal layer that is neither a feature layer nor a group cleans to undefined (#3817). Kept exactly as
+          // before strict null checks: reading its type throws, which fails the service's layers. Skipping it instead
+          // would change what such a service does, so that is left for its own issue (#3804, batch g234). Past the
+          // type read, `cleaned` is there.
+          if (cleaned!.type === 'feature') {
+            Object.assign(cleaned!, args.source.native!.defaultFeatureLayerProperties);
+          } else if (cleaned!.type === 'group') {
+            Object.assign(cleaned!, args.source.native!.defaultGroupLayerProperties);
           }
         }
 
@@ -693,7 +723,7 @@ export class EsriMapService {
         // A class named by the definition draws every feature, because the renderer's values are stale.
         const serviceClass = (source as LayerSource).symbolFromServiceClass;
         const renderer = serviceClass
-          ? serviceClassRenderer(portal ?? layer.renderer?.toJSON(), serviceClass) ?? portal
+          ? (serviceClassRenderer(portal ?? layer.renderer?.toJSON(), serviceClass) ?? portal)
           : portal;
 
         if (!renderer) {
@@ -817,8 +847,8 @@ export class EsriMapService {
    * authenticated requests to secure resources.
    */
   private async registerIdentityAuthInfos(sources: LayerSource[]) {
-    const sourcesWithAuthInfo = sources.filter((s) => {
-      return s.auth;
+    const sourcesWithAuthInfo = sources.filter((s): s is AuthedLayerSource => {
+      return Boolean(s.auth);
     });
 
     if (sourcesWithAuthInfo.length > 0) {
@@ -826,7 +856,8 @@ export class EsriMapService {
         .require(['IdentityManager', 'OAuthInfo'])
         .then(([IdentityManager, OAuthInfo]: [esri.IdentityManager, typeof esri.OAuthInfo]) => {
           const sourcesNotYetInIdentityManager = sourcesWithAuthInfo.filter((source) => {
-            const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl);
+            // Passed on as it is, as before: a source whose auth names no portal asks for undefined.
+            const identityManagerInfo = IdentityManager.findOAuthInfo(source.auth.info.portalUrl as string);
 
             // We want to filter out the only the OAuthInfos **NOT** already registered in the IdentityService.
             if (identityManagerInfo !== undefined) {
@@ -860,9 +891,7 @@ export class EsriMapService {
           }
 
           sourcesWithImmediateCredentialResolve.forEach((source) => {
-            const url = source.auth.overrideCredentialUrl ? source.auth.overrideCredentialUrl : source.auth.info.portalUrl;
-
-            IdentityManager.getCredential(url);
+            IdentityManager.getCredential(credentialUrl(source.auth));
           });
 
           return;
@@ -877,7 +906,8 @@ export class EsriMapService {
       const layers = parent.subLayerIds.map((sl) => {
         const child = args.layers.find((listItem) => listItem.id === sl);
 
-        return this.getChildLayers(child, args);
+        // The service lists every sub-layer it names; one that is missing fails below, as before strict null checks.
+        return this.getChildLayers(child as IPortalLayer, args);
       });
 
       const inverted = parent.resolvedLayer;
@@ -896,29 +926,31 @@ export class EsriMapService {
    * @param {string} id Layer id reference
    */
   public findLayerById(id: string): esri.Layer {
-    const map: esri.Map = this._modules.map;
+    const map: esri.Map = this.currentMap;
     const layer = map.findLayerById(id);
 
     if (!layer) {
       console.warn(`Layer with ID '${id}' does not exist. Recommend layer creation.`);
     }
 
-    return layer;
+    // Typed as found, as callers have always used it; a missing layer is still returned as undefined, after the warning.
+    return layer as esri.Layer;
   }
 
   /**
    * Removes a list of layers by ID. Ignores invalid layer ID's.
    */
   public removeLayersById(ids: Array<string>): void {
-    const map = this._modules.map;
+    const map = this.currentMap;
 
-    const layers = ids.map((lid) => map.findLayerById(lid)).filter((layer) => layer !== undefined);
+    // The same test as before strict null checks, which lets a null through to removeMany as it always did.
+    const layers = ids.map((lid) => map.findLayerById(lid)).filter((layer) => layer !== undefined) as Array<esri.Layer>;
 
     map.removeMany(layers);
   }
 
   public removeLayerById(id: string): void {
-    const map: esri.Map = this._modules.map;
+    const map: esri.Map = this.currentMap;
     const layer = map.findLayerById(id);
 
     if (!layer) {
@@ -934,8 +966,8 @@ export class EsriMapService {
    * @param {string} id Unique string id for the layer.
    */
   public layerExists(id: string): boolean {
-    const map: esri.Map = this._modules.map;
-    if (this._modules.map) {
+    const map = this._modules.map;
+    if (map) {
       return map.findLayerById(id) !== undefined;
     } else {
       throw new Error('Map instances does not exist.');
@@ -1031,18 +1063,21 @@ export class EsriMapService {
       return acc;
     }, [] as string[]);
 
+    // The search answers an observable when asked for one; were it not to, this throws as it did before strict null checks.
     this.searchService
       .search<esri.Graphic>({
         returnObservable: true,
         sources: repeatedDataset,
         values: extractionResult.identifiersList
-      })
+      })!
       .subscribe((queryResults) => {
         const validGraphics = queryResults.results.reduce((collection, resultItem) => {
           if (resultItem.features?.length) {
             const primaryGraphic = resultItem.features[0];
             const clonedGraphic = { ...primaryGraphic } as esri.Graphic;
-            (<{ type: unknown }>clonedGraphic.geometry).type = getGeometryType(primaryGraphic.geometry);
+            (<{ type: unknown }>clonedGraphic.geometry).type = getGeometryType(
+              primaryGraphic.geometry as Partial<esri.Geometry>
+            );
             collection.push(clonedGraphic);
           }
           return collection;
@@ -1136,12 +1171,14 @@ export class EsriMapService {
 
     // Source object
     const selectionLayers = this.environment.value('LayerSources') as LayerSource[];
-    const source = Object.assign(selectionLayers.find((src) => src.id === SELECTION_LAYER_ID)) as LayerSource;
+    // Every map lists the selection layer; one that does not fails here, as before strict null checks.
+    const source = Object.assign(selectionLayers.find((src) => src.id === SELECTION_LAYER_ID)!) as LayerSource;
 
     // Add the symbol and polygon type to each feature
     const features = graphics.map((ft) => {
       const feature = ft;
-      feature.symbol = this.environment.value('SelectionSymbols')[ft.geometry.type];
+      // A selected feature has a geometry; one without fails here, as before strict null checks.
+      feature.symbol = this.environment.value('SelectionSymbols')[ft.geometry!.type];
 
       return feature;
     });
@@ -1210,9 +1247,12 @@ export class EsriMapService {
    * Calculates the longest edge of the graphic collection envelope and uses that
    * value to determine a best-fit zoom level.
    */
-  public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number> {
+  // Undefined for an extent too wide for any of the levels below, which leaves the zoom to `zoomTo`, as it always has.
+  public computeZoomLevel(graphics: Array<esri.Graphic>): Promise<number | undefined> {
     return this.moduleProvider.require(['unionOperator']).then(([unionOperator]: [esri.unionOperator]) => {
-      const result = unionOperator.executeMany(graphics.map((graphic) => graphic.geometry));
+      // Selected graphics have geometries, and their union is a geometry; were either not so, this fails as it did
+      // before strict null checks.
+      const result = unionOperator.executeMany(graphics.map((graphic) => graphic.geometry) as Array<esri.GeometryUnion>)!;
 
       if (result.extent) {
         const xMin = result.extent.xmin;
@@ -1276,16 +1316,20 @@ export interface BaseMapProperties extends Omit<esri.BasemapProperties, 'baseLay
   baseLayers: Array<LayerProperties>;
 }
 
-interface LayerProperties
-  extends esri.LayerProperties, esri.TileLayerProperties, esri.VectorTileLayerProperties, esri.WMSLayerProperties {
-  type: string;
-  /** A VectorTileLayer's style layers to turn off once its style loads, by id (#2459). */
-  hiddenStyleLayers?: StyleLayerChanges['hiddenStyleLayers'];
-  /** A FeatureLayer's, for one drawn as part of a basemap (#2459). */
-  definitionExpression?: esri.FeatureLayerProperties['definitionExpression'];
-  renderer?: esri.FeatureLayerProperties['renderer'];
-  popupEnabled?: esri.FeatureLayerProperties['popupEnabled'];
-}
+// An intersection, not an interface: under strict null checks TileLayer's and WMSLayer's properties disagree on a
+// type, which an interface may not extend both of (#3804). The shape is the same.
+type LayerProperties = esri.LayerProperties &
+  esri.TileLayerProperties &
+  esri.VectorTileLayerProperties &
+  esri.WMSLayerProperties & {
+    type: string;
+    /** A VectorTileLayer's style layers to turn off once its style loads, by id (#2459). */
+    hiddenStyleLayers?: StyleLayerChanges['hiddenStyleLayers'];
+    /** A FeatureLayer's, for one drawn as part of a basemap (#2459). */
+    definitionExpression?: esri.FeatureLayerProperties['definitionExpression'];
+    renderer?: esri.FeatureLayerProperties['renderer'];
+    popupEnabled?: esri.FeatureLayerProperties['popupEnabled'];
+  };
 
 /**
  * Locally stored esri map and view class instances
@@ -1296,6 +1340,17 @@ export interface MapServiceInstance {
 }
 
 type NullableMapServiceInstance = Partial<MapServiceInstance>;
+
+/** A layer source that signs in to its service (#3804). */
+type AuthedLayerSource = LayerSource & { auth: NonNullable<LayerSource['auth']> };
+
+/**
+ * The url a signed-in source's credential is asked for: its override, or else its portal. Passed on as it is, as
+ * before strict null checks: an auth naming neither asks the IdentityManager for undefined (#3804).
+ */
+function credentialUrl(auth: NonNullable<LayerSource['auth']>): string {
+  return (auth.overrideCredentialUrl ? auth.overrideCredentialUrl : auth.info.portalUrl) as string;
+}
 
 /**
  * Defines a graphics collection and any additional options that should be used in the selection.

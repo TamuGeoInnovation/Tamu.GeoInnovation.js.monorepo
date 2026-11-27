@@ -27,6 +27,18 @@ it has one.
 admin page opens with the stubs and not without them, the API receives the permissions asked for, an unanswered call is
 answered `[]` and listed, and one image is written per scheme at the size asked.
 
+## Testing what a form saves
+
+The same helper tests the admin forms' round trips (#3839), in the E2E suite, so they run in CI.
+[`admin-round-trip.ts`](../test/e2e/gisday/admin-round-trip.ts) adds `openAdmin`, which signs in, answers the API and
+records every write the page sends with its body read as the API reads it, JSON or multipart, and `sentTo`, which waits
+for one. [`admin-round-trips.spec.ts`](../test/e2e/gisday/admin-round-trips.spec.ts) checks, for each admin area, that
+the Add form sends what was entered and that the Edit form opens with every field of a record and saves every one of
+them back, not only the one changed. The last is the shape of #3827, which erased an event's attendance on every edit.
+
+For a new form, give the edit page a fixture with every field, change one, and compare the whole body sent, not the
+field changed.
+
 ## Making images
 
 A capture is a small Playwright file in [`test/e2e/gisday/captures/`](../test/e2e/gisday/captures), named
