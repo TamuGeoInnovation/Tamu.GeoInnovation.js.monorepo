@@ -1,5 +1,64 @@
 # Home machine: current tasks
 
+
+## Batch a69 (aggiemap: #3671, the NSC Parking lots' permit instructions never show; 26 November 2026, 6:45 PM Central, from `work (aggiemap)`) (Medium) — **after a67**
+
+**Two standing changes, today:**
+- **Announce every step, before and after** (`DIRECTOR.md`, 26 November): a one-line push when a step starts and when it
+  ends, time read from PowerShell, with `STATUS.md`'s **Running now** updated in the same commit.
+- **Today's lock has every package at its latest**, so branch from today's `development`.
+
+### What it is
+
+[#3671](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3671). The New Student Conference
+parking map resolves each lot's permit instructions and then throws them away. I checked it on today's `development`
+and the issue is exactly right:
+
+```ts
+// libs/ts/events/ngx/src/lib/definitions/nsc-parking.definitions.ts:60
+      notes: {
+        field: 'GIS.TS.Lot_Notes.NewStudentConfN',
+```
+
+The markdown popup reads `name` and `description`. Nothing reads a lowercase `notes`, so the text is fetched and
+dropped. Every other event parking map maps the same kind of field straight to `description`:
+
+```ts
+// libs/ts/events/ngx/src/lib/definitions/break-summer.definitions.ts:62
+      description: {
+        field: 'GIS.TS.Lot_Notes.BreakN',
+```
+
+**The service has already been asked** — the issue records 34 features on production with 34 non-empty
+`GIS.TS.Lot_Notes.NewStudentConfN` values, on 25 November. So this is not a data fault and you do not need to re-run
+that; **say in the report that you confirmed the field is still populated**, because a one-line rename to a field that
+turns out to be empty is the failure mode CLAUDE.md warns about four times over.
+
+### What to do
+
+1. **Reproduce it first.** Open the NSC parking map and click a lot: the popup shows the lot's name and nothing about
+   permits. Capture that as the "before".
+2. **One line:** `notes` becomes `description`. Nothing else in that file.
+3. **A check, proven red first.** The issue asks for one. The natural place is the smoke suite, where a popup's content
+   on a deployed map can be asserted; a unit test over the definition would pass without proving the popup shows it.
+   Use your judgement and say which you chose and why.
+4. **Before and after images** into `docs/screenshots/3671-nsc-permit-instructions/`, and a release-notes entry in
+   `docs/releases/unreleased/3671-<slug>.md` with its *What to test on dev* row. This is visible, so the images are not
+   optional and the pull request waits for them.
+5. **Check the other event parking maps for the same mistake** while you are in there. One map mapping a field to a key
+   no popup reads is a typo; two is a pattern, and the report should say which it is. There are several event parking
+   definitions in that folder.
+
+### Do not
+
+**Do not delete anything that looks dead.** The maintainer's instruction today: dead code is **marked as potentially
+parked and he decides**. Report it and stop.
+
+**Branch** `fix/3671-nsc-permit-instructions` from today's `development`. `check-in-volume.sh`, then
+**`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not**
+committed. **Open no pull request** — I open it.
+
+**Report** `home/reports/2026-11-26-a69.md`. Questions `Q-a69-<n>`.
 ## Batch g127 (gisday: park the question-type API and two season-day routes; #3793 questions 2 and 3; 26 November 2026, 6:35 PM Central, from `work (gisday)`) (Medium) - **after g126**
 
 **The rules for GIS Day batches (the maintainer, 26 November):** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed to the fork, and I open the pull requests; a visible change carries before and after images and a release entry (`app: gisday`).
