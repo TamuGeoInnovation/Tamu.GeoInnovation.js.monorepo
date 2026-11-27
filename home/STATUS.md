@@ -17,7 +17,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - Nothing. Idle since 6:55 PM Central, 26 November.
 
 ## Finished
-- **Batch g126** (report `reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
+- **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
 - **Batch s90** (report `home/reports/2026-11-26-s90.md`, 5:31 PM Central): CodeQL #3776, 4 branches red first, all checks and pre-pr-check Exit 0; PRs 3783, 3784 open; common-node-fs and tools branch ready (`3ed8a3ad0`).
 - **Batch s89** (report `home/reports/2026-11-26-s89.md`, 4:17 PM Central): branch ready `chore/3767-analogjs-3` at `cf0e88680`; @analogjs 3.0.0 under #3763; same test counts in all 95 projects; check and pre-pr-check Exit 0.
 - **Batch s87** (report `home/reports/2026-11-26-s87.md`, 3:34 PM Central): branch ready `chore/3755-jimp-2` at `178f4560b`; jimp 2.2.0 under #3763, `fitImage` keeps 4:4:4 JPEG colour (Q-s87-4 A, red first); output compared in `docs/screenshots/jimp-2/`; check and pre-pr-check Exit 0.
