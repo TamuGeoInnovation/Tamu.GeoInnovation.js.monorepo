@@ -44,7 +44,9 @@ export class RoleGuard {
 
     return this.as.idTokenClaims$.pipe(
       map((user) => {
-        if (user === null) {
+        // Undefined before Auth0 has answered; either way the catchError below redirects, as it did when this read a
+        // claim of undefined and threw.
+        if (user === null || user === undefined) {
           throw new Error('User is not authenticated');
         }
 
