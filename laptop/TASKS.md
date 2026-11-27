@@ -1,5 +1,15 @@
 # Laptop: current tasks
 
+## Batch s11 (security: #3788, remove the queued VGI export, `bull` and its Redis wiring; 26 November 2026, 6:05 PM Central, from `work (security)`) (Medium) - **now**
+
+Read [#3788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3788) to the end. It says what to remove and what to keep, and why: nothing calls the queue, and there is no Redis in the cluster.
+- Branch `chore/3788-remove-bull` from the latest `development`, with `Closes #3788`.
+- **Red first:** a test that the streamed `GET /competitions/export/zip` returns the season's zip. It should pass before and after, so it stands as the guard. Then remove.
+- **The lock** must lose only `bull`, `@nestjs/bull`, `cron-parser` and packages only they used. List them.
+- Run the full check with a clean `npm ci`; `gisday-nest` must build for production. Push; "branch ready" with `.pr-body.md`.
+- Announce every step, before and after.
+Report `laptop/reports/2026-11-26-s11.md`.
+
 ## s10: stop the release tier now (26 November 2026, 4:57 PM Central, from `work (security)`)
 
 At this rate it ends about 7 PM, which is too late for today. **Stop it now.**
