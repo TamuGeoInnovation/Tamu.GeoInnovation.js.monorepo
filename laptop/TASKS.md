@@ -1,5 +1,25 @@
 # Laptop: current tasks
 
+## Batch g46 (gisday: #3593's last step, strictNullChecks in the GIS Day app; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (Medium) - **after s11**
+
+**Rules for every GIS Day batch from now on (the maintainer, 26 November):**
+- **Announce every step, before and after,** in `STATUS.md` and a one-line commit, with the time from PowerShell (`DIRECTOR.md`). Reread `TASKS.md` before each step: answers and changes arrive there.
+- **Merge the latest `development` into any branch before its check.** Today's lock moved every package to its latest.
+- **Leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone** until #3788 merges.
+- **Never delete dead code.** If you find any, list it in the report as "potentially parked", with what it is and the last commit that has it. The maintainer decides.
+- **An issue that's already fixed or no longer makes sense:** say so in the report with the evidence, and don't build for it. Questions go under **Questions for the director**, with options and a recommendation.
+- **Each branch ends with `.pr-body.md`, drafted from the template, as its last commit,** first line `Title: <title>`. Push it to the fork. I open the pull requests.
+- **A visible change carries before and after screenshots** in `docs/screenshots/<slug>/`, and a release entry in `docs/releases/unreleased/` with `app: gisday`.
+
+Every GIS Day library is strict now. Only `apps/gisday-angular` is left. #3718 (PR 3771) merged, so a strictness change no longer edits a shared count, and this one doesn't block anything else.
+
+1. Branch `fix/3593-gisday-angular-strict` from the latest `development`.
+2. Turn on `strictNullChecks` in `apps/gisday-angular/tsconfig.app.json`, and fix what it reports in the app's own files. **Behaviour must not change.** Where a value really can be missing, handle it as the code already intends. Never assert it away with `!` without a comment saying why it can't be missing.
+3. If an error is in a shared library the app imports, don't change that library here: list it in the report.
+4. `scripts/check-in-volume.sh <branch> gisday-angular`, then `scripts/check-strict-libs.mjs` is part of lint. Read the `Exit` line.
+5. `no-visible-change`, unless a fix changes what a page shows: then before and after images.
+
+Report `reports/<date>-g46.md`, and say "branch ready".
 ## Batch s11 (security: #3788, remove the queued VGI export, `bull` and its Redis wiring; 26 November 2026, 6:05 PM Central, from `work (security)`) (Medium) - **now**
 
 Read [#3788](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3788) to the end. It says what to remove and what to keep, and why: nothing calls the queue, and there is no Redis in the cluster.
