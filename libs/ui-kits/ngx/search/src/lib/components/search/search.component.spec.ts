@@ -178,7 +178,13 @@ describe('SearchComponent: a typed coordinate (#3615)', () => {
     store = new BehaviorSubject({ results: [] } as unknown as SearchResult<unknown>);
     clear = vi.fn(() => store.next({ results: [] } as unknown as SearchResult<unknown>));
 
-    const searchService = { search: vi.fn(), clear, getSources: vi.fn().mockReturnValue(of([])), store, searching: of(false) };
+    const searchService = {
+      search: vi.fn(),
+      clear,
+      getSources: vi.fn().mockReturnValue(of([])),
+      store,
+      searching: of(false)
+    };
 
     // The component provides its own SearchService, so the stub replaces that one.
     await TestBed.configureTestingModule({
