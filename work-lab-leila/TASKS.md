@@ -1,6 +1,23 @@
 # work-lab-leila: current tasks
 
 
+## Batch g236 (gisday: #3593's last step, the GIS Day app turns on strictNullChecks, stacked on every strict branch; 26 November 2026, 10:00 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; leave the #3788 files alone; never delete dead code; end with `.pr-body.md` (first line `Title: ...`) and push. **New (`DIRECTOR.md`, 26 November): never wait for a fix to merge. Merge the branches yours depends on into it, and name them in the body.**
+
+The app's own files are clean under the flag (laptop g46). What failed was the libraries it imports, and every one of them now has a branch.
+
+1. Branch `fix/3593-gisday-angular-strict` from the latest `development`. Merge into it, from the fork, all fourteen:
+   - `fix/3593-gisday-template-strict`;
+   - `fix/3804-navigation-triggers-strict`, `-common-ngx-auth-strict`, `-dev-tools-responsive-strict`, `-ui-kits-forms-templates`, `-clipboard-strict`, `-mobile-tab-strict`, `-qr-code-strict`;
+   - `fix/3804-maps-feature-location-strict`, `-geometry-esri-strict`, `-common-ngx-pipes-strict`, `-mobile-tile-strict`, `-common-utils-device-strict`;
+   - `fix/3804-maps-mapbox-strict`, `fix/3804-maps-esri-strict`.
+
+   Each conflict is only `.pr-body.md`: drop theirs.
+2. Turn on `"strictNullChecks": true` in `apps/gisday-angular/tsconfig.app.json`.
+3. **Build it** (`nx build gisday-angular`, the Angular compiler, which reads templates). **Expect 0 errors.** Any left are a library the list missed: fix it in this branch if it's GIS Day's, and list it if it's shared.
+4. `scripts/check-in-volume.sh <branch> gisday-angular`. `.pr-body.md`: `Closes #3593`, and that it **depends on every pull request above and merges last**. Name each by its branch; I fill in the PR numbers when I open it. `no-visible-change`.
+5. Report `reports/<date>-g236.md` with the error count before (each branch alone) and after.
 ## Batch g235 (gisday: #3829, amCharts' "multiple Roots on the same DOM node" on the admin dashboards; 26 November 2026, 9:40 PM Central, from `work (gisday)`) (Low) - **after g234**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed, and I open the pull request.
