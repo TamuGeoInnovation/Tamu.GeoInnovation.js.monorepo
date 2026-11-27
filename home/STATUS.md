@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a69**: the NSC popup check already exists but is a known failure under #2520; running popup.spec on production to see today's reality, 7:22 PM Central, 26 November.
+- **Batch a69** (#3671): fix red then green; images and full check next, 7:37 PM Central. **g127** waiting on Q-g127-1 and PR 3797.
 
 ## Finished
+- **Batch a67** (report `home/reports/2026-11-26-a67.md`, 7:37 PM Central): branch ready `fix/3615-coordinate-search` at `9f99c7023`; two causes fixed, red first; check passes but for check-parked-code (PR 3797).
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
 - **Batch s90** (report `home/reports/2026-11-26-s90.md`, 5:31 PM Central): CodeQL #3776, 4 branches red first, all checks and pre-pr-check Exit 0; PRs 3783, 3784 open; common-node-fs and tools branch ready (`3ed8a3ad0`).
 - **Batch s89** (report `home/reports/2026-11-26-s89.md`, 4:17 PM Central): branch ready `chore/3767-analogjs-3` at `cf0e88680`; @analogjs 3.0.0 under #3763; same test counts in all 95 projects; check and pre-pr-check Exit 0.
