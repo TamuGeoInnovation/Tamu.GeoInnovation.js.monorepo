@@ -1,6 +1,15 @@
 # Home machine: current tasks
 
 
+## g127: one more route (26 November 2026, 9:30 PM Central, from `work (gisday)`)
+
+**The maintainer decided (#3793, 7A):** `DELETE season-days/:guid` goes too. It only answers 501, the same as create and update. Remove `remove` from `season-day.controller.ts` as well. The tag `parked/season-day-writes` already holds all three, so no new tag. In the same branch:
+- update the spec: DELETE now answers 404, and the reads still answer;
+- add to the `parked/season-day-writes` row in `docs/parked-code.md` that it covers the DELETE route too (`delete:season-days`);
+- update the issue line in `.pr-body.md`: it still closes #3796.
+
+PR 3797 has merged, so the register check passes again: merge `development` in, then run the full check.
+
 ## g128: the issue to close (26 November 2026, from `work (gisday)`)
 
 g128 closes **#3807** ("Park the question-type API with the initial survey"). Put `Closes #3807` and "Part of #3713" in its `.pr-body.md`.
