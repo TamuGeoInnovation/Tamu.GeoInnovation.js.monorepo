@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a71**: started batch a71 (#3824); finding #1897's measuring method before measuring, 8:23 PM Central, 26 November.
+- **Batch a71**: machine quiet (CPU 5%, no other containers but mssql); building production at today's development for the before measurements, 8:23 PM Central, 26 November.
 
 ## Finished
 - **Batch a70** (report `home/reports/2026-11-26-a70.md`, 8:19 PM Central): branch ready `fix/3808-popup-keys` at `528b6ff59`; four maps fixed, the check red on all four and NSC first; check-parked-code the only red.
