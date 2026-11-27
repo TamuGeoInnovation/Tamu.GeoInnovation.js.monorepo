@@ -5,6 +5,65 @@
 
 The API-side #3827 hunt moved to home, which is free now. Carry on with g237.
 
+
+## Batch a76 (aggiemap: #2420 and #2421, the two UES Operations bugs; 26 November 2026, 10:45 PM Central, from `work (aggiemap)`) (High) — **now**
+
+**One library, two bugs, two pull requests.** The maintainer is clearing the bug list, so machines now work a cluster
+rather than picking issues — you read `ues-operations-angular` once and close both. `a66` was yours and is open as
+[PR 3846](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3846).
+
+**Standing:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running now** in
+the same commit, answers in `TASKS.md`, branch from today's `development`.
+
+### Both were reported by a real user
+
+Darryus Vaughn of UES, 26 October 2026, on the dev deployment. These are not found-by-reading bugs; somebody is waiting
+on them.
+
+**[#2420](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2420) — building search takes about
+five minutes.** Seven search sources point at a host that never answers, and each request fails with
+`status: 0, statusText: 'Unknown Error'` after its own timeout. His console shows the shape repeatedly.
+
+**[#2421](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2421) — the legend lists every
+layer**, drawn or not, so a visitor cannot tell what is on the map and sees symbols for layers they switched off.
+
+### Do #2420 first, and read #2670 before you start it
+
+**[#2670](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2670) is now labelled `external`**
+and it overlaps this: three of Transportation's services answer **499 Token Required** on their own host, public on
+development. So part of why those layers fail is theirs, not ours.
+
+**That does not make #2420 external.** Ours is that the app waits minutes on a host that never answers instead of
+failing fast or not asking. Fix our half and say in the body which failures are #2670's — do not try to make
+Transportation's services answer.
+
+1. **Reproduce the five minutes and time it**, before any change. A duration is the whole claim here, so it needs a
+   before and an after, measured the same way. Say how you measured.
+2. **Name the seven sources and what each points at.** Which are #2670's, which point at something that no longer exists
+   at all. That list belongs in the pull request.
+3. **Fix our half.** Judgement is yours — fail fast, drop sources whose host cannot answer, or stop querying them in
+   that build — but say why you chose it and what a visitor now experiences.
+4. **A regression test, proven red.** Assert the search answers within a sane budget, or that a dead source is not
+   queried. Not that it eventually returns.
+
+### Then #2421
+
+5. **Reproduce it and capture the legend**, then fix it to list what is drawn, then capture it again.
+6. **A regression test, proven red:** a layer switched off is absent from the legend.
+
+### Both
+
+**Before and after images** into `docs/screenshots/2420-ues-search/` and `docs/screenshots/2421-ues-legend/`, and a
+release-notes entry each with its *What to test on dev* row. The dev deployment is UES's own host, not
+`dev.aggiemap.tamu.edu` — put the right address in the row.
+
+**Dead code you find** goes as a row on **#1899** and nothing else. Never a question for me.
+
+**Two branches**, `fix/2420-ues-search-speed` and `fix/2421-ues-legend-visible`, each from today's `development`.
+`check-in-volume.sh` then **`pre-pr-check.sh`** on each, and give me both last lines. Body text per branch in the report
+with a `Title:` line, `.pr-body.md` **not** committed. **Open no pull request** — I open them.
+
+**Report** `work-lab-leila/reports/2026-11-26-a76.md`. Questions `Q-a76-<n>`.
 ## Batch g237 (gisday: #3839, the admin save round trips as end-to-end tests; 26 November 2026, 10:20 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; leave the #3788 files alone; dead code is deleted and features are parked, without asking (`DIRECTOR.md`); never wait for a fix to merge, stack on it. End with `.pr-body.md` (first line `Title: ...`, `Closes #3839`) and push.
