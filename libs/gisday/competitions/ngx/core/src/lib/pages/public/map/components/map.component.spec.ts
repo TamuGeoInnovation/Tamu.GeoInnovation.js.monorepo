@@ -171,4 +171,20 @@ describe('MapComponent', () => {
       expect(component.showsMine()).toBe(false);
     });
   });
+
+  // An ArcGIS GeoJSONLayer cannot infer its geometry type from an empty FeatureCollection, so at the start of every
+  // season, before the first submission, each layer failed to build and logged an error (#3748). Every feature the API
+  // writes for these endpoints is a Point (map.service.ts), so each layer states it.
+  it('states the geometry of every layer, so an empty season still builds them (#3748)', () => {
+    create();
+
+    const geojson = layers().filter((l) => (l as Source & { type: string }).type === 'geojson');
+
+    expect(geojson.map((l) => l.id)).toEqual(['already-found-layer', 'submissions-layer', 'my-submissions-layer']);
+    expect(geojson.map((l) => [l.id, (l.native as { geometryType?: string }).geometryType])).toEqual([
+      ['already-found-layer', 'point'],
+      ['submissions-layer', 'point'],
+      ['my-submissions-layer', 'point']
+    ]);
+  });
 });

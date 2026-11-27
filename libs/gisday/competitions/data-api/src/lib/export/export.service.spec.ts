@@ -63,13 +63,7 @@ describe('ExportService.zipForSeason() (#545)', () => {
     return {
       seasons,
       submissionRepo,
-      service: new ExportService(
-        undefined,
-        competitionSeasons as never,
-        seasons as never,
-        submissionRepo as never,
-        mediaRepo as never
-      )
+      service: new ExportService(competitionSeasons as never, seasons as never, submissionRepo as never, mediaRepo as never)
     };
   }
 

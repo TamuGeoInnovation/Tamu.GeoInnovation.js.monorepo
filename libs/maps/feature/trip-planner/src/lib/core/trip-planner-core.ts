@@ -103,6 +103,23 @@ export class TripPoint {
 
   public static from<T extends esri.Graphic>(input: SearchSelection<T>): TripPoint {
     const isString = typeof input.selection === 'string';
+    const typed = isString ? parseLatLon(input.selection as unknown as string) : undefined;
+
+    // A coordinate typed into the search, latitude first, arrives as the text itself. It had no geometry, so drawing it
+    // threw "Could not resolve geometry type." and nothing was placed (#3615). It becomes a point where it says, named
+    // by its text as `normalize` reads it.
+    if (typed) {
+      return new TripPoint({
+        source: input.type,
+        index: input.index,
+        originAttributes: { name: input.selection as unknown as string },
+        originGeometry: {
+          ...typed,
+          raw: { type: 'point', x: typed.longitude, y: typed.latitude, spatialReference: { wkid: 4326 } } as esri.Point
+        },
+        originParameters: { type: input.type, value: input.result?.breadcrumbs }
+      });
+    }
 
     const attr = { ...(input.selection.attributes as object) } as TripPointAttributes;
     const selection = { ...(input.selection as object) } as TripPointAttributes;
