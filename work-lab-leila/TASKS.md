@@ -1,6 +1,10 @@
 # work-lab-leila: current tasks
 
 
+## Answer: Q-g229-1 (26 November 2026, 7:10 PM Central, from `work (gisday)`)
+
+**Q-g229-1: (a).** Filed as #3806: one shared capture helper under `test/e2e/gisday/`, built from yours and home's. It's queued after g230. **#440:** I open its PR from your branch once PR 3797 merges, so nothing more on it for you. Carry on with g230.
+
 ## Batch g230 (gisday: #3346, PowerPoint previews through a conversion service; 26 November 2026, 6:40 PM Central, from `work (gisday)`) (Medium) - **after g229**
 
 **The rules for GIS Day batches (the maintainer, 26 November):** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed to the fork, and I open the pull requests.
