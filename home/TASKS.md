@@ -9,6 +9,66 @@ g128 closes **#3807** ("Park the question-type API with the initial survey"). Pu
 
 **Q-g127-1: (a).** Ship the season-day half on its own. Rename the branch `chore/3796-park-season-day-writes` before pushing, so its name says what it does. After PR 3797 merges: merge `development`, run the full check, push, say "branch ready", with `Closes #3796`. You were right to stop at `app.module.ts`, and right not to write the register note early.
 
+
+## Decided (a67 and a69; 26 November 2026, 7:05 PM Central, from `work (aggiemap)`)
+
+### a67 is accepted, and its red is not yours
+
+`fix/3615-coordinate-search` at `9f99c7023`. **Your reading of the `Exit 1` is right and I confirmed it**: lint.yml's
+`check-parked-code` fails on `development` itself, because `parked/season-day-writes` was tagged at 6:20 PM and its row
+has not merged. Lint and test passing for 29 projects and build for 5 is the result that matters.
+
+**I have fixed the underlying fault rather than waiting it out:** [PR 3805](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3805) ([#3717](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3717)) gives the check a
+one-day grace period, so a tag and its row disagreeing for a few minutes warns instead of failing every branch in the
+repository. Either that or PR 3797 unblocks you; both are with the maintainer. **I open a67's pull request as soon as
+one of them is on `development`** — you do not need to re-run anything, I will merge `development` in and re-run it
+myself.
+
+Two things I liked: the second cause (the stale "No results found" left under the box after the point was placed) is
+not in the issue and nobody asked for it, and you checked the phone rather than leaving it to be found later.
+
+### Q-a69-1: **B**, with the spec's render attached as evidence — and not A
+
+**No stubbed capture.** A composed image of a popup that no visitor can open is a picture of something that does not
+happen. However carefully this pull request labels it, the label does not travel: the release notes link the same files
+by relative path, and in six months the image is indistinguishable from a real one. CLAUDE.md's hardest-won lesson here
+is about changes that *look* like fixes and alter nothing a visitor sees — a constructed screenshot is that failure mode
+with evidence attached. Borrowing the lot polygon from another layer makes it worse, because the geometry is the exact
+thing #2520 says is missing.
+
+So:
+
+1. **Carry the `no-visible-change` label**, and say plainly in the body why it is honest rather than a dodge: the fix is
+   correct and tested, and **no visitor can see it yet** because [#2520](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2520)
+   stops any NSC lot popup opening at all. Nothing a visitor can reach changes in this release.
+2. **Include the spec's rendered popup** — your option C — as a **test artifact**, captioned as the component's output
+   under test and not a page. That is the evidence the fix works, and it cannot be mistaken for a map.
+3. **Still add the release-notes entry**, with its *What to test on dev* row saying it **cannot be checked, and why**,
+   naming #2520. CLAUDE.md allows exactly that and asks for the reason. Writing it now is right: the notes are where
+   somebody will look when they ask why NSC shows no permit text, and an entry written later is an entry written never
+   (#1132).
+4. **Say in the body that `popup.spec.ts`'s NSC row stays an allowed failure under #2520**, and that your new spec is
+   what proves the fix in the meantime. Do not remove the known-failure entry — the fix does not make that check pass.
+5. **Link #3671 to #2520 both ways** in the body, so whoever fixes #2520 knows the permit text is waiting behind it and
+   re-checks it then. That link is the whole value of merging this now.
+
+### Q-a69-2: **A**, and I have filed it
+
+[#3808](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3808) — *Four parking maps resolve
+popup fields into keys their popup never reads*. Medium, on the AggieMap project.
+
+I verified your finding before filing rather than taking it on trust: `motorcycle-parking.definitions.ts:34` has
+`lotName`, `spaceType`, `spaceId`, `garageLevel`, `rnsNumber` and `notes` with no `name` and no `description`, and none
+of the four declares `popupDataResolutionStrategy: 'cumulative'`, which is what `construction-map`, `main-parking` and
+`savannah-bananas` use to let a template read resolved entries. **This is exactly what step 5 was for, and it found a
+pattern on its first use** — five instances of one fault counting #3671.
+
+The issue asks for the check you proposed, and for something your message implies but does not say: **prove per map what
+a visitor sees today before changing anything.** Two of four popup faults in one week would have looked like fixes and
+changed nothing visible, and #3671's own map cannot be clicked. If `motorcycle-parking` has the same no-geometry fault,
+the key names are cosmetic underneath it.
+
+**Not in a69.** Finish #3671 as the one-line change it is.
 ## Batch g128 (gisday: park the question-type API, the other half of #3793's 2A) (Medium)
 
 Held until PR 3803 merges.
