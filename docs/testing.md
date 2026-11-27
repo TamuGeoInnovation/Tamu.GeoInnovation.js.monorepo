@@ -75,19 +75,29 @@ with the number of maps and services.
 
 ### What it checks
 
-The counts are a snapshot: **1,127 tests, measured on 24 November 2026** in the release tier that cleared
-the [24 November release](releases/2026-11-24.md): 1,033 passed, 9 failed, 14 flaky and 71 skipped, 10:50 AM
-to about 12:14 PM US Central, 1.4 hours, on a machine with nothing else running. **Every failure was traced
-and one came from the build** - a check merged that morning, which flags a basemap whose URL is a literal
-address rather than a campus constant (#3416). It is a fault in the check and visitors see nothing, but it is
-deterministic, so the tier cannot come back green until it is fixed. Of the rest, two are real on a quiet
-machine and predate the release (#3369 and break-summer's Lot 100g popup, both failing as "never finished
-drawing"), and the others are timing flakiness or two GIS services answering intermittently during the run,
-including production's own basemap service refusing count queries.
+The counts are a snapshot: **1,139 tests, measured on 26 November 2026** in the release tier that cleared
+the [26 November release](releases/2026-11-26.md): 1,068 passed, **0 failed**, 1 flaky and 70 skipped, 3:41 PM
+to about 4:04 PM US Central, 22 minutes 44 seconds, on a machine with nothing else running.
 
-The run before it, on 23 November, reported 18 failed, 7 flaky and 982 passed on the same tier under load.
-The difference is mostly the machine: `basemap-requests` (#3364) fails under load and **passed on its first
-try** here, which is what a quiet machine is for.
+**This is the first release tier with no failures.** The release before it had nine and the one before that
+eighteen, so the figure worth recording is not only the count but that every one of those was traced and
+closed rather than retried through. The deterministic check that kept the tier red - a basemap whose URL is a
+literal address rather than a campus constant (#3416) - is fixed and closed.
+
+**The two that failed on a quiet machine passed here, and #3369 is still open.** #3513 consolidated ten
+hand-written waits into one "finished drawing" helper, which raised the popup wait from 60 seconds to 90 and
+is the likely reason the Lot 100g popups passed; the layer-order budget was already 90 seconds and is
+unchanged. So this run is evidence and not a fix: #3369 also asks for a timeout that says which condition ran
+out, so a slow draw can never read as a wrong layer order, and for an answer to why these event maps keep
+updating for 20 to 60 seconds after their data has arrived. Neither has been done.
+
+The one flaky test was `service-metadata.spec.ts` fetching a basemap layer's `?f=json`, which timed out at 30
+seconds and succeeded on retry. The same layer did the same in the run before it: a slow GIS server, not the
+maps and not the suite. One expected failure is counted as a pass (`mobile.spec.ts:220`, #71).
+
+**The run is also an hour and a half shorter than it was two days ago** - 23 minutes against 1.4 hours - which
+is the release cadence rather than a faster suite: 156 pull requests over two days instead of 236 over three
+weeks (#3411), so far less had changed and far fewer services were being hammered at once.
 
 This tier covers both environments, so it is not a dev-only figure as snapshots before 30 October were.
 Production lists fewer maps than dev, so it runs fewer; the bus routes run as one test each on dev (#1473).
@@ -160,6 +170,7 @@ The suite started on 27 September 2026 and grew with nearly every bug found sinc
 | 30 October        | 1,018 | Routing on the new development network ([#659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/659)), the builder-gated maps' layers ([#2519](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2519)), the blank-map check, service self-consistency and portal renderers, and the basemap round trip. **Measured: 1,018** with the release tier across both environments, 12:45 to 2:38 PM Central, on the build cleared for the [30 October release](releases/2026-10-30.md): 911 passed, 5 failed, 32 flaky and 70 skipped in 113 minutes. The 5 failures are two known dev-only ones and three from `gis.tamu.edu` refusing count queries under load, which fails identically on production                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | 10 November       | 1,084 | Every map clicked and a rate reported rather than a single miss ([#2778](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2778)), routing on each environment's own host, the Transportation maps, and the development-only gates checked against the application. **Measured: 1,084** with the release tier on dev, 10:54 PM on 9 November to 12:08 AM Central, on the build cleared for the [10 November release](releases/2026-11-10.md): 999 passed, 15 failed and 70 skipped in 1.2 hours. All 15 were traced and none is in the build: two tracked as known, three the dev environment, ten the suite out of date with merged changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | 24 November       | 1,127 | Every map's outbound links followed ([#3334](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3334)), the basemap definitions resolved rather than named ([#3352](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3352)), a refused count asked again once ([#3386](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3386)), buildings clicked where they are rather than at fixed screen points ([#3385](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3385)), and a route change proven to be exactly one page view ([#3353](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3353)). **Measured: 1,127** with the release tier on dev, 10:50 AM to about 12:14 PM Central, on the build cleared for the [24 November release](releases/2026-11-24.md): 1,033 passed, 9 failed, 14 flaky and 71 skipped in 1.4 hours, on a quiet machine. One failure is from the build and is a fault in a check ([#3416](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3416)); two are real and predate it; the rest are timing or a service having a bad hour |
+| 26 November       | 1,139 | **Measured: 1,139** on the build cleared for the [26 November release](releases/2026-11-26.md), the first tier with no failures (1,068 passed, 0 failed, 1 flaky, 70 skipped). The bus-route checks of [#2758](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2758) ran for the first time, having skipped on every earlier build because the deployed tag predated them |
 
 Numbers marked ~ are estimates: today's count for each spec, added up by the date the spec first
 appeared. Bold numbers are real runs. The early estimates are approximate, because the per-map checks
