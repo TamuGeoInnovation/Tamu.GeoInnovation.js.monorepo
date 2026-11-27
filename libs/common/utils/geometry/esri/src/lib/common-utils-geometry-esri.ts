@@ -41,15 +41,14 @@ export function centroidFromPolygonGeometry(feature: esri.Polygon): Point {
       longitude: feature.centroid.longitude
     };
   } else if (feature.rings) {
-    // Result type is a Turf Point
+    // Turf's centroid is always a point feature with coordinates: `tPolygon` throws on rings it cannot use, so the
+    // check this had for a missing point could never fail, and the function never returned nothing (#3804).
     const p: tFeature<tPoint> = tCentroid(tPolygon([...feature.rings]));
 
-    if (p && p.geometry && p.geometry.coordinates) {
-      return {
-        latitude: p.geometry.coordinates[1],
-        longitude: p.geometry.coordinates[0]
-      };
-    }
+    return {
+      latitude: p.geometry.coordinates[1],
+      longitude: p.geometry.coordinates[0]
+    };
   } else {
     throw new Error('Feature provided does not contain rings.');
   }
@@ -118,9 +117,13 @@ export function pointFromPointGeometry(feature: esri.Point | Point): Point {
 
 export function pointFromPolylineGeometry(feature: esri.Polyline): Point {
   if (feature && feature.paths) {
+    // Read as before. A polyline with paths has an extent, and its centre's latitude and longitude are null only in a
+    // spatial reference that is neither geographic nor Web Mercator, which no caller passes (#3804).
+    const { latitude, longitude } = (feature.extent as esri.Extent).center;
+
     return {
-      latitude: feature.extent.center.latitude,
-      longitude: feature.extent.center.longitude
+      latitude: latitude as number,
+      longitude: longitude as number
     };
   } else {
     throw new Error('Feature provided does not contain paths.');
@@ -148,7 +151,7 @@ export function getLayerTypeFromPortalJSON(layer: { type: string }) {
  * Strips unnecessary layer definition properties from a Portal JSON representation
  * to create bare minimum auto-castable layers.
  */
-export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): AutocastableLayer {
+export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): AutocastableLayer | undefined {
   if (layer.type === API_LAYER_TYPES.FEATURE_LAYER) {
     return {
       type: 'feature',
@@ -166,10 +169,10 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
 
 export class CoordinateConverter {
   private modules: {
-    point: typeof esri.Point;
-    spatialReference: typeof esri.SpatialReference;
-    webMercatorUtils: esri.webMercatorUtils;
-  } = { point: undefined, spatialReference: undefined, webMercatorUtils: undefined };
+    point?: typeof esri.Point;
+    spatialReference?: typeof esri.SpatialReference;
+    webMercatorUtils?: esri.webMercatorUtils;
+  } = {};
 
   constructor() {
     Promise.all([
@@ -188,11 +191,18 @@ export class CoordinateConverter {
   }
 
   public webMercatorToGeographic(latitude: number, longitude: number) {
-    return this.modules.webMercatorUtils.webMercatorToGeographic(
-      new this.modules.point({
+    const { point, spatialReference, webMercatorUtils } = this.modules;
+
+    // Called before its modules have loaded, this threw a TypeError reading them; it still throws, saying why (#3804).
+    if (!point || !spatialReference || !webMercatorUtils) {
+      throw new TypeError('CoordinateConverter: its modules have not loaded yet.');
+    }
+
+    return webMercatorUtils.webMercatorToGeographic(
+      new point({
         y: latitude,
         x: longitude,
-        spatialReference: this.modules.spatialReference.WebMercator
+        spatialReference: spatialReference.WebMercator
       })
     ) as esri.Point;
   }
