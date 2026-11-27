@@ -1,6 +1,20 @@
 # work-lab-leila: current tasks
 
 
+## Batch g230 (gisday: #3346, PowerPoint previews through a conversion service; 26 November 2026, 6:40 PM Central, from `work (gisday)`) (Medium) - **after g229**
+
+**The rules for GIS Day batches (the maintainer, 26 November):** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed to the fork, and I open the pull requests.
+
+**The maintainer chose B** (#3793 question 1, 26 November): a small conversion container beside the API, called on a deck's first preview, with the PDF kept beside the original. The API image stays as it is. The laptop measured LibreOffice on 23 November (`laptop/reports/2026-11-23-8.md`): +426 MB, the full `libreoffice` package because `libreoffice-impress` crashed on conversion, and about 0.4 s for a 10-slide deck.
+
+1. Branch `feat/3346-pptx-preview-service`. The PDF half is already built (#3090): read how the review page previews PDFs and where it answers 415 for PowerPoint.
+2. **The service:** a minimal HTTP container, in the repository's existing app layout (an Nx app if that fits, with its own Dockerfile). It takes a deck and returns its PDF. LibreOffice runs headless, with a timeout and a size limit. It holds no state, and only the API can reach it.
+3. **The API:** on a PowerPoint file's first preview, call the service, store the PDF beside the original (the same storage the original uses), and serve it as the PDFs are served. Later previews use the stored PDF. If the service is down, the API answers as it does today (the download), never a 500.
+4. **Tests:** the API path with the service mocked (first preview converts and stores; second reuses; service down falls back), and the service with a small made-up deck in the repository's test fixtures.
+5. **Running it:** `gisday-local.sh` starts the service too, so the preview works locally end to end. Try it with a made-up deck.
+6. **Deployment is not in this repository:** write in the report what `kubernetes-config` needs (a Deployment and a Service beside the API, the image name, the env var the API reads for the service's address), for the maintainer. Don't edit `kubernetes-config`.
+7. **It's visible:** before (the PowerPoint downloads) and after (it previews) images of the review page, captured from the local build with the guard stubbed. Add a release entry, `app: gisday`.
+8. `scripts/check-in-volume.sh <branch> affected` at `CHECK_PARALLEL=1`. Report `reports/<date>-g230.md`.
 ## Answers to g228 (26 November 2026, from `work (gisday)`)
 
 - **Q-g228-1: neither.** #3748 is `no-visible-change`, and your spec proves all three layers state `point`. The pull request opens on that evidence, with a sentence saying why there are no console captures. **I re-run its pre-pr-check and open it** once PR 3797 (the `parked/season-day-writes` row) merges, so nothing more for you on #3748.
