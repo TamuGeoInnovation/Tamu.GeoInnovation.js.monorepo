@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **7:48 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **7:56 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch g232 (gisday): #3804, seven small shared libraries strict.** Since 7:48 PM Central, 26 November. Step 1: reading how `check-strict-libs.mjs` and a strict library's `tsconfig.lib.json` work since #3718.
+**Batch g232 (gisday): #3804, seven small shared libraries strict.** Since 7:48 PM Central, 26 November. Seven branches committed (7:56 PM), one per library, each with zero own errors under the flag and its specs passing; the GIS Day app built with the flag on and all seven applied has no error left in any of them (134 located errors before, 114 after). Running now (7:56 PM): `pre-pr-check` on each in turn, in volume `tamu-js-3804`.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
