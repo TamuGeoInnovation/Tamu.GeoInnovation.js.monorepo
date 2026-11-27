@@ -5,8 +5,8 @@ import { CompetitionSubmission, SubmissionMedia } from '../entities/all.entities
 
 /**
  * What a VGI export holds (#650, #545): `submissions.csv`, a row per submission, and each submission's photos under
- * `medias/<submission>/images/`. Shared by #650's queued export and the zip streamed from the request (#545), so the two
- * write the same file.
+ * `medias/<submission>/images/`, the layout #650's queued export wrote. The zip streamed from the request (#545) is the
+ * only export now: the queued one went with `bull` (#3788).
  */
 
 /** A photo's file extension, from its type. */
@@ -50,7 +50,7 @@ export function mediaPath(submissionGuid: string, media: Pick<SubmissionMedia, '
 
 /**
  * A submission's row in `submissions.csv`: who, when, where, its status, its photos, then each of its answers. Its
- * photo count is of those it has, which the queued export counts even when one could not be written.
+ * photo count is of those it has, as the queued export counted them, even when one could not be written.
  */
 export function exportRow(
   submission: CompetitionSubmission,
