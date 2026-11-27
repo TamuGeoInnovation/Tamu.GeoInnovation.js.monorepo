@@ -526,9 +526,9 @@ describe('EsriMapService clicking a map that is still drawing', () => {
 
 /**
  * A map-server source whose service holds a layer that is neither a feature layer nor a group (#3804, after #3817).
- * Such a layer cleans to undefined, and the feature and group defaults are for those two kinds only. It used to throw on
- * `cleaned.type`, which failed every layer of the service; it is now made from the source's `native` alone, as any
- * other source's layer is.
+ * Such a layer cleans to undefined, and reading its type for the feature and group defaults throws, which fails every
+ * layer of the service. That is what it did before strict null checks, and #3804 keeps it: this pins it, so changing
+ * it is a decision of its own rather than a side effect of a type fix (batch g234).
  */
 describe('EsriMapService a map service with a layer of another kind', () => {
   let service: EsriMapService;
@@ -549,7 +549,7 @@ describe('EsriMapService a map service with a layer of another kind', () => {
     service = TestBed.inject(EsriMapService);
   });
 
-  it('resolves its layers rather than failing on the one it has no defaults for', async () => {
+  it('fails its layers on the one it has no defaults for, as it always has', async () => {
     const source = {
       id: 'made-up-map-service',
       type: 'map-server',
@@ -563,6 +563,6 @@ describe('EsriMapService a map service with a layer of another kind', () => {
         source,
         layers: [raster] as unknown as Parameters<typeof service.resolveUnloadedLayers>[0]['layers']
       })
-    ).resolves.toHaveLength(1);
+    ).rejects.toThrow(TypeError);
   });
 });
