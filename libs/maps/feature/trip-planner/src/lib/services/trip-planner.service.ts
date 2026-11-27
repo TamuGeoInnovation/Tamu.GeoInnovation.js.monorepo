@@ -1956,16 +1956,9 @@ export class TripPlannerService implements OnDestroy {
           // Add all graphics generated from the route segments.
           layer.addMany(graphicCollection);
 
+          // Clear of the side panel, as a bus route is (#2763).
           this.computeZoomLevel(graphicCollection).then((zoom) => {
-            this._view.goTo(
-              {
-                target: graphicCollection,
-                zoom: zoom
-              },
-              {
-                animate: true
-              }
-            );
+            this.mapService.fit({ target: graphicCollection, zoom: zoom }, { animate: true });
           });
 
           this.busService.removeAllFromMap();

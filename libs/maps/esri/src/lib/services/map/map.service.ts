@@ -21,6 +21,7 @@ import { LayerSourcesService } from '../layer-sources/layer-sources.service';
 import { registerMapProbe } from './map-probe';
 import { orderHitsForPopup, SELECTION_LAYER_ID } from './hit-order';
 import { queryPopupLayersAtClick } from './click-query';
+import { coveredEdges, goToClearOf } from './fit';
 import { keepSelectionLayerOnTop } from './selection-layer';
 import { PopupComponentReference } from '../../popup-reference';
 import {
@@ -56,6 +57,9 @@ export class EsriMapService {
   // AsyncSubject allows us to control when to emit map loaded, and emit map and view instances.
   //
   private _modules: NullableMapServiceInstance = {};
+
+  /** What lies over the map for a fit to leave clear: see `coverWith`. */
+  private readonly _covers = new Set<Element>();
 
   private _store: BehaviorSubject<MapServiceInstance> = new BehaviorSubject(undefined);
 
@@ -1195,13 +1199,38 @@ export class EsriMapService {
    *  Zooms to a collection of graphics at a specified zoom.
    */
   public zoomTo(properties: ZoomProperties) {
-    const view = <esri.MapView>this._modules.view;
-
     if (properties.zoom !== undefined) {
-      return view.goTo({ target: properties.graphics, zoom: properties.zoom });
+      return this.fit({ target: properties.graphics, zoom: properties.zoom });
     }
 
-    return view.goTo(properties.graphics);
+    return this.fit(properties.graphics);
+  }
+
+  /**
+   * Lays an element over the map, such as the side panel, for `fit` to leave clear while it is there, until the
+   * function returned is called (#2763). Where it lies is read at each fit, so a panel that slides away or changes width
+   * needs nothing more.
+   */
+  public coverWith(element: Element): () => void {
+    this._covers.add(element);
+
+    return () => this._covers.delete(element);
+  }
+
+  /**
+   * Goes to a target in the part of the map nothing lies over (`coverWith`), as `view.goTo` would go to it in the whole
+   * view (#2763). Every fit to a feature or a route goes through here: a fit to the whole view finished a long bus route
+   * behind the side panel.
+   */
+  public fit(target: esri.GoToTarget2D, options?: esri.GoToOptions2D): Promise<void> {
+    const view = this._modules.view;
+    const container = view.container as HTMLElement;
+    const covered = coveredEdges(
+      container.getBoundingClientRect(),
+      [...this._covers].map((element) => element.getBoundingClientRect())
+    );
+
+    return goToClearOf(view, target, covered, options);
   }
 
   /**
