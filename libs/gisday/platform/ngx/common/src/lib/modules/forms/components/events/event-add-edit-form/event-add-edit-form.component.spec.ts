@@ -50,7 +50,7 @@ describe('EventAddEditFormComponent', () => {
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
-        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: EventService, useValue: { getEntity: () => of(event), getEventAttendance: () => NEVER } },
         { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
@@ -175,6 +175,7 @@ describe('EventAddEditFormComponent, the profile email', () => {
         {
           provide: EventService,
           useValue: {
+            getEventAttendance: () => NEVER,
             getEntity: () =>
               of({
                 guid: 'event',
@@ -234,7 +235,7 @@ describe('EventAddEditFormComponent, the Broadcast drop-down', () => {
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of(broadcasts) } },
-        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: EventService, useValue: { getEntity: () => of(event), getEventAttendance: () => NEVER } },
         { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
@@ -329,7 +330,7 @@ describe('EventAddEditFormComponent, the Email these speakers menu', () => {
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
-        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: EventService, useValue: { getEntity: () => of(event), getEventAttendance: () => NEVER } },
         { provide: NotificationService, useValue: toasts },
         { provide: SpeakerEditsService, useValue: speakerEdits },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
@@ -558,7 +559,10 @@ describe('EventAddEditFormComponent, the Slides section (#3093)', () => {
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
-        { provide: EventService, useValue: { getEntity: () => of({ guid: 'event', speakers: [], tags: [] }) } },
+        {
+          provide: EventService,
+          useValue: { getEntity: () => of({ guid: 'event', speakers: [], tags: [] }), getEventAttendance: () => NEVER }
+        },
         { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: sessionFiles },
@@ -699,7 +703,7 @@ describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
         { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
         { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
-        { provide: EventService, useValue: { getEntity: () => of(event) } },
+        { provide: EventService, useValue: { getEntity: () => of(event), getEventAttendance: () => NEVER } },
         { provide: NotificationService, useValue: { toast: vi.fn() } },
         { provide: SpeakerEditsService, useValue: {} },
         { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
