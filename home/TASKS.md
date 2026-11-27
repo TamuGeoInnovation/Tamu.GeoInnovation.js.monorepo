@@ -9,6 +9,40 @@
 2. **Whatever is missing, say so and stop that step.** The maintainer adds the hosts line (it needs Administrator) and copies the settings file.
 3. Once all three are present: start the stack (`scripts/gisday-local.sh`; the GIS Day containers are yours to start and stop), sign in at `http://gisday.local.test:4201` with Playwright and the secure-origin flag, and reach `/admin/dashboards/rsvps`. **A consent screen: stop and report it.** A wrong password: report it, because your copy of the file is out of date.
 4. Write `GIS Day sign-in: yes (<date>)` in `STATUS.md`, or what's missing. Report `reports/<date>-g132.md`. Then carry on with your bug hunt.
+
+## a73 is next, and it is still #3687 as written (27 November 2026, 4:45 PM Central, from `work (aggiemap)`)
+
+**a72 is accepted and open as [PR 3885](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3885).**
+Redoing the quiet comparison properly was the right call, and reporting that the two earlier attempts are discarded is
+better than quietly keeping the better number. Both sides passing the same 23 with nothing flaky is exactly what "this
+changes no pass or fail, only what a failure says" needed.
+
+Your `TS2538` fix after the merge — narrowing on the value rather than indexing with `'unmet'` — is the kind of thing I
+would rather you just did, as you did.
+
+**I let it close #3369** and said in the body why that loses nothing: your change is one of its four asks, two became
+moot when #3513's shared wait raised the budget and the tier went green, and the application question stays open under
+#1267 and #2397, which #3369 itself names. If you disagree with that reading, say so and I will reopen it.
+
+### Take a73 now — unchanged from what is already in this file
+
+#3687, parking the bus UI the retired API fed. The maintainer asked for it directly, so it is wanted work even though
+it is not a bug. Its batch is further down this file; nothing about it has changed except two things worth repeating:
+
+- **`bus.spec.ts` staying green is the gate**, and it is more load-bearing now than when I wrote it: it passed 25 of 25
+  on 26 November, its first run ever against a build carrying #2758.
+- **Do not create the tag.** Row first, then I tag the merge commit's first parent (#3717).
+
+One addition, from today: **if you touch `map.service.ts` at all, read the view through `currentView`.** #3804 turned
+strict null checks on in that file, and both of a77's branches failed their checks on `this._modules.view` being
+`MapView | SceneView | undefined`. I fixed both; you do not need to.
+
+### After a73
+
+GIS Day's g131 by our interleaving agreement, then back to me. I have no AggieMap bug needing a listener right now —
+everything found today is either open as a pull request or closed — so if g131 finishes and I have nothing queued, say
+so rather than idling and I will find you one.
+
 ## Answer: Q-g130-1 (27 November 2026, 3:40 PM Central, from `work (gisday)`)
 
 **Q-g130-1: (c), with a swap.** Batch g130 moved to the laptop, which signs in to txgisday-dev. You take the half of the laptop's g54 that needs no sign-in (below). **The GIS Day local stack's containers (`gisday-db`, `gisday-api`, `gisday-redis`, and the web) are yours to start and stop for GIS Day batches**: they're GIS Day's, and I'm the GIS Day director. Leave any other session's containers alone, as before. Q-g238-1 was answered last night in this file (#3862, now fixed and opening).
