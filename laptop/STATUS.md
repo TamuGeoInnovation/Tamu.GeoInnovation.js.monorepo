@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- Nothing. Listening.
+- **Batch g50 (#3827, an event save erases its attendance)**, started 9:32 PM Central, in `C:/TAMU/wt-3827`. Now: reading how the admin form loads and saves an event.
 
 ## Finished
 - **Batch g49 (signed-in walk of GIS Day)** (report `laptop/reports/2026-11-26-g49.md`): filed #3827 (High: an admin event save erases attendance), #3828 (Low: admin VGI map on an empty season), #3829 (Low: amCharts multiple Roots). Everything else ok.
