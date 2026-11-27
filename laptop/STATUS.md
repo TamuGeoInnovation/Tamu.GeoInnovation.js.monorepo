@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g52 (form-side bugs shaped like #3827)**, started 10:31 PM Central. Now: a sweep of every admin Edit form on the local stack (open, change one field, Update, reopen; compare what was there, what was sent and what is there after).
+- **Batch g52 (form-side bugs shaped like #3827)**, started 10:31 PM Central. Now (10:42 PM): restarting the local stack on the latest development (04c348dd4); the sweep script of all 12 admin Edit forms is written.
 
 ## Finished
 - **Batch g50 (#3827, an event save erases its attendance)** (report `laptop/reports/2026-11-26-g50.md`): **branch ready: `fix/3827-event-save-keeps-attendance`** (`c198b0333`). Fixed in the form; DB NULL/NULL -> 12/15 kept; check Exit 0; read-only production query in the report.
