@@ -1,7 +1,14 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Season, SeasonDay } from '../entities/all.entity';
-import { answering, buildingTransactionFinds, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import {
+  answering,
+  buildingTransactionFinds,
+  loadedSeason,
+  queryCheckingDataSource,
+  queryCheckingRepository,
+  recordWrites
+} from '../_base/query-checking-data-source';
 import { SeasonService } from './season.service';
 
 // Creating the next season (#3302): `clonePreviousSeason` named the previous season in its where value as the whole loaded
