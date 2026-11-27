@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Waiting on Q-g238-1 (GIS Day) and Q-3851-1 (AggieMap); a72 and a73 next if the bug queue stays empty. Since 11:02 PM Central.
+- **Batch a72**: bug queue empty; re-running a72's comparison on a quiet machine (layer-order, popup, legend on production: branch then development), 11:02 PM Central, 26 November.
 
 ## Finished
 - **#3851** (report `home/reports/2026-11-26-3851.md`, 11:02 PM Central): not reproduced; the route survives option changes because currentResult\$ redraws after the clear; no branch.
