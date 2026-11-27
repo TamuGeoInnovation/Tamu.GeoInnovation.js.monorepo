@@ -571,9 +571,7 @@ test.describe('Events (#3839)', () => {
   });
 
   test('An edit of the abstract leaves the recorded attendance alone (#3827)', async ({ browser, baseURL }) => {
-    // #3827: the form never reads the attendance, so every update sent both counts as null and erased them. Expected to
-    // fail until the laptop's fix (`fix/3827-event-save-keeps-attendance`, batch g50) is in; then remove this line.
-    test.fail(true, '#3827: saving an event erases its recorded attendance');
+    // #3827: the form used to send both counts as null on every update, which erased them. Fixed by PR 3855.
     const admin = await openAdmin(browser, baseURL!, editing);
     const body = await editAbstract(admin);
 
