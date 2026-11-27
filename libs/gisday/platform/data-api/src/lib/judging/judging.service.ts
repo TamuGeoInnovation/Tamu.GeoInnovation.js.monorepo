@@ -153,10 +153,16 @@ export class JudgingService {
 
     // Checked above.
     const scores = body?.scores as Record<string, number>;
-    const comment = typeof body?.comment === 'string' && body.comment.trim() ? body.comment.trim() : null;
     const existing = await this.assessments.findOne({
       where: { judge: { guid: judgeGuid }, submission: { guid: submission.guid } }
     });
+    // A comment left out keeps the one the judge gave before (#3862); sent empty, it clears it.
+    const comment =
+      body?.comment === undefined
+        ? (existing?.comment ?? null)
+        : typeof body.comment === 'string' && body.comment.trim()
+          ? body.comment.trim()
+          : null;
     const saved = await this.assessments.save(
       this.assessments.create({
         ...(existing ? { guid: existing.guid, created: existing.created } : {}),

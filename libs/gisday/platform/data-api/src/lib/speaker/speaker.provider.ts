@@ -64,6 +64,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
    * copied into a season is listed in it with or without a session there, and could not be told apart (#439). Only the
    * route behind `update:speakers` asks for them, because they include sessions hidden from the public schedule. A
    * speaker belongs to one season, so these are that season's. Added here, not to the lookup table, which other queries share.
+   * Each session comes with its tags, so the list can be filtered by them (#440).
    */
   public async getSpeakersForSeason(seasonGuid: string, withSessions = false) {
     try {
@@ -73,7 +74,7 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
             guid: seasonGuid
           }
         },
-        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: true } : EntityRelationsLUT.speaker,
+        relations: withSessions ? { ...EntityRelationsLUT.speaker, events: { tags: true } } : EntityRelationsLUT.speaker,
         order: {
           lastName: 'ASC',
           firstName: 'ASC'
@@ -273,11 +274,14 @@ export class SpeakerProvider extends SeasonScopedProvider<Speaker> {
       }
 
       // A speaker as saved, whose images may be left out: without a new photo they are, and stay as they are.
+      // Form data coerces a boolean to text. A flag left out keeps the speaker's own (#3862), rather than becoming false.
+      const flag = (sent: unknown, kept: boolean | undefined) =>
+        sent === undefined ? kept : sent === true || (sent as string) === 'true';
       const toSave: DeepPartial<Speaker> = {
         ...existing,
         ...incoming,
-        isOrganizer: (incoming.isOrganizer as unknown as string) === 'true', // form data coerces boolean to string
-        isActive: (incoming.isActive as unknown as string) === 'true', // form data coerces boolean to string
+        isOrganizer: flag(incoming.isOrganizer, existing.isOrganizer),
+        isActive: flag(incoming.isActive, existing.isActive),
         images: [speakerImage]
       };
 

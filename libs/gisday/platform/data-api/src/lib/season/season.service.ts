@@ -468,13 +468,21 @@ export class SeasonService extends BaseProvider<Season> {
       throw new NotFoundException();
     }
 
-    const existingActive = await this.seasonRepo.findOne({ where: { active: true } });
+    // Its year, which the edit form's Year box sends as text (#3861): it was never read, so a changed year answered 200
+    // and stayed as it was. Refused, with nothing changed, when it is not a whole number or another season holds it.
+    const sentYear = updateSeasonDto.year as unknown;
+    const year = sentYear === undefined || sentYear === null || `${sentYear}`.trim() === '' ? undefined : Number(sentYear);
 
-    // If the incoming has active set to true, and there is an existing active season,
-    // and the existing active season is not the same as the incoming season, disable the existing active season.
-    if (existingActive && updateSeasonDto.active && existingActive.year !== updateSeasonDto.year) {
-      existingActive.active = false;
-      await this.seasonRepo.save(existingActive);
+    if (year !== undefined && !Number.isInteger(year)) {
+      throw new BadRequestException("A season's year is a whole number.");
+    }
+
+    if (year !== undefined && year !== existingCurrent.year) {
+      const holder = await this.seasonRepo.findOne({ where: { year } });
+
+      if (holder && holder.guid !== existingCurrent.guid) {
+        throw new ConflictException(`There is already a ${year} season.`);
+      }
     }
 
     if (updateSeasonDto.days) {
@@ -521,12 +529,27 @@ export class SeasonService extends BaseProvider<Season> {
           return existing;
         });
 
-      // Left as it is when the update does not say.
-      existingCurrent.active = updateSeasonDto.active ?? existingCurrent.active;
       existingCurrent.days = [...newDays, ...updateDays];
-
-      return existingCurrent.save();
     }
+
+    // Only once nothing can be refused: the season that was active is switched off when this one becomes active. It
+    // compared years, and the form sends its year as text, so a season saved as active switched itself off first.
+    const existingActive = await this.seasonRepo.findOne({ where: { active: true } });
+
+    if (existingActive && updateSeasonDto.active && existingActive.guid !== existingCurrent.guid) {
+      existingActive.active = false;
+      await this.seasonRepo.save(existingActive);
+    }
+
+    // Left as it is when the update does not say. Saved whether or not it sent days (#3861): without them, it saved
+    // nothing, after switching the active season off.
+    existingCurrent.active = updateSeasonDto.active ?? existingCurrent.active;
+
+    if (year !== undefined) {
+      existingCurrent.year = year;
+    }
+
+    return existingCurrent.save();
   }
 
   /**
@@ -543,10 +566,13 @@ export class SeasonService extends BaseProvider<Season> {
       throw new BadRequestException('Send the deadlines, each a date or empty for open.');
     }
 
-    const problem = deadlinesProblem(deadlines);
+    // Each one sent must be a date, or empty for open, whatever the season holds.
+    const sentProblem = deadlinesProblem(
+      Object.fromEntries(Object.entries(deadlines).filter(([field]) => SUBMISSION_DEADLINE_FIELDS.includes(field as never)))
+    );
 
-    if (problem) {
-      throw new BadRequestException(problem);
+    if (sentProblem && / is not a date\.$/.test(sentProblem)) {
+      throw new BadRequestException(sentProblem);
     }
 
     const season = await this.seasonRepo.findOne({ where: { guid } });
@@ -555,11 +581,26 @@ export class SeasonService extends BaseProvider<Season> {
       throw new NotFoundException('Season not found.');
     }
 
-    const values = Object.fromEntries(SUBMISSION_DEADLINE_FIELDS.map((field) => [field, asDate(deadlines[field])]));
+    // An update changes only the deadlines it is sent (#3862): one left out keeps what the season has, rather than
+    // becoming empty, which reopened that competition. The order of submissions and files is checked as they will be.
+    const sent = SUBMISSION_DEADLINE_FIELDS.filter((field) => field in deadlines);
+    const merged = Object.fromEntries(
+      SUBMISSION_DEADLINE_FIELDS.map((field) => [
+        field,
+        asDate(sent.includes(field) ? deadlines[field] : (season as unknown as Record<string, unknown>)[field])
+      ])
+    ) as Record<(typeof SUBMISSION_DEADLINE_FIELDS)[number], Date | null>;
+    const problem = deadlinesProblem(merged);
 
-    await this.seasonRepo.update(guid, values);
+    if (problem) {
+      throw new BadRequestException(problem);
+    }
 
-    return values;
+    if (sent.length > 0) {
+      await this.seasonRepo.update(guid, Object.fromEntries(sent.map((field) => [field, merged[field]])));
+    }
+
+    return merged;
   }
 
   /**
@@ -647,12 +688,15 @@ export class SeasonService extends BaseProvider<Season> {
 
       const rows = await manager.find(SeasonCompetition, { where: { season: { guid } } });
       const saved = listed.map<Partial<SeasonCompetition>>((input) => {
-        const values = {
+        // Only the settings it is sent (#3862): one left out keeps what the competition has, rather than becoming empty.
+        // A competition with no row yet starts with the rest empty, as it did.
+        const all = {
           sessionGuid: input.sessionGuid || null,
           graduateSessionGuid: input.graduateSessionGuid || null,
           awardsSessionGuid: input.awardsSessionGuid || null,
           finalistsNotifiedAt: asDate(input.finalistsNotifiedAt)
         };
+        const values = Object.fromEntries(Object.entries(all).filter(([field]) => field in input));
         const row = rows.find((existing) => existing.competitionType === input.competitionType);
 
         return row
@@ -661,7 +705,7 @@ export class SeasonService extends BaseProvider<Season> {
               season: { guid },
               competitionType: input.competitionType,
               runs: null,
-              ...values
+              ...all
             });
       });
 

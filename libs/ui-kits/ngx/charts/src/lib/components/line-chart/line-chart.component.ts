@@ -60,6 +60,13 @@ export class LineChartComponent {
 
   private readonly plot = viewChild<ElementRef<HTMLElement>>('plot');
 
+  /**
+   * The drawing under way, or the last one, settled. Each draw waits for it, so a drawing is disposed of before the next
+   * begins: amCharts allows one Root on an element, and two draws started together both made theirs before either was
+   * disposed (#3829).
+   */
+  private drawing: Promise<void> = Promise.resolve();
+
   constructor() {
     // Drawn again whenever what it shows changes; the last drawing is disposed of first.
     effect((onCleanup) => {
@@ -73,13 +80,23 @@ export class LineChartComponent {
       let dispose: (() => void) | null = null;
       let gone = false;
 
-      this.draw(host, options).then((d) => {
-        if (gone) {
-          d();
-        } else {
-          dispose = d;
-        }
-      });
+      this.drawing = this.drawing
+        .then(async () => {
+          // Replaced before its turn came: there is nothing to draw, and drawing it would only be disposed of.
+          if (gone) {
+            return;
+          }
+
+          const d = await this.draw(host, options);
+
+          if (gone) {
+            d();
+          } else {
+            dispose = d;
+          }
+        })
+        // A failed drawing must not stop the next one.
+        .catch(() => undefined);
 
       onCleanup(() => {
         gone = true;

@@ -42,7 +42,9 @@ describe('BaseProvider queries, built by typeorm', () => {
   it('finds one by options, a loaded season in the where', async () => {
     const season = Object.assign(new Season(), { guid: 's-1', year: 2026, startDate: null, endDate: null });
 
-    await expect(provider.findOne({ where: { season: { guid: season.guid } }, relations: { season: true } })).resolves.toBeNull();
+    await expect(
+      provider.findOne({ where: { season: { guid: season.guid } }, relations: { season: true } })
+    ).resolves.toBeNull();
   });
 
   it('finds many by guid or by options', async () => {

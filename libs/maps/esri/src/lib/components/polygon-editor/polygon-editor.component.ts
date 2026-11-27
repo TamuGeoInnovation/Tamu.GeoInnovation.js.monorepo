@@ -184,11 +184,12 @@ export class PolygonEditorComponent implements OnInit, OnDestroy {
     sketch.layer.add(new sketch.Graphic({ geometry, symbol: sketch.model.polygonSymbol }));
     this.hasPolygon.set(true);
 
-    sketch.view.goTo(geometry.extent.clone().expand(2)).catch(() => undefined);
+    // A polygon made from a ring of corners has an extent.
+    sketch.view.goTo(geometry.extent!.clone().expand(2)).catch(() => undefined);
   }
 
   /** Sends the corners of the polygon on the map, or none when it is gone. */
-  private send(sketch: Sketch, graphic: esri.Graphic | undefined): void {
+  private send(sketch: Sketch, graphic: esri.Graphic | null | undefined): void {
     const geometry = graphic?.geometry as esri.Polygon | undefined;
     const geographic = geometry ? (sketch.webMercatorUtils.webMercatorToGeographic(geometry) as esri.Polygon) : undefined;
     const corners = cornersFromRing(geographic?.rings?.[0] ?? []);

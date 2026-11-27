@@ -570,11 +570,31 @@ generators are configured with `skipTests`.
 **Deleting code we expect back parks it, in the same pull request as the deletion.** An annotated `parked/*` tag on the
 last commit that still has it, a row in [`docs/parked-code.md`](docs/parked-code.md), and an issue labelled `parked`
 naming the condition for its return. `scripts/check-parked-code.mjs` fails when those three disagree, so none can go
-stale; `git tag -l "parked/*"` lists them. **Tag before the deletion merges**, while a commit containing the code is
-still on `development` — afterwards, finding the right commit means reading a closed pull request's history, which is
-the situation this avoids. The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
+stale; `git tag -l "parked/*"` lists them. **Merge the row, then tag immediately**: the commit you want is the merge
+commit's first parent, `git tag -a parked/<name> "$(git rev-parse <merge>^)"`. The rule used to be the other way round
+and was wrong twice over (#3717) — the commit was never hard to find, and because tags are global while a row is not,
+tagging first left a `parked/*` tag with no row for a whole pull-request cycle, failing lint on **every branch in the
+repository** for 33 minutes on its second use. The check now warns instead of failing while a disagreement is under a
+day old, so neither order can break everyone's branch mid-park; past a day it fails, which is the point of it.
+
+The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
 the usual reason for parking it is that it calls a retired service, which is a trap for the next reader. What the tag
 preserves is the working out, not code to paste back. See #3704, which parked the bus timetable.
+
+**Dead code is not a park, and neither is a question for the maintainer.** A **feature** that might come back is
+parked, as above. **Actual dead code** — a stub never implemented, a helper nothing uses, an unreachable branch, a
+duplicate of something shared — is deleted outright, with no tag and no row, and recorded in #1899. When it is unclear
+which it is, park it: parking is cheap and losing a feature is not. Code whose use cannot be determined, such as a
+public API or something read by name, is left alone and noted.
+
+**#1899 is the running list, and has been since October.** A find you are not acting on now goes there as a row and
+nothing else: not its own issue, not a pull request, not a decision for anybody. It is worked as its own sitting.
+None of this is urgent — code nothing calls is not a fault and nothing is broken for anybody. **A bug still gets an
+issue, always** (#1056): the narrowing is for dead code only.
+
+On 26 November 2026 four dead-code finds in one evening each reached the maintainer as a decision, and a second
+collection issue was filed beside #1899 without anyone noticing it existed. His words: *"I am trying to get the issues
+down to zero and you keep making new things at every turn."* See #3835.
 
 **Every bug gets a test.** Nothing else here requires one, so a bug could be fixed, and every rule
 followed, with nothing to stop it coming back.

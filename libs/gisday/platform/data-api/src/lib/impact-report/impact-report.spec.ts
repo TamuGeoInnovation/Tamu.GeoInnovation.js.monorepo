@@ -17,18 +17,81 @@ function rows(over: Partial<ImpactRows> = {}): ImpactRows {
     days: ['2026-11-18', '2026-11-17'],
     accounts: windows.map((w, i) => ({ ...w, student: 10 + i, industry: 2, academia: 1, incomplete: 3, total: 16 + i })),
     speakers: [
-      { guid: 's1', email: 'a@example.com', isOrganizer: false, organization: 'Acme Mapping', university: null, onActiveSession: true },
+      {
+        guid: 's1',
+        email: 'a@example.com',
+        isOrganizer: false,
+        organization: 'Acme Mapping',
+        university: null,
+        onActiveSession: true
+      },
       // The same person copied twice into the season.
-      { guid: 's2', email: 'A@example.com ', isOrganizer: false, organization: 'Acme Mapping', university: null, onActiveSession: true },
-      { guid: 's3', email: 'b@example.com', isOrganizer: false, organization: 'acme  mapping', university: null, onActiveSession: false },
-      { guid: 's4', email: null, isOrganizer: true, organization: null, university: 'Example University', onActiveSession: true },
-      { guid: 's5', email: 'c@example.com', isOrganizer: false, organization: 'Survey Co', university: 'Example University', onActiveSession: true }
+      {
+        guid: 's2',
+        email: 'A@example.com ',
+        isOrganizer: false,
+        organization: 'Acme Mapping',
+        university: null,
+        onActiveSession: true
+      },
+      {
+        guid: 's3',
+        email: 'b@example.com',
+        isOrganizer: false,
+        organization: 'acme  mapping',
+        university: null,
+        onActiveSession: false
+      },
+      {
+        guid: 's4',
+        email: null,
+        isOrganizer: true,
+        organization: null,
+        university: 'Example University',
+        onActiveSession: true
+      },
+      {
+        guid: 's5',
+        email: 'c@example.com',
+        isOrganizer: false,
+        organization: 'Survey Co',
+        university: 'Example University',
+        onActiveSession: true
+      }
     ],
     checkIns: [
-      { account: 'u1', session: 'e1', sessionTitle: 'Keynote', sessionActive: true, outsideSessionTime: false, organizer: false },
-      { account: 'u1', session: 'e1', sessionTitle: 'Keynote', sessionActive: true, outsideSessionTime: false, organizer: false },
-      { account: 'u2', session: 'e1', sessionTitle: 'Keynote', sessionActive: true, outsideSessionTime: true, organizer: false },
-      { account: 'u3', session: 'e2', sessionTitle: 'Career fair', sessionActive: false, outsideSessionTime: false, organizer: true }
+      {
+        account: 'u1',
+        session: 'e1',
+        sessionTitle: 'Keynote',
+        sessionActive: true,
+        outsideSessionTime: false,
+        organizer: false
+      },
+      {
+        account: 'u1',
+        session: 'e1',
+        sessionTitle: 'Keynote',
+        sessionActive: true,
+        outsideSessionTime: false,
+        organizer: false
+      },
+      {
+        account: 'u2',
+        session: 'e1',
+        sessionTitle: 'Keynote',
+        sessionActive: true,
+        outsideSessionTime: true,
+        organizer: false
+      },
+      {
+        account: 'u3',
+        session: 'e2',
+        sessionTitle: 'Career fair',
+        sessionActive: false,
+        outsideSessionTime: false,
+        organizer: true
+      }
     ],
     submissions: [
       { type: 'presentation', level: 'undergraduate', accepted: true, reviewed: true },

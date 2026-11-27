@@ -5,7 +5,8 @@
     "types": ["@arcgis/core/interfaces"],
     "target": "ES2022",
     "useDefineForClassFields": false,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "strictNullChecks": true
   },
   "files": ["src/main.ts"],
   "angularCompilerOptions": {

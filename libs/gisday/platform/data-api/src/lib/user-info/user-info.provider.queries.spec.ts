@@ -35,7 +35,13 @@ describe('UserInfoProvider queries, built by typeorm', () => {
     const profile = {
       app_metadata: { gisday: { attendeeType: ParticipantType.Student, completedProfile: false } },
       user_metadata: {
-        education: { id: '123', institution: 'other', otherInstitution: 'A university', fieldOfStudy: 'GIS', classification: 'U1' }
+        education: {
+          id: '123',
+          institution: 'other',
+          otherInstitution: 'A university',
+          fieldOfStudy: 'GIS',
+          classification: 'U1'
+        }
       }
     } as unknown as GisDayAppMetadata;
 
@@ -44,7 +50,7 @@ describe('UserInfoProvider queries, built by typeorm', () => {
     expect(saved.app_metadata.gisday.completedProfile).toBe(true);
   });
 
-  it("saves an industry profile, looking up the other organization they name", async () => {
+  it('saves an industry profile, looking up the other organization they name', async () => {
     const profile = {
       app_metadata: { gisday: { attendeeType: ParticipantType.Industry, completedProfile: false } },
       user_metadata: {

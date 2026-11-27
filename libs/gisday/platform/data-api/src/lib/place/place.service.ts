@@ -162,15 +162,21 @@ export class PlaceService extends SeasonScopedProvider<Place> {
         where: {
           guid
         },
-        relations: { logos: true }
+        // Its links too, so an update that does not send them keeps them (#3862).
+        relations: { logos: true, links: true }
       });
 
       if (!existing) {
         throw new NotFoundException();
       }
 
-      let links: Array<Partial<PlaceLink>> = [];
-      const visibilitySettings = this._deserializeStringifiedJSON(place.visibilitySettings);
+      // An update changes only what it is sent (#3862): links and visibility left out keep what they were, rather than
+      // emptying the links and nulling the visibility. Sent, even as an empty list, they replace them as before.
+      let links: Array<Partial<PlaceLink>> = place.links === undefined ? existing.links : [];
+      const visibilitySettings =
+        place.visibilitySettings === undefined
+          ? existing.visibilitySettings
+          : this._deserializeStringifiedJSON(place.visibilitySettings);
 
       if (place.links && place.links.length > 0) {
         // Because the payload is formData, we need to parse the stringified JSON

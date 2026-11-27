@@ -95,7 +95,7 @@ export class MapboxMapService {
 
   public loaded: ReplaySubject<Map> = new ReplaySubject(1);
 
-  public async createMap(properties?: MapOptions) {
+  public async createMap(properties: MapOptions) {
     await useAppWorker();
 
     const defaultsUnlessProvided: Partial<MapOptions> = {
