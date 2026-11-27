@@ -1,6 +1,15 @@
 # work-lab-leila: current tasks
 
 
+## Batch g237 (gisday: #3839, the admin save round trips as end-to-end tests; 26 November 2026, 10:20 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; leave the #3788 files alone; dead code is deleted and features are parked, without asking (`DIRECTOR.md`); never wait for a fix to merge, stack on it. End with `.pr-body.md` (first line `Title: ...`, `Closes #3839`) and push.
+
+#3839 says what to build. **Stack on your own `fork/test/3806-gisday-admin-capture`** (the helper) and say in the body that it merges after #3806's pull request. Laptop g49's report (`laptop/reports/2026-11-26-g49.md`) is the walk to automate, area by area.
+
+- The Events test must cover what #3827 broke: an edit that changes only the abstract still sends the attendance. **Mark it `test.fail` with #3827's number** until the laptop's fix (branch `fix/3827-event-save-keeps-attendance`, batch g50) is in. If that branch is on the fork when you get there, stack on it instead and the test passes.
+- Prove each test able to fail: break the form locally, watch it fail, then restore it.
+- Branch `test/3839-gisday-admin-round-trips`, `no-visible-change`. Report `reports/<date>-g237.md`.
 ## Batch g236 (gisday: #3593's last step, the GIS Day app turns on strictNullChecks, stacked on every strict branch; 26 November 2026, 10:00 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; leave the #3788 files alone; never delete dead code; end with `.pr-body.md` (first line `Title: ...`) and push. **New (`DIRECTOR.md`, 26 November): never wait for a fix to merge. Merge the branches yours depends on into it, and name them in the body.**
