@@ -1,6 +1,23 @@
 # Laptop: current tasks
 
 
+## Batch g48 (gisday: #3804, five more shared libraries go strict; 26 November 2026, 7:58 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; **never delete dead code** (list it as "potentially parked"); each branch ends with `.pr-body.md` (first line `Title: ...`) and is pushed, and I open the pull requests.
+
+The lab is doing #3804's seven smallest libraries (g232). These five are yours, **one branch and one pull request per library**, as g47 did. Turn on `strictNullChecks` in the library's `tsconfig.lib.json`, and fix its own errors without changing behaviour (no bare `!` without a comment saying why). Prove each with the app's flag on locally, as you did in g47, since `check-strict-libs.mjs` doesn't read templates. Then turn it off again.
+
+| Library | Errors (your g46) | Branch |
+| --- | ---: | --- |
+| `libs/maps/feature/location` | 5 | `fix/3804-maps-feature-location-strict` |
+| `libs/common/utils/geometry/esri` | 7 | `fix/3804-geometry-esri-strict` |
+| `libs/common/ngx/pipes` | 8 | `fix/3804-common-ngx-pipes-strict` |
+| `libs/ui-kits/ngx/navigation/mobile-tile` | 9 | `fix/3804-mobile-tile-strict` |
+| `libs/common/utils/device` | 10 | `fix/3804-common-utils-device-strict` |
+
+**`common-ngx-pipes`:** #1899 lists seven of its pipes as unused (`DateRangePipe`, `NearestDatePipe`, `ToDatePipe`, `GroupByPipe`, `ToArrayPipe`, `LookupPipe`, `PhoneNumberFormatPipe`). Don't delete them. Make them strict like the rest, and list them in the report as "potentially parked", for the maintainer.
+
+Each: `scripts/check-in-volume.sh <branch> <library>,gisday-angular,aggiemap-angular`. `.pr-body.md`: "Part of #3804", `no-visible-change`. Until PR 3797 merges, `check-parked-code.mjs` fails every branch: say so and carry on. Report `reports/<date>-g48.md`.
 ## Answer to g46, and batch g47 (26 November 2026, 7:00 PM Central, from `work (gisday)`)
 
 **Q-g46-1: B, with A's issue.** Fix GIS Day's own 11 template errors now. The shared libraries' errors are #3804 (filed; not for this batch). The app's flag stays off until #3804 is done.
