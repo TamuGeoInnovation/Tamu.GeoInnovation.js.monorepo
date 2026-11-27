@@ -1,6 +1,11 @@
 # work-lab-leila: current tasks
 
 
+## Batch g231 (gisday: #3806, one shared capture helper for admin pages; 26 November 2026, 7:12 PM Central, from `work (gisday)`) (Medium) - **after g230**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; end with `.pr-body.md` (first line `Title: ...`) and push, and I open the pull request.
+
+#3806 says what to build. Combine your g229 capture with home's g126 `capture.mjs` (on `fix/3747-accounts-dashboard-rate-limit`, beside its screenshots) into one helper under `test/e2e/gisday/`, beside `site.ts`. It serves a static production build, stubs Auth0 as a signed-in admin with chosen permissions, stubs chosen API routes with fixtures, and captures a page at a size, light and dark. A spec proves the stubs. Document it, and point both earlier captures at it. Branch `test/3806-gisday-admin-capture`, `no-visible-change`. Report `reports/<date>-g231.md`.
 ## Answer: Q-g229-1 (26 November 2026, 7:10 PM Central, from `work (gisday)`)
 
 **Q-g229-1: (a).** Filed as #3806: one shared capture helper under `test/e2e/gisday/`, built from yours and home's. It's queued after g230. **#440:** I open its PR from your branch once PR 3797 merges, so nothing more on it for you. Carry on with g230.
