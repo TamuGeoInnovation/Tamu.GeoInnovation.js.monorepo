@@ -1,7 +1,13 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Event, Organization, SeasonDay, Speaker, University } from '../entities/all.entity';
-import { answering, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import {
+  answering,
+  loadedSeason,
+  queryCheckingDataSource,
+  queryCheckingRepository,
+  recordWrites
+} from '../_base/query-checking-data-source';
 import { AssetsService } from '../assets/assets.service';
 import { SeasonService } from '../season/season.service';
 import { OldFormatSpeaker, SpeakerProvider } from './speaker.provider';
@@ -10,7 +16,9 @@ import { OldFormatSpeaker, SpeakerProvider } from './speaker.provider';
 // so it cannot see a query typeorm itself refuses, such as a loaded row with a null column passed as a where value (#2363).
 
 /** The season's one day, with an event, as the speaker queries see it. */
-const seasonDays = () => [Object.assign(new SeasonDay(), { guid: 'd-1', date: new Date('2026-11-18T06:00:00Z'), events: [{ guid: 'e-1' }] })];
+const seasonDays = () => [
+  Object.assign(new SeasonDay(), { guid: 'd-1', date: new Date('2026-11-18T06:00:00Z'), events: [{ guid: 'e-1' }] })
+];
 
 /** A speaker as the API loads them: most columns are optional and come back null. */
 const loadedSpeaker = () =>
@@ -107,6 +115,20 @@ describe('SpeakerProvider queries, built by typeorm', () => {
       expect(query).toMatch(/JOIN "event_speakers"/);
       expect(query).toMatch(/JOIN "events"/);
     }
+  });
+
+  // The admin list filters speakers by the tags of the sessions they are in (#440), so its own route brings each
+  // session's tags; the public list, which brings no sessions, brings no tags either.
+  it("brings each session's tags for the admin list only (#440)", async () => {
+    const queries = speakerQueries();
+
+    await provider.getSpeakersForSeason('s-1', true);
+    await provider.getSpeakersForSeason('s-1');
+
+    expect(queries).toHaveLength(2);
+    expect(queries[0]).toMatch(/JOIN "event_tags"/);
+    expect(queries[0]).toMatch(/JOIN "tags"/);
+    expect(queries[1]).not.toMatch(/"event_tags"|JOIN "tags"/);
   });
 
   it('finds a presenter with their events in day and time order', async () => {

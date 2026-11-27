@@ -30,19 +30,23 @@ export const MediaParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     popupComponent: EventPopups.MarkdownPopupComponent,
+    // The lot's type ("Surface", "Garage") is composed into the description, under its permit notes; resolved into a key
+    // of its own it was never shown (#3808). The template comes last: each entry reads only the ones resolved before it.
+    popupDataResolutionStrategy: 'cumulative',
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
-      description: {
+      notes: {
         field: 'GIS.TS.Lot_Notes.AVPN',
         collapsed: true
       },
       lotType: {
         field: 'GIS.TS.ParkingLots.LotType',
         collapsed: true
-      }
+      },
+      description: `{attributes.notes}\nLot type: {attributes.lotType}`
     },
     native: {
       outFields: ['*']
