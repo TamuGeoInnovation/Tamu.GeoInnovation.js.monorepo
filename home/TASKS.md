@@ -1,6 +1,16 @@
 # Home machine: current tasks
 
 
+## Batch g238 (gisday: find more bugs shaped like #3827, on the API side; 26 November 2026, 10:05 PM Central, from `work (gisday)`) (Medium) - **now** (moved from the lab)
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; dead code is deleted and features are parked, never asked about; never wait for a fix to merge, stack on it. Each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed.
+
+#3827: an admin edit erased an event's recorded attendance, because the update overwrote fields the form doesn't send. The same shape can exist anywhere an update replaces a whole record from a partial body.
+
+1. **Read every update route** in `libs/gisday/platform/data-api` and `libs/gisday/competitions/data-api` (`PATCH` and `PUT`, and any `save` of a body). For each, does a field the caller leaves out survive, or become null? Look for `save({...body})`, `update(id, dto)` with a DTO that defaults missing fields, and relations replaced wholesale (tags, days, speakers).
+2. **Prove each suspect** with a spec through Nest's real routing: create a record with every field set, update one field, and read every field back. **A field that doesn't survive is a bug:** file it at once (Bug, `bug`, Priority by estimate: High if data is lost, as #3827 was), and fix it in its own branch with the spec red first.
+3. **Fields that do survive:** keep the spec anyway, as a guard, in one branch `test/3827-update-round-trips`.
+4. Report `reports/<date>-g238.md`: a table of each route, survives or not, and the issues filed.
 ## Batches g128 and g129 withdrawn for now: bugs first (26 November 2026, 10:25 PM Central, from `work (gisday)`)
 
 The maintainer wants a first pass through bugs only. **Batch g128 (question-type parking) and Batch g129 (501 stubs) are withdrawn for now**, and come back after the bug pass. Bug batches for home come next.
