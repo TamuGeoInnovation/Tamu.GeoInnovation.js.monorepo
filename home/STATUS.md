@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a77**: started; #2723 first (a routing stop named by coordinates), reproducing it over several loads, 11:05 PM Central, 26 November. a72's quiet comparison still runs in the background.
+- **Batch a77**: #2723 reproduced on dev (the stop read `30.6146, -96.3493` on 3 loads of 3), red unit test and smoke spec proven, fix committed; building it to run the spec green on a local build, 11:19 PM Central, 26 November.
 
 ## Finished
 - **#3851** (report `home/reports/2026-11-26-3851.md`, 11:02 PM Central): not reproduced; the route survives option changes because currentResult\$ redraws after the clear; no branch.
