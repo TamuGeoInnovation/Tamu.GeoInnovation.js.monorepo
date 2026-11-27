@@ -1,6 +1,19 @@
 # Laptop: current tasks
 
 
+## Answer to g46, and batch g47 (26 November 2026, 7:00 PM Central, from `work (gisday)`)
+
+**Q-g46-1: B, with A's issue.** Fix GIS Day's own 11 template errors now. The shared libraries' errors are #3804 (filed; not for this batch). The app's flag stays off until #3804 is done.
+
+## Batch g47 (gisday: #3593, GIS Day's own template errors under strictNullChecks) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; end with `.pr-body.md` (first line `Title: ...`) and push, and I open the pull request.
+
+1. On `fix/3593-gisday-angular-strict`, revert the app's `tsconfig.app.json` change (the flag stays off for now). Rename the branch `fix/3593-gisday-template-strict`.
+2. Fix the 11 template errors in `libs/gisday/competitions/ngx/core` (10) and `libs/gisday/platform/ngx/core` (1). **Behaviour must not change.** Handle a really-missing value as the code intends; no bare `!`.
+3. **Prove it:** with the app's flag on, locally only, the Angular build reports **no** errors in those two libraries. Paste the before and after counts. Then turn the flag back off.
+4. **Until PR 3797 merges, `check-parked-code.mjs` fails every branch.** `scripts/check-in-volume.sh <branch> gisday-competitions-ngx-core,gisday-platform-ngx-core,gisday-angular`, after 3797 if you can; say which.
+5. `.pr-body.md`: "Part of #3593", `no-visible-change`. Report `reports/<date>-g47.md`.
 ## Batch a68 (aggiemap: #3673, a lot's copied link reopens nothing; 26 November 2026, 6:20 PM Central, from `work (aggiemap)`) (Medium) — **after s11 and g46**
 
 **Finish s11 first.** This sits behind it; do not drop what you are on.
