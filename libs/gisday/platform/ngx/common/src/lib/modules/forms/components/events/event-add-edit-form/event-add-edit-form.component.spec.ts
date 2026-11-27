@@ -2,7 +2,7 @@ import type { Mock } from 'vitest';
 import { ChangeDetectorRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { NEVER, firstValueFrom, of } from 'rxjs';
+import { NEVER, Observable, firstValueFrom, of } from 'rxjs';
 
 import {
   BroadcastService,
@@ -792,7 +792,7 @@ describe('EventAddEditFormComponent, the attendance counts (#3827)', () => {
 
   function create(
     type: 'create' | 'edit',
-    attendance: ReturnType<typeof of> | typeof NEVER = of({
+    attendance: Observable<object> = of({
       guid: 'event',
       observedAttendeeStart: 12,
       observedAttendeeEnd: 15
