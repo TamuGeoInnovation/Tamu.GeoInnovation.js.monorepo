@@ -11,6 +11,65 @@ Any route that only throws `NotImplementedException` (501) is a stub that was ne
 2. For each one left, check nothing calls it: no page, no service, no other API. Then delete the handler, and its guard and permission if nothing else uses them.
 3. A spec per controller: the route now answers 404, and its working routes still answer.
 4. Record each in #1899's done list, in the report. Branch `chore/1899-gisday-501-stubs`, `no-visible-change`, `Closes` a new small issue: file it (Task, `enhancement`, Low, GIS Day project) and name it in the body. Report `reports/<date>-g129.md`.
+
+## Bug fixes come first; a72 and a73 wait (26 November 2026, 10:10 PM Central, from `work (aggiemap)`)
+
+**The maintainer:** *"I just want to fix bugs and close issues right now, not think about design decisions and have to
+implement things on other websites."*
+
+So a74 and a75 below are **ahead of a72 and a73**. a72 (#3369's timeout diagnostic) is test quality and a73 (#3687,
+parking the dead bus UI) is cleanup — real work, neither a bug. Take them when the bug queue is empty.
+
+I am queueing only issues that are **bugs in our code with a visitor-visible result**. Not service symbology (#2081,
+#2492 — those need a decision about overriding published symbology), not anything waiting on the GIS team, not CI.
+
+## Batch a74 (aggiemap: #2846, a route that solves is not drawn on the map; 26 November 2026, 10:10 PM Central, from `work (aggiemap)`) (High) — **now**
+
+**Standing:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running now** in
+the same commit, branch from today's `development`.
+
+[#2846](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2846), reported by the maintainer on
+production. Eller Oceanography & Meteorology to Halbouty Geosciences: the trip **solves** — 5 minutes, 0.26 miles, the
+full turn-by-turn list drawn in the panel — and **the map shows no route line.**
+
+So the solve works and the drawing does not. The issue says it is not #2843. Read it before starting; it has the
+reproduction.
+
+1. **Reproduce it first**, and capture the "before": panel full of directions, map with no line.
+2. **Find where the geometry is dropped** between the solved route and the graphics layer. The panel rendering proves
+   the route object arrived.
+3. **A regression test, proven red**, quoting the failure. A solved route must put a line on the map — assert the
+   graphic, not that the panel filled.
+4. **Before and after images** into `docs/screenshots/2846-route-not-drawn/`, and a release-notes entry with its *What
+   to test on dev* row.
+
+**Branch** `fix/2846-route-not-drawn`. `check-in-volume.sh`, then **`pre-pr-check.sh`**, and give me its last line.
+Body in the report with a `Title:` line, `.pr-body.md` **not** committed. **Open no pull request.**
+
+**Report** `home/reports/2026-11-26-a74.md`. Questions `Q-a74-<n>`.
+
+## Batch a75 (aggiemap: #2608, the trip planner's Leave at cannot be used; 26 November 2026, 10:10 PM Central, from `work (aggiemap)`) (High) — **after a74**
+
+[#2608](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2608). **Leave at** cannot be used to
+choose a time:
+
+- choosing **Leave at** in the menu sets the mode to `depart` and `requested_time` to now, and **no picker is drawn**;
+- a shared link with a time gives a **blank** picker.
+
+The issue was found while checking #2583's rebuilt date-time picker and **confirmed on plain `development` too**, so it
+is not caused by that change. #2583 has since shipped, so **re-confirm both symptoms on today's `development` before
+fixing anything** — if the picker rebuild fixed either half, say so and fix only what is left.
+
+1. **Reproduce both halves**, and capture the "before" for each.
+2. **The two may have one cause or two.** Say which. The picker not being drawn and the picker being blank are different
+   failures if the shared link reaches it by a different path.
+3. **A regression test per half, proven red.**
+4. **Before and after images** into `docs/screenshots/2608-leave-at/`, and a release-notes entry with its row. The row
+   needs a dev link with a time in it.
+
+**Branch** `fix/2608-leave-at`. Same checks, same rules, **open no pull request**.
+
+**Report** `home/reports/2026-11-26-a75.md`. Questions `Q-a75-<n>`.
 ## Status check (26 November 2026, 9:58 PM Central, from `work (gisday)`)
 
 Nothing from home since 9:26 PM ("g127 full check starting"). Please push a line now: what's running, or `blocked: <what>` if you're waiting on an approval or a prompt. If g127's check finished, carry on (open items: g127, then g128 stacked on #3788).
