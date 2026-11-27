@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, viewChild } from '@angular/core';
-import { UserClass } from '@tamu-gisc/gisday/platform/data-api';
+import { Class, UserClass } from '@tamu-gisc/gisday/platform/data-api';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, forkJoin, of, switchMap, tap } from 'rxjs';
 
@@ -11,6 +11,16 @@ import { AsyncPipe } from '@angular/common';
 
 import { BaseAdminDetailsPageComponent } from '../../../base-admin-details-page/base-admin-details-page.component';
 import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
+
+/**
+ * The attendance file's name: the class's code, number and section, then its professor's name. A class saved without a
+ * professor's name is named without one, rather than failing the export (#3627).
+ */
+export function attendanceFileName(cl: Partial<Class>): string {
+  const professor = (cl.professorName ?? '').toLowerCase().split(' ').join('_');
+
+  return `${cl.code}-${cl.number}${cl?.section ? '-' + cl?.section : ''}-${professor}_gisday_attendance.csv`;
+}
 
 @Component({
   selector: 'tamu-gisc-class-edit',
@@ -55,10 +65,7 @@ export class ClassEditComponent extends BaseAdminDetailsPageComponent implements
           const rows = (csv as Array<Record<string, unknown>>) ?? [];
           const unparsed = toCsv(Object.keys(rows[0] ?? {}), rows);
 
-          const fileName = `${cl.code}-${cl.number}${cl?.section ? '-' + cl?.section : ''}-${cl.professorName
-            .toLowerCase()
-            .split(' ')
-            .join('_')}_gisday_attendance.csv`;
+          const fileName = attendanceFileName(cl);
           downloadFile(unparsed, fileName, 'text/csv');
 
           this.isExporting$.next(false);

@@ -15,7 +15,7 @@ export const SPONSOR_LOGO_SIZES: Array<{ value: SponsorLogoSize; label: string }
  * sponsor with no size, or one this site does not know (an API from before #2638), is `regular`.
  */
 export function sponsorLogoClass(sponsor: Partial<Sponsor> | null | undefined): string {
-  const size = SPONSOR_LOGO_SIZES.some((s) => s.value === sponsor?.logoSize) ? sponsor.logoSize : 'regular';
+  const size = SPONSOR_LOGO_SIZES.find((s) => s.value === sponsor?.logoSize)?.value ?? 'regular';
 
   return `logo-${size}`;
 }

@@ -31,7 +31,8 @@ export class AccordionContentComponent implements OnChanges, OnDestroy, AfterVie
    */
   private mutationObserver: MutationObserver;
 
-  public readonly _container = viewChild<ElementRef>('content');
+  // Required: `#content` is the root of the template, never behind an @if (#3601).
+  public readonly _container = viewChild.required<ElementRef>('content');
 
   public ngAfterViewInit(): void {
     // If resize is set to `true`, initialize a mutation observer on the host element. The callback will trigger an

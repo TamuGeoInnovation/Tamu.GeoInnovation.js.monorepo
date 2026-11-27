@@ -1,8 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 import { Page } from '@playwright/test';
 
+import { readBuilderDestinations } from './builder-destinations';
 import type { MapManifest } from './global-setup';
 import { PROBE_GLOBAL } from './map-probe';
 
@@ -17,20 +15,6 @@ export interface Framing {
   center: [number, number];
 }
 
-const INVENTORY_PATH = path.join(
-  __dirname,
-  '..',
-  '..',
-  '..',
-  'tools',
-  'builder-inventory',
-  'builder-inventory.generated.json'
-);
-
-interface BuilderInventory {
-  maps: { route: string; destinations: { shareTarget: string }[] }[];
-}
-
 /**
  * The routes that open the maps an environment serves: every map the manifest lists, plus every builder destination
  * recorded in `tools/builder-inventory`, by its direct link. A map behind a builder is reached through its
@@ -38,21 +22,20 @@ interface BuilderInventory {
  * not list is left out. With `onePerMap`, a map behind a builder is reached through its first destination only: about
  * 50 routes instead of about 410, since the rest are the same map opened with different builder choices (#1426).
  *
+ * Every destination, not one per layer set as `loadBuilderTargets` takes: builder choices can move where a map opens
+ * without changing its layers. The inventory is read through `readBuilderDestinations`, so a destination recorded on
+ * another environment is marked as borrowed here too (#3474).
+ *
  * Shared by `framing.spec.ts`, which frames every route, and `building-clicks.spec.ts`, which clicks one per map.
  */
 export function servedRoutes(manifest: MapManifest, { onePerMap }: { onePerMap: boolean }): string[] {
-  // Read regardless of the environment the inventory was captured on: its destinations are root-relative links, and
-  // the manifest decides which of them this environment serves.
-  const inventory: BuilderInventory = fs.existsSync(INVENTORY_PATH)
-    ? JSON.parse(fs.readFileSync(INVENTORY_PATH, 'utf8'))
-    : { maps: [] };
+  const { byRoute } = readBuilderDestinations(manifest);
   const listed = new Set(manifest.maps);
-  const builderMaps = new Set(inventory.maps.map((map) => map.route));
-  const destinations = inventory.maps
-    .filter((map) => listed.has(map.route))
-    .flatMap((map) => map.destinations.slice(0, onePerMap ? 1 : undefined).map((destination) => destination.shareTarget));
+  const destinations = [...byRoute]
+    .filter(([route]) => listed.has(route))
+    .flatMap(([, recorded]) => recorded.slice(0, onePerMap ? 1 : undefined).map((destination) => destination.target));
 
-  return [...new Set([...manifest.maps.filter((route) => !builderMaps.has(route)), ...destinations])].sort();
+  return [...new Set([...manifest.maps.filter((route) => !byRoute.has(route)), ...destinations])].sort();
 }
 
 /** How often the probe and the framing are read while waiting (#1426). */

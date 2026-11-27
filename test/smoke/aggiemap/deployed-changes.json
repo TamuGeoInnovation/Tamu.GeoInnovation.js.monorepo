@@ -3,5 +3,10 @@
     "change": "#2758",
     "what": "every event and parking map has the main map's side panel, with Bus Routes and the development-only sections",
     "commit": "e91a27724cc47bb2aa4a053f0d3df5f81878ca72"
+  },
+  {
+    "change": "#3468",
+    "what": "the phone's trip planner offers accessible routing only in development",
+    "commit": "ea941e9dc4856a42ed47722dcfa19f1e1cf6302d"
   }
 ]

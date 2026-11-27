@@ -3,6 +3,7 @@
 #
 #   bash scripts/tidy.sh              # report what would go, remove nothing
 #   bash scripts/tidy.sh --yes        # remove it
+#   bash scripts/tidy.sh --remove-orphans  # remove only the wt-* folders with no .git that git does not list (#3678)
 #
 # Why this exists. CLAUDE.md documents creating both of these and removing neither, so growth is monotonic
 # by construction. On 24 November 2026 the work computer reached 0 bytes free of 1,907 GB: 460 worktrees at
@@ -87,28 +88,158 @@ unregistered_folders() {
   done
 }
 
-# True when every uncommitted change in <git status --porcelain output> is an untracked `.pr-body.md`, and
-# there is at least one. That file drafts a pull request body and is deliberately never committed to
-# `development`, so a copy left in a worktree makes it look like someone is working there for ever: on
-# 24 November 2026, 68 of the 69 worktrees this script had kept held nothing else, every one of them a merged
-# branch, about 40 GiB no sweep could reclaim (#3432).
+# Which of two kinds an unlisted folder is (#3678): `orphaned` when it has no `.git` at all, `own-git` when it has one,
+# file or directory, readable or not. An orphan is a worktree whose registration and `.git` file are both gone, so it
+# cannot be anybody's live work - but nothing proves it was this repository's either. A folder with a `.git` is another
+# repository's worktree or a clone (four on the work machine were kubernetes-config's), and is never removed here.
+# Reporting the two under one heading made a warning about three folders of residue read as one about seven.
+unregistered_kind() {
+  if [ -e "$1/.git" ]; then echo own-git; else echo orphaned; fi
+}
+
+# A size in KiB as people say it: GiB to one decimal from 1 GiB up, then MiB, then KiB, so a near-empty folder is not "0".
+kib_human() {
+  awk -v k="$1" 'BEGIN { if (k >= 1048576) printf "%.1f GiB\n", k / 1048576; else if (k >= 1024) printf "%.0f MiB\n", k / 1024; else printf "%d KiB\n", k }'
+}
+
+# True when <dir> may be removed by --remove-orphans: a `wt-*` folder directly in <parent>, which the worktree list in
+# <porcelain> does not name, with no `.git` of any kind. Otherwise false, printing why. Each condition is checked again
+# at the moment of removal, not trusted from the report: a folder that has gained a `.git` since is somebody's.
+orphan_removable() {
+  local dir="$1" parent="$2" porcelain="$3"
+  case "$(basename "$dir")" in wt-*) ;; *) echo "not named wt-*"; return 1 ;; esac
+  if [ "$(cd "$(dirname "$dir")" 2>/dev/null && pwd)" != "$(cd "$parent" 2>/dev/null && pwd)" ]; then
+    echo "not directly in $parent"
+    return 1
+  fi
+  if [ -e "$dir/.git" ]; then
+    echo "it has a .git, so it is a repository's working copy"
+    return 1
+  fi
+  if [ -n "$(unregistered_folders "$porcelain" "$parent" | awk -v d="$dir" '$0 == d')" ]; then
+    return 0
+  fi
+  echo "git lists it as a worktree"
+  return 1
+}
+
+# Removes <dir> if orphan_removable allows it, and otherwise prints why not and leaves it.
+remove_orphan() {
+  local dir="$1" parent="$2" porcelain="$3" why
+  if ! why="$(orphan_removable "$dir" "$parent" "$porcelain")"; then
+    echo "  NOT removing $dir: $why"
+    return 1
+  fi
+  rm -rf -- "$dir"
+}
+
+# True when every uncommitted change in <git status --porcelain output> is an untracked leftover, and there is at
+# least one. The leftovers are the files a finished piece of work leaves behind and nobody comes back for:
+#   - `.pr-body.md`, a drafted pull request body, deliberately never committed. On 24 November 2026, 68 of the 69
+#     worktrees this script had kept held nothing else, about 40 GiB no sweep could reclaim (#3432);
+#   - `check.out` and `check-tamu-js-*.log`, what a check writes beside the checkout it was run from;
+#   - `.b<number>/`, a listener's scratch folder for a batch: its scripts, logs and working captures (#3707).
 #
-# Deliberately narrow: that exact path, untracked, and nothing else on the line. A worktree holding anything
-# else is still kept, screenshots above all - a capture stops being obtainable the moment the code changes, so
-# an untracked `docs/screenshots/` folder is possibly irreplaceable work and is exactly what keeping dirty
-# worktrees is for. Tested by scripts/tidy.test.sh.
-only_a_drafted_pr_body() {
+# Deliberately narrow: those exact names at the top of the worktree, untracked, and nothing else on the line. A
+# worktree holding anything else is still kept, screenshots above all - a capture stops being obtainable the moment the
+# code changes, so an untracked `docs/screenshots/` folder is possibly irreplaceable work and is exactly what keeping
+# dirty worktrees is for. Tested by scripts/tidy.test.sh.
+only_leftovers() {
   local status="$1"
 
   [ -n "$status" ] || return 1
 
-  printf '%s
-' "$status" | awk '
+  printf '%s\n' "$status" | awk '
     $0 == "" { next }
-    $0 != "?? .pr-body.md" { other = 1 }
+    $0 !~ /^\?\? (\.pr-body\.md|check\.out|check-tamu-js-[^ \/]+\.log|\.b[0-9]+\/)$/ { other = 1 }
     { seen = 1 }
     END { exit (seen && !other) ? 0 : 1 }
   '
+}
+
+# Prints `prune <why>` or `keep <why>` for one local branch, from what is known about it (#3707, #3756):
+#   <name> <protected> <in development> <commits on no remote> <a remote has it> <merged-at epoch or -> <tip epoch>
+#   <published>
+# <protected> is 1 for a branch held by a worktree that is kept, checked out where the sweep runs, or named by the check
+# that runs the sweep. <published> is 1 for a branch that was pushed (it has an upstream) or has a merged pull request.
+#
+# A branch any remote still has is open work, whatever else is true: a Dependabot branch lives on origin and was never
+# on the fork, and reading "not on the fork" as "gone" deleted one from under its own check (#3756). Otherwise a finished
+# branch goes when it was published and its tip is in origin/development, when its pull request merged and nothing was
+# committed after the merge (a squash merge leaves the branch's own commits on no remote, so without that rule almost
+# nothing would ever go: 425 of 452 on home, 26 November), or when every commit is on a remote and no remote has the
+# branch any more. Anything with commits on no remote is kept and listed: this machine holds the only copy. So is a
+# branch never pushed at all, whose tip can still be on development because nobody has committed to it yet. Never
+# development, master or a mailbox branch, or a local copy of one (`mb-<name>`, as home kept `mb-gisday`).
+# Tested by scripts/tidy.test.sh.
+branch_verdict() {
+  local name="$1" protected="$2" in_dev="$3" only_here="$4" on_remote="$5" merged_at="$6" tip="$7" published="${8:-1}"
+
+  case "$name" in
+    development | master | *mailbox* | mb-*) echo "keep a branch this sweep never touches"; return ;;
+  esac
+  if [ "$protected" = 1 ]; then
+    echo "keep its worktree is kept, the sweep is running in it, or the check is checking it"
+  elif [ "$on_remote" = 1 ]; then
+    echo "keep a remote still has it, so it is open work"
+  elif [ "$in_dev" = 1 ] && [ "$published" = 1 ]; then
+    echo "prune its tip is in origin/development"
+  elif [ "$merged_at" != - ] && [ "$tip" -le "$merged_at" ]; then
+    echo "prune its pull request merged, and nothing was committed after"
+  elif [ "$only_here" -gt 0 ]; then
+    echo "keep only on this machine: $only_here commit(s) on no remote"
+  elif [ "$published" != 1 ]; then
+    echo "keep never pushed: started here, and not yet committed to"
+  else
+    echo "prune every commit is on a remote, and no remote has the branch any more"
+  fi
+}
+
+# True when any remote has a branch named <name> in the repository at <main>: origin as well as the fork (#3756).
+on_a_remote() {
+  git -C "$1" for-each-ref --format='%(refname)' refs/remotes |
+    awk -v want="$2" '{ ref = $0; sub(/^refs\/remotes\/[^\/]+\//, "", ref) } ref == want { found = 1 } END { exit !found }'
+}
+
+# True when <name> was published from the repository at <main>: its upstream is a branch of the same name, which
+# `git push -u` sets. A branch only started from origin/development tracks `development`, so it does not count.
+was_published() {
+  [ "$(git -C "$1" config --get "branch.$2.merge" 2>/dev/null)" = "refs/heads/$2" ]
+}
+
+# True when <name> is the branch the caller is about to use, passed as TIDY_KEEP_BRANCH: check-in-volume.sh sweeps
+# before its container fetches the branch, and must not remove what it is about to check (#3756).
+kept_by_caller() {
+  [ -n "${TIDY_KEEP_BRANCH:-}" ] && [ "$1" = "$TIDY_KEEP_BRANCH" ]
+}
+
+# Prints what removing a branch takes, in order: its worktree first (`worktree <path>`), then the branch
+# (`branch <name>`). Git will not delete a branch a worktree has checked out, which is why the first cleanup on home on
+# 26 November failed on most branches and needed a second command. <worktree> is `-` for none.
+prune_steps() {
+  local name="$1" worktree="$2"
+
+  [ "$worktree" = - ] || echo "worktree $worktree"
+  echo "branch $name"
+}
+
+# Prints the paths in <list file> except <path>, compared without regard to case or slash direction, as Windows does.
+# The sweep never removes the worktree it is run from: on 26 November, run from wt-preprcheck, it counted
+# wt-preprcheck as removable, since that worktree sat clean on a commit in development.
+without_path() {
+  local list="$1" self="$2"
+  awk -v self="$self" '
+    function norm(p) { gsub(/\\/, "/", p); sub(/\/$/, "", p); return tolower(p) }
+    BEGIN { s = norm(self) }
+    norm($0) != s
+  ' "$list"
+}
+
+# True when <branch>'s tip is in origin/development in the repository at <main>. Always origin/development, never the
+# checkout's HEAD or the commit the sweep's own copy of this script came from: home's main checkout sat on a commit from
+# before tidy.sh existed (26 November), and a finished branch is finished whatever that checkout has.
+branch_in_development() {
+  git -C "$1" merge-base --is-ancestor "refs/heads/$2" refs/remotes/origin/development 2>/dev/null
 }
 
 # Prints the volume names in <volume list file> that are tamu-js-<number> for a CLOSED issue, one per line.
@@ -171,12 +302,16 @@ image_advice() {
 set -e
 act=no
 compact=no
+remove_orphans=no
+branches_only=no
 case "${1:-}" in
   --yes) act=yes ;;
+  --branches) act=yes; branches_only=yes ;;
   --compact) act=yes; compact=yes ;;
   --if-due) ;;
+  --remove-orphans) remove_orphans=yes ;;
   '') ;;
-  *) echo "usage: $0 [--yes|--compact|--if-due]" >&2; exit 2 ;;
+  *) echo "usage: $0 [--yes|--branches|--compact|--if-due|--remove-orphans]" >&2; exit 2 ;;
 esac
 
 # `--if-due` is what a listener calls on a schedule. It returns immediately and silently unless a sweep is
@@ -205,30 +340,82 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
 main="$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")"
+# The worktree this sweep runs in is never removed, and neither is its branch (#3707).
+self="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+self_branch="$(git branch --show-current 2>/dev/null || true)"
 
-echo "Reading merged pull requests and closed issues from $repo..."
-gh pr list --repo "$repo" --state merged --limit 1000 --json headRefName --jq '.[].headRefName' | sort -u > "$tmp/merged"
-gh issue list --repo "$repo" --state closed --limit 4000 --json number --jq '.[].number' | sort -u > "$tmp/closed"
+# What finished means is decided against the remotes as they are now, not as this clone last saw them: a branch whose
+# fork branch has gone, or that merged since the last fetch, is only finished after a fetch (#3707). A failed fetch
+# leaves the old refs, which only makes fewer branches removable, never more.
+for remote in origin fork; do
+  if git -C "$main" remote get-url "$remote" >/dev/null 2>&1; then
+    git -C "$main" fetch -q --prune "$remote" || echo "  Could not fetch $remote; deciding on what this clone last saw." >&2
+  fi
+done
+
+if [ "$branches_only" = yes ]; then
+  echo "Reading merged pull requests from $repo..."
+else
+  echo "Reading merged pull requests and closed issues from $repo..."
+fi
+# `<head branch> <merged at, epoch>`, the latest merge first when a branch name was used twice.
+gh pr list --repo "$repo" --state merged --limit 4000 --json headRefName,mergedAt \
+  --jq '.[] | "\(.headRefName) \(.mergedAt | fromdate)"' | sort -k1,1 -k2,2nr | awk '!seen[$1]++' > "$tmp/merged-at"
+cut -d ' ' -f 1 "$tmp/merged-at" > "$tmp/merged"
+if [ "$branches_only" = yes ]; then
+  : > "$tmp/closed"
+else
+  gh issue list --repo "$repo" --state closed --limit 4000 --json number --jq '.[].number' | sort -u > "$tmp/closed"
+fi
 
 git -C "$main" worktree list --porcelain > "$tmp/porcelain"
 worktree_candidates "$tmp/merged" "$tmp/porcelain" > "$tmp/worktrees"
 
 # Detached worktrees: removable when their commit is already in origin/development (#3438). A stale
-# origin/development only makes fewer of them removable, never more.
+# origin/development only makes fewer of them removable, never more. Not on the every-check branch sweep: a detached
+# worktree belongs to no branch, and several are tools other sessions keep and reuse (a pre-pull-request checkout,
+# another listener's own), so they wait for the free-space sweep as before (#3707).
 detached_worktrees "$tmp/porcelain" > "$tmp/detached"
-if git -C "$main" rev-parse -q --verify origin/development >/dev/null; then
+if [ "$branches_only" != yes ] && git -C "$main" rev-parse -q --verify origin/development >/dev/null; then
   detached_merged "$tmp/detached" origin/development >> "$tmp/worktrees"
 fi
 echo "  $(grep -c . "$tmp/detached" || true) detached worktree(s); those whose commit is in origin/development are considered."
 
-# Folders git does not list: named with their size, never removed (#3438).
+# Folders git does not list (#3438), in two kinds with their sizes added up (#3678). Neither is touched by --yes. An
+# orphan, with no .git at all, is removed only by --remove-orphans; a folder with its own .git, never.
 unregistered_folders "$tmp/porcelain" "$(dirname "$main")" > "$tmp/unregistered"
-if [ -s "$tmp/unregistered" ]; then
-  echo "  Not worktrees of this repository as far as git knows, so not removed (another repository's, or a pruned registration); check each by hand:"
-  while IFS= read -r dir; do
-    echo "    $dir ($(du -sh "$dir" 2>/dev/null | cut -f1))"
-  done < "$tmp/unregistered"
+: > "$tmp/orphaned"
+: > "$tmp/own-git"
+while IFS= read -r dir; do
+  [ -n "$dir" ] || continue
+  printf '%s\t%s\n' "$(du -sk "$dir" 2>/dev/null | cut -f1)" "$dir" >> "$tmp/$(unregistered_kind "$dir")"
+done < "$tmp/unregistered"
+orphans="$(grep -c . "$tmp/orphaned" || true)"
+if [ -s "$tmp/orphaned" ]; then
+  echo "  $orphans folder(s) with no .git and not listed by git, $(kib_human "$(awk -F '\t' '{ s += $1 } END { print s + 0 }' "$tmp/orphaned")") in all."
+  echo "  Old worktrees whose registration and .git are gone; nothing in them can be checked, and --yes never sees them:"
+  while IFS="$(printf '\t')" read -r kib dir; do
+    echo "    $dir ($(kib_human "${kib:-0}"))"
+  done < "$tmp/orphaned"
 fi
+if [ -s "$tmp/own-git" ]; then
+  echo "  $(grep -c . "$tmp/own-git") folder(s) with their own .git, $(kib_human "$(awk -F '\t' '{ s += $1 } END { print s + 0 }' "$tmp/own-git")") in all: another repository's worktrees or clones. Never removed here:"
+  while IFS="$(printf '\t')" read -r kib dir; do
+    echo "    $dir ($(kib_human "${kib:-0}"))"
+  done < "$tmp/own-git"
+fi
+if [ "$remove_orphans" = yes ] && [ "$orphans" -gt 0 ]; then
+  echo "Removing $orphans orphaned folder(s), checking each again first."
+  removed=0
+  while IFS="$(printf '\t')" read -r kib dir; do
+    remove_orphan "$dir" "$(dirname "$main")" "$tmp/porcelain" && removed=$((removed + 1)) && echo "    removed $dir"
+  done < "$tmp/orphaned"
+  echo "  Removed $removed of $orphans."
+fi
+
+# Never the worktree this sweep runs in (#3707).
+without_path "$tmp/worktrees" "$self" > "$tmp/worktrees-not-self"
+mv "$tmp/worktrees-not-self" "$tmp/worktrees"
 
 # A worktree with uncommitted changes is kept, merged branch or not. On 24 November 2026, 7 of 367
 # candidates were dirty: one held a real edit to a release-notes file and five held only check logs.
@@ -244,15 +431,71 @@ while IFS= read -r path; do
 
   if [ -z "$status" ]; then
     echo "$path" >> "$tmp/worktrees-clean"
-  elif only_a_drafted_pr_body "$status"; then
-    echo "  $path holds only a drafted .pr-body.md, which is not work (#3432)"
+  elif only_leftovers "$status"; then
+    echo "  $path holds only leftovers (a drafted .pr-body.md, check output or batch scratch), which are not work (#3432, #3707)"
     echo "$path" >> "$tmp/worktrees-clean"
   else
     echo "  keeping $path (uncommitted changes)"
   fi
 done < "$tmp/worktrees"
 
-if docker volume ls -q > "$tmp/volumes" 2>/dev/null; then
+# Branches (#3707). Each local branch, by branch_verdict: `<name>\t<its worktree, or ->` for those that go, in
+# branches-prune, and `<name>: <why>` for those kept with commits on no remote, in branches-kept. A branch whose worktree
+# is removed above needs nothing more; one held by another worktree goes with it only when that worktree holds no work.
+awk '
+  /^worktree / { path = substr($0, 10); is_main = (++seen == 1); next }
+  /^branch refs\/heads\// { b = substr($0, 8); sub(/^refs\/heads\//, "", b); print b "\t" path "\t" is_main }
+' "$tmp/porcelain" > "$tmp/held"
+git -C "$main" for-each-ref --format='%(refname:short) %(committerdate:unix)' refs/heads > "$tmp/branches"
+: > "$tmp/branches-prune"
+: > "$tmp/branches-why"
+: > "$tmp/branches-kept"
+while read -r name tip; do
+  [ -n "$name" ] || continue
+  protected=0
+  worktree=-
+  held="$(awk -F '\t' -v b="$name" '$1 == b { print $2 "\t" $3; exit }' "$tmp/held")"
+  if [ -n "$held" ]; then
+    path="${held%$'\t'*}"
+    if [ "${held##*$'\t'}" = 1 ] || [ "$name" = "$self_branch" ] || [ -z "$(printf '%s\n' "$path" > "$tmp/one" && without_path "$tmp/one" "$self")" ]; then
+      protected=1
+    elif ! grep -qxF "$path" "$tmp/worktrees-clean"; then
+      status="$(git -C "$path" --no-optional-locks status --porcelain 2>/dev/null)" || status="unreadable"
+      if [ -z "$status" ] || only_leftovers "$status"; then worktree="$path"; else protected=1; fi
+    fi
+  fi
+  kept_by_caller "$name" && protected=1
+  in_dev=0
+  branch_in_development "$main" "$name" && in_dev=1
+  only_here="$(git -C "$main" rev-list --count "refs/heads/$name" --not --remotes 2>/dev/null || echo 1)"
+  on_remote=0
+  on_a_remote "$main" "$name" && on_remote=1
+  merged_at="$(awk -v b="$name" '$1 == b { print $2; exit }' "$tmp/merged-at")"
+  published=0
+  { was_published "$main" "$name" || [ -n "$merged_at" ]; } && published=1
+  verdict="$(branch_verdict "$name" "$protected" "$in_dev" "$only_here" "$on_remote" "${merged_at:--}" "$tip" "$published")"
+  case "$verdict" in
+    prune*)
+      printf '%s\t%s\n' "$name" "$worktree" >> "$tmp/branches-prune"
+      echo "$name: ${verdict#prune }" >> "$tmp/branches-why"
+      ;;
+    "keep only on this machine"*) echo "$name: ${verdict#keep }" >> "$tmp/branches-kept" ;;
+  esac
+done < "$tmp/branches"
+branches="$(grep -c . "$tmp/branches-prune" || true)"
+if [ -s "$tmp/branches-why" ]; then
+  echo "  $branches finished branch(es):"
+  sed 's/^/    /' "$tmp/branches-why"
+fi
+if [ -s "$tmp/branches-kept" ]; then
+  echo "  $(grep -c . "$tmp/branches-kept") branch(es) kept because this machine holds their only copy:"
+  sed 's/^/    /' "$tmp/branches-kept"
+fi
+
+if [ "$branches_only" = yes ]; then
+  # Volumes stay behind the free-space watermark; this mode runs on every check (#3707).
+  : > "$tmp/volumes-removable"
+elif docker volume ls -q > "$tmp/volumes" 2>/dev/null; then
   volume_candidates "$tmp/closed" "$tmp/volumes" > "$tmp/volumes-removable"
 else
   echo "  Docker is not answering, so no volume is considered." >&2
@@ -261,10 +504,11 @@ fi
 
 worktrees="$(grep -c . "$tmp/worktrees-clean" || true)"
 volumes="$(grep -c . "$tmp/volumes-removable" || true)"
-echo "Removable: $volumes volume(s) (about $((volumes * 27 / 10)) GiB inside the Docker disk image), $worktrees worktree(s) (about $((worktrees * 589 / 1024)) GiB on this disk)."
+echo "Removable: $volumes volume(s) (about $((volumes * 27 / 10)) GiB inside the Docker disk image), $worktrees worktree(s) (about $((worktrees * 589 / 1024)) GiB on this disk), $branches branch(es)."
 
 if [ "$act" != yes ]; then
-  echo "Nothing removed. Run '$0 --yes' to remove them."
+  echo "Nothing removed. Run '$0 --yes' to remove them, or '$0 --branches' for the branches and worktrees alone."
+  [ "$orphans" -gt 0 ] && [ "$remove_orphans" != yes ] && echo "The orphaned folders are kept by --yes as well. '$0 --remove-orphans' removes them, and only them."
   exit 0
 fi
 
@@ -323,6 +567,31 @@ if [ "$worktrees" -gt 0 ]; then
   git -C "$main" worktree prune
 fi
 
+# Branches last, each one's own worktree first (prune_steps), since git will not delete a checked-out branch. A branch
+# is deleted with -D because a squash-merged branch is never "merged" to git; branch_verdict is what decided it may go.
+if [ "$branches" -gt 0 ]; then
+  echo "Removing $branches branch(es)."
+  while IFS="$(printf '\t')" read -r name worktree; do
+    [ -n "$name" ] || continue
+    ok=yes
+    sha="$(git -C "$main" rev-parse --short "refs/heads/$name" 2>/dev/null || echo unknown)"
+    while read -r kind what; do
+      [ "$ok" = yes ] || break
+      case "$kind" in
+        worktree) git -C "$main" worktree remove --force "$what" 2>/dev/null || ok=no ;;
+        branch) git -C "$main" branch -D "$what" >/dev/null 2>&1 || ok=no ;;
+      esac
+    done < <(prune_steps "$name" "${worktree:--}")
+    if [ "$ok" = yes ]; then
+      # The tip, so a branch removed in error is one `git branch <name> <sha>` away.
+      echo "  removed $name ($sha)"
+    else
+      echo "  COULD NOT REMOVE $name"
+      failures=$((failures + 1))
+    fi
+  done < "$tmp/branches-prune"
+fi
+
 if [ "$failures" -gt 0 ]; then
   echo
   echo "$failures could not be removed:"
@@ -332,7 +601,8 @@ fi
 
 # The image is reported on EVERY sweep, so its size cannot quietly become 975 GB again.
 image="${DOCKER_DISK_IMAGE:-$LOCALAPPDATA/Docker/wsl/disk/docker_data.vhdx}"
-if [ -f "$image" ]; then
+# Not on the every-check branch sweep, which touches no volume and would print it on every check.
+if [ "$branches_only" != yes ] && [ -f "$image" ]; then
   size="$(awk -v b="$(wc -c < "$image")" 'BEGIN { printf "%.0f", b / 1073741824 }')"
   # The same 2.7 GiB per volume the removable line above reports, so the two numbers agree.
   gain="$(awk -v v="$volumes" 'BEGIN { printf "%.0f", v * 2.7 }')"

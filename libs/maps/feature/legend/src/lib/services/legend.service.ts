@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { combineLatest, from, fromEventPattern, Observable, ReplaySubject } from 'rxjs';
+import { combineLatest, from, Observable, ReplaySubject } from 'rxjs';
 import { map, scan, startWith, switchMap } from 'rxjs/operators';
 
-import { EsriMapService, EsriModuleProviderService, MapServiceInstance } from '@tamu-gisc/maps/esri';
+import { EsriMapService, EsriModuleProviderService, MapServiceInstance, watchAsObservable } from '@tamu-gisc/maps/esri';
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 
 import esri = __esri;
@@ -49,20 +49,10 @@ export class LegendService {
             respectLayerVisibility: false
           });
 
-          let handle: esri.Handle;
-
           // Watch every layer's visibility as well as the list itself. Because the list keeps hidden
           // layers, switching one on does not change it, so watching the list alone never listed a
           // layer that loaded hidden and was switched on later: every layer on the main map (#1857).
-          const add = (handler) => {
-            handle = reactiveUtils.watch(() => model.activeLayerInfos.map((info) => info.layer.visible), handler);
-          };
-
-          const remove = (): void => {
-            handle.remove();
-          };
-
-          return fromEventPattern(add, remove).pipe(
+          return watchAsObservable(reactiveUtils, () => model.activeLayerInfos.map((info) => info.layer.visible)).pipe(
             startWith(undefined),
             map(() => {
               return model.activeLayerInfos

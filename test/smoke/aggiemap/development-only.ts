@@ -76,6 +76,11 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
   selector: string;
   page: string;
   reason: string;
+  /**
+   * `phone` for a control only the phone's components draw: the check opens its page in `PHONE_VIEWPORT`, because a
+   * wider window is sent from `/map/m/...` to `/map/d/...` and never shows it (#3722).
+   */
+  viewport?: 'phone';
 }> = [
   {
     name: 'the dated raster campus basemaps in the gallery',
@@ -97,7 +102,10 @@ export const DEVELOPMENT_ONLY_CONTROLS: Array<{
     name: "the phone trip planner's accessible toggle",
     selector: '#direction-accessible-mode',
     page: '/map/m/trip',
-    reason: '#2801: accessible routing, which the routing network does not support yet (#3468: the phone missed the gate)'
+    reason: '#2801: accessible routing, which the routing network does not support yet (#3468: the phone missed the gate)',
+    // Without it, both directions were empty: development looked for the toggle on the desktop planner and timed out,
+    // and production found it absent from a page that could never have it (#3722).
+    viewport: 'phone'
   }
 ];
 

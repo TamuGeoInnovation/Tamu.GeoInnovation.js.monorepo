@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { Page } from '@playwright/test';
 
-import { expect, test } from './fixtures';
+import { PHONE_VIEWPORT, expect, test } from './fixtures';
 import { blockAnalytics } from './analytics';
 import {
   DEVELOPMENT_ONLY_CONTROLS,
@@ -49,11 +49,14 @@ const SIDE_PANEL_MAPS = ['/map', '/events/tailgating/map'];
  * What came with a change, and waits for a build carrying it (#3539), each skipping as "deploy a newer build" only
  * while the environment's newest tag predates that change: the sections #2758 gave the event map's side panel, by
  * `<map> <section>`, and its trip options page, by address. Directions was there before, so it is checked throughout.
+ * And the phone trip planner's accessible toggle, by its page: #3468 took it off production, and until a build with that
+ * fix is deployed, production still offers it (#3722).
  */
 const WAITS_FOR: Record<string, string> = {
   '/events/tailgating/map Bus Routes': '#2758',
   '/events/tailgating/map Experiments': '#2758',
-  '/events/tailgating/map/d/trip/options': '#2758'
+  '/events/tailgating/map/d/trip/options': '#2758',
+  '/map/m/trip': '#3468'
 };
 
 test.describe(`development-only sections ${VISIBLE ? 'are offered here' : 'stay off this environment'}`, () => {
@@ -267,6 +270,15 @@ test.describe(`development-only map controls ${VISIBLE ? 'are offered here' : 's
   for (const control of DEVELOPMENT_ONLY_CONTROLS) {
     test(`${control.name} ${VISIBLE ? 'is offered' : 'is not offered'}`, async ({ page }) => {
       await blockAnalytics(page);
+
+      // Only the gate waits for a deploy: development offers the control with or without the fix that hides it.
+      if (!VISIBLE && WAITS_FOR[control.page]) skipUntilDeployed(WAITS_FOR[control.page]);
+
+      if (control.viewport === 'phone') {
+        // Before arriving: a wider window is sent on to the desktop page, which has no such control (#3722).
+        await page.setViewportSize(PHONE_VIEWPORT);
+      }
+
       await page.goto(control.page);
 
       const locator = page.locator(control.selector);

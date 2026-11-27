@@ -13,7 +13,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 
 import {
   SUBMISSION_FILE_RULES,
@@ -211,7 +211,9 @@ export class SubmissionFilesComponent implements OnInit {
           if (event.type === HttpEventType.UploadProgress && event.total) {
             this.uploading.set({ name: file.name, percent: Math.round((100 * event.loaded) / event.total) });
           } else if (event.type === HttpEventType.Response && event.body) {
-            this.files.update((files) => [...(files ?? []), event.body]);
+            const added = event.body;
+
+            this.files.update((files) => [...(files ?? []), added]);
           }
         },
         error: (err) => {
@@ -309,9 +311,16 @@ export class SubmissionFilesComponent implements OnInit {
       });
   }
 
-  /** The `source`, or the submission's own files. */
+  /** The `source`, or the submission's own files; none, for a list given neither. */
   private from(): FilesSource {
-    return this.source() ?? submissionFiles(this.injector.get(UserSubmissionsService), this.submissionGuid());
+    const source = this.source();
+    const guid = this.submissionGuid();
+
+    if (source) {
+      return source;
+    }
+
+    return guid ? submissionFiles(this.injector.get(UserSubmissionsService), guid) : NO_FILES;
   }
 
   private load(): void {
@@ -332,6 +341,9 @@ export class SubmissionFilesComponent implements OnInit {
 const ALL = 'all';
 
 /** A submission's files (#2933), as a source. */
+/** A list given neither a source nor a submission: it has no files, and takes none (#3611). */
+const NO_FILES: FilesSource = { list: () => of([]), add: () => EMPTY, remove: () => EMPTY };
+
 function submissionFiles(submissions: UserSubmissionsService, guid: string): FilesSource {
   return {
     list: () => submissions.getFiles(guid),

@@ -223,11 +223,11 @@ export class SelectComponent<T extends object> implements ControlValueAccessor {
     this.cd.markForCheck();
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (value: T | string | undefined) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 

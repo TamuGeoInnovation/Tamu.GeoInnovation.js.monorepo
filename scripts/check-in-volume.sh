@@ -213,6 +213,31 @@ memory_advice() {
   echo "Run it again with fewer tasks at once, CHECK_PARALLEL=1 (a GIS Day-wide check needs it), or more memory, CHECK_MEMORY=24g if Docker has it; or run the failed projects alone."
 }
 
+# Runs <command> as the step <label>, and once more if it fails (#3695). For the steps that read the checkout at /src:
+# the container reads it through Docker's file sharing from the Windows drive, and that fails now and then with
+# "Cannot allocate memory" before anything is checked, then passes when run again. Twice, never a loop: a second
+# failure is a real one. Runs inside the container, which defines `step`, so it is POSIX sh. Tested by
+# scripts/check-in-volume.test.sh.
+retry_once() {
+  label="$1"
+  shift
+  step "$label" "$@" && return 0
+  echo "=== $label failed; trying once more in ${CHECK_RETRY_DELAY:-5} s, since reading the checkout through Docker's file sharing fails now and then and passes when run again (#3695)"
+  sleep "${CHECK_RETRY_DELAY:-5}"
+  step "$label (second try)" "$@"
+}
+
+# Prints, for a check that stopped with exit 3, that it never got as far as checking anything, and why when the log
+# says: the container could not read the branch from the checkout. Nothing for any other exit (#3695).
+setup_advice() {
+  local log="$1" code="$2"
+  [ "$code" -eq 3 ] || return 0
+  echo "Exit 3: the check stopped before checking anything, because the container could not read the branch from this checkout (clone, fetch or checkout)."
+  if grep -q 'Cannot allocate memory' "$log" 2>/dev/null; then
+    echo "The log says 'Cannot allocate memory': Docker's file sharing failed reading the Windows drive, not the branch. Each read was tried twice before giving up; run the same command again."
+  fi
+}
+
 # Sourced (by the test): stop here, with only the functions defined.
 # Prints the part of the log's name that comes from <mode>: `affected`, `all`, or a project list with every character a
 # file name cannot hold turned into `-`. A list longer than 60 characters is cut to its first project, how many there are,
@@ -321,9 +346,11 @@ step() { echo "=== $1 $(date +%T)"; shift; "$@"; c=$?; echo "=== exit $c $(date 
 git config --global --add safe.directory "*"
 cd /w
 echo "memory $CHECK_MEMORY, parallel $CHECK_PARALLEL"
-if [ ! -d .git ]; then step "clone" git clone -q /src /w || exit 3; fi
-step "fetch development" git fetch -q -f /src refs/remotes/origin/development:refs/remotes/origin/development || exit 3
-step "fetch $branch" git fetch -q /src "refs/heads/$branch" || exit 3
+# A clone that fails part-way leaves a .git behind, and a second clone into it would refuse; it goes first.
+clone_src() { git clone -q /src /w && return 0; rm -rf /w/.git; return 1; }
+if [ ! -d .git ]; then retry_once "clone" clone_src || exit 3; fi
+retry_once "fetch development" git fetch -q -f /src refs/remotes/origin/development:refs/remotes/origin/development || exit 3
+retry_once "fetch $branch" git fetch -q /src "refs/heads/$branch" || exit 3
 git checkout -q -f -B check FETCH_HEAD && git clean -fdq || exit 3
 git log --oneline -1
 sum=$(cat package.json package-lock.json | sha1sum | cut -c1-40)
@@ -382,7 +409,15 @@ src="$(cd "$main" && pwd -W)"
 # nobody is made to do decays exactly as writing the release notes afterwards did (#1132, #3400).
 if sweep_needed "$here"; then
   echo "Below ${CHECK_SWEEP_FREE_GB:-60} GiB free: clearing worktrees and volumes whose work has merged."
-  "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --yes || echo "The sweep did not finish; carrying on." >&2
+  # Never the branch about to be checked: the sweep runs before the container fetches it (#3756).
+  TIDY_KEEP_BRANCH="$branch" "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --yes || echo "The sweep did not finish; carrying on." >&2
+else
+  # Finished branches and their worktrees on every check, whatever the free disk: that part is cheap, and waiting for
+  # the watermark let one machine reach 789 branches, 732 of them finished (#3707). Only what it removed is shown.
+  sweep_log="$(mktemp)"
+  TIDY_KEEP_BRANCH="$branch" "$(dirname "${BASH_SOURCE[0]}")/tidy.sh" --branches > "$sweep_log" 2>&1 || echo "The branch sweep did not finish; carrying on." >&2
+  grep -E '^  (removed |COULD NOT REMOVE)|could not be removed' "$sweep_log" || true
+  rm -f "$sweep_log"
 fi
 free_space_check "$here" || exit 2
 
@@ -401,13 +436,14 @@ container="check-$volume"
 container_free "$container" || exit 1
 docker run --rm --name "$container" -m "$memory" \
   -v "$volume:/w" -v "$src:/src:ro" -w /w \
-  -e CHECK_MEMORY="$memory" -e CHECK_PARALLEL="$parallel" -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.3 sh -c "$(declare -f unknown_projects)
+  -e CHECK_MEMORY="$memory" -e CHECK_PARALLEL="$parallel" -e NX_DAEMON=false -e NX_REJECT_UNKNOWN_LOCAL_CACHE=0 -e LINT_STEPS="$extra" node:24.22.3 sh -c "$(declare -f unknown_projects retry_once)
 $inner" check "$branch" "$mode" "${runs[@]}" >"$log" 2>&1
 code=$?
 set -e
 grep "^unknown project: " "$log" | sed "s/^unknown project: /No such project: /" >&2 || true
 echo "Exit $code ($branch, $mode). Log: $log"
 memory_advice "$log" "$code" >&2
+setup_advice "$log" "$code" >&2
 run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
   "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"
 exit "$code"

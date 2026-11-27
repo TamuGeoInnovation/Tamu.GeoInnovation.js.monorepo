@@ -19,7 +19,7 @@ import { Angulartics2 } from 'angulartics2';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
-import { arrowKeyControl } from '@tamu-gisc/common/utils/ui';
+import { KeyboardNavigationDirective } from '@tamu-gisc/ui-kits/ngx/interactions/keyboard';
 import { getGeolocation, parseLatLon } from '@tamu-gisc/common/utils/geometry';
 import { TemplateRenderer } from '@tamu-gisc/common/utils/string';
 
@@ -34,9 +34,14 @@ import { NgClass, AsyncPipe, TitleCasePipe } from '@angular/common';
   styleUrls: ['./search.component.scss'],
   providers: [SearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, AsyncPipe, TitleCasePipe]
+  imports: [NgClass, AsyncPipe, TitleCasePipe, KeyboardNavigationDirective]
 })
 export class SearchComponent implements OnInit, OnDestroy {
+  private static nextListId = 0;
+
+  /** The results list's id, which the box names in aria-controls: one per search, as two can share a page. */
+  public readonly listId = `search-results-${SearchComponent.nextListId++}`;
+
   private cd = inject(ChangeDetectorRef);
   private analytics = inject(Angulartics2);
   private ns = inject(NotificationService);
@@ -49,21 +54,21 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Defaults to blank.
    */
-  public readonly placeholder = input<string>(undefined);
+  public readonly placeholder = input<string | undefined>(undefined);
 
   /**
    * Option that handles whether or not geolocation for the component is enabled
    *
    * Defaults to false.
    */
-  public readonly canGeolocate = input<boolean>(undefined);
+  public readonly canGeolocate = input<boolean | undefined>(undefined);
 
   /**
    * Option that enables/disabled the left side action icon on the search bar.
    *
    * Default to false.
    */
-  public readonly leftActionIcon = input<string>(undefined);
+  public readonly leftActionIcon = input<string | undefined>(undefined);
 
   /**
    * Option that enables/disabled the right side action on the search bar.
@@ -74,7 +79,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * Default to false.
    */
-  public readonly rightActionIcon = input<string>(undefined);
+  public readonly rightActionIcon = input<string | undefined>(undefined);
 
   /**
    * Option that sets a default search input value
@@ -109,7 +114,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    * When omitted, falls back to the application-wide search sources as usual.
    */
-  public readonly sources = input<SearchSource[]>(undefined);
+  public readonly sources = input<SearchSource[] | undefined>(undefined);
 
   // ===========================================================================
 
@@ -187,7 +192,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Describes if and geolocation selection is visible
    */
-  public searchResultsActive: boolean = undefined;
+  public searchResultsActive: boolean | undefined = undefined;
 
   /**
    * Set while a result is being chosen, so that the focus the browser gives the chosen option does not
@@ -206,12 +211,13 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Search service subscription, allowing un-subscription on component destroy
    */
-  private _destroy$: Subject<boolean> = new Subject();
+  private _destroy$: Subject<void> = new Subject();
 
   /**
    * DOM input element reference.
    */
-  private readonly searchElem = viewChild<ElementRef>('search');
+  // Required: the template always renders the input, outside any @if, and it is resolved by ngOnInit (#3495).
+  private readonly searchElem = viewChild.required<ElementRef>('search');
 
   constructor() {
     if (this.environment.value('SearchSources')) {
@@ -237,7 +243,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       // Test if any search result object contains at least one search result.
       // If there are no search result objects, it is understood that it a search service clear was invoked.
       if (res.results.length > 0) {
-        this.searchResultStatus = res.results.some((result) => result.features.length > 0);
+        this.searchResultStatus = res.results.some((result) => (result.features?.length ?? 0) > 0);
       } else {
         // Prevent the "no features found" suggestion on an empty search result.
         this.searchResultStatus = true;
@@ -315,7 +321,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     // Dispose of any subscriptions made
-    this._destroy$.next(undefined);
+    this._destroy$.next();
     this._destroy$.complete();
   }
 
@@ -390,8 +396,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     });
 
     if (feature && !isString) {
-      // Update the DOM model value
-      this.value.set(this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate));
+      // Update the DOM model value. With no display template there is no text, and the box shows nothing, as it did
+      // when this set `undefined` (#3495).
+      this.value.set(this.evaluateDisplayTemplate(feature as unknown as object, parentResult.displayTemplate) ?? '');
 
       // De-focus the component, and ignore the focus the chosen option is about to take (#2844).
       this._selecting = true;
@@ -402,15 +409,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // Emit search result object to be consumed by parent component
     this.result.emit(selection);
-  }
-
-  /**
-   * Function wrapper for custom drop down element arrow navigation.
-   *
-   * See child function documentation for parameter descriptions.
-   */
-  public keyControl(e: KeyboardEvent, action: string, target: string): void {
-    arrowKeyControl(e, action, target);
   }
 
   /**
@@ -503,7 +501,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   /**
    * Uses a template renderer to evaluate the display template with values from the provided feature object.
    */
-  public evaluateDisplayTemplate(obj: object, template: string) {
+  public evaluateDisplayTemplate(obj: object, template: string | undefined) {
     return new TemplateRenderer({
       lookup: obj,
       template: template

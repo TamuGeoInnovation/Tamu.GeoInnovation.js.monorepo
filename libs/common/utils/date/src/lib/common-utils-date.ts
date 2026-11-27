@@ -48,6 +48,28 @@ export function parseEventDate(date: string | Date | number): number {
 }
 
 /**
+ * A calendar date, as local midnight on that date in epoch milliseconds, for showing it in the viewer's zone.
+ *
+ * An ArcGIS date field that holds a date with no time stores it as **midnight UTC**: 1 January 2025 is
+ * 1735689600000. Read as an instant in College Station that is 6 PM on 31 December, so a date formatted from it
+ * shows a day early (#3551). This keeps the UTC calendar date and moves it to local midnight. A `YYYY-MM-DD`
+ * string is read as `parseEventDate` reads it. `NaN` for a value that is not a date.
+ */
+export function calendarDate(date: string | Date | number): number {
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return parseEventDate(date);
+  }
+
+  const instant = new Date(date);
+
+  if (isNaN(instant.getTime())) {
+    return NaN;
+  }
+
+  return new Date(instant.getUTCFullYear(), instant.getUTCMonth(), instant.getUTCDate()).getTime();
+}
+
+/**
  * Whether an event is over: its last date's whole local day has ended, and then `graceDays` more full
  * days. With no grace, an event on 2 October is over from midnight on 3 October; with one day, from
  * midnight on 4 October. No dates, or none that parse, means it has not passed.

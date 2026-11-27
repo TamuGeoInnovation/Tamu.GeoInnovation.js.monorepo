@@ -109,6 +109,44 @@ describe('SiteCopyService', () => {
       await expect(service.import({ ...file({}), source: 'file:///etc' }, false)).rejects.toThrow(BadRequestException);
     });
 
+    // An import fetches the file's logos and photos from its `source`, so a source that could be any address would let
+    // whoever uploads a file make this server request any host, an internal one included (CodeQL js/request-forgery, #3776).
+    it('refuses a file from a site that is not a GIS Day site, so the server never fetches from an address a file names', async () => {
+      const service = new SiteCopyService(dataSource(new Map()).source);
+
+      for (const source of [
+        'https://internal.example',
+        'https://10.0.0.5',
+        'https://txgisday.org.example.com',
+        'https://txgisday.org:8443',
+        // This server's own ports: a local site is allowed only when ORIGINS lists it.
+        'http://localhost:6379'
+      ]) {
+        await expect(service.import({ ...file({}), source }, false)).rejects.toThrow(BadRequestException);
+      }
+    });
+
+    it("accepts every GIS Day site's addresses, this API's own origins and a local site", async () => {
+      vi.stubEnv('ORIGINS', 'https://gisday.example.edu,http://localhost:4200');
+
+      try {
+        const service = new SiteCopyService(dataSource(new Map([[Season, []]])).source);
+
+        for (const source of [
+          'https://txgisday.org',
+          'https://gisday.tamu.edu',
+          'https://tamu.txgisday.org',
+          'https://gisday.ucgis.org',
+          'https://gisday.example.edu',
+          'http://localhost:4200'
+        ]) {
+          await expect(service.import({ ...file({}), source }, false)).resolves.toMatchObject({ applied: false });
+        }
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
     it('writes nothing in a dry run, and says what it would add', async () => {
       const { source, save } = dataSource(new Map([[Season, []]]));
       const plan = await new SiteCopyService(source).import(

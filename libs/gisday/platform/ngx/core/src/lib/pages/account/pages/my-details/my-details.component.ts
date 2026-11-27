@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import {
+  AbstractControl,
   UntypedFormBuilder,
   UntypedFormGroup,
   ValidatorFn,
@@ -7,9 +8,9 @@ import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
-import { Observable, Subject, map, shareReplay, startWith, switchMap, take } from 'rxjs';
+import { Observable, Subject, filter, map, shareReplay, startWith, switchMap, take } from 'rxjs';
 
-import { AuthService } from '@auth0/auth0-angular';
+import { AuthService, User } from '@auth0/auth0-angular';
 
 import { OrganizationService, UniversityService, UserService } from '@tamu-gisc/gisday/platform/ngx/data-access';
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
@@ -21,41 +22,47 @@ import { SelectComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { ButtonComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { GISDAY_SITE, serverMessage } from '@tamu-gisc/gisday/platform/ngx/common';
 
-const infoCompletionValidator: ValidatorFn = (control: UntypedFormGroup): { [key: string]: boolean } | null => {
-  const type = control.get('app_metadata.gisday.attendeeType');
-  const education = control.get('user_metadata.education');
-  const occupation = control.get('user_metadata.occupation');
+/**
+ * Complete when the attendee type's own fields are all filled in: a student's education, anyone else's occupation. Given
+ * the controls it reads, so it does not have to look them up by path.
+ */
+function infoCompletionValidator(
+  type: AbstractControl,
+  education: UntypedFormGroup,
+  occupation: UntypedFormGroup
+): ValidatorFn {
+  return (): { [key: string]: boolean } | null => {
+    if (type.value === 'student') {
+      const allFieldsValid = Object.entries(education.value).every(([key, value]) => {
+        if (key === 'otherInstitution' && education.controls['institution'].value !== 'other') {
+          return true;
+        }
 
-  if (type.value === 'student') {
-    const allFieldsValid = Object.entries(education.value).every(([key, value]) => {
-      if (key === 'otherInstitution' && education.get('institution').value !== 'other') {
-        return true;
+        return value !== null && value !== undefined && value !== '';
+      });
+
+      if (allFieldsValid) {
+        return null;
       }
-
-      return value !== null && value !== undefined && value !== '';
-    });
-
-    if (allFieldsValid) {
-      return null;
     }
-  }
 
-  if (type.value === 'industry' || type.value === 'academia') {
-    const allFieldsValid = Object.entries(occupation.value).every(([key, value]) => {
-      if (key === 'otherEmployer' && occupation.get('employer').value !== 'other') {
-        return true;
+    if (type.value === 'industry' || type.value === 'academia') {
+      const allFieldsValid = Object.entries(occupation.value).every(([key, value]) => {
+        if (key === 'otherEmployer' && occupation.controls['employer'].value !== 'other') {
+          return true;
+        }
+
+        return value !== null && value !== undefined && value !== '';
+      });
+
+      if (allFieldsValid) {
+        return null;
       }
-
-      return value !== null && value !== undefined && value !== '';
-    });
-
-    if (allFieldsValid) {
-      return null;
     }
-  }
 
-  return { incomplete: true };
-};
+    return { incomplete: true };
+  };
+}
 
 @Component({
   selector: 'tamu-gisc-my-details',
@@ -84,6 +91,9 @@ export class MyDetailsComponent implements OnInit {
   private readonly os = inject(OrganizationService);
 
   public form: UntypedFormGroup;
+  private email: AbstractControl;
+  private attendeeType: AbstractControl;
+  private employer: AbstractControl;
 
   public signedOnEntityIsSocial$: Observable<boolean>;
   public signedOnEntityHasCompletedInfo$: Observable<boolean>;
@@ -96,52 +106,55 @@ export class MyDetailsComponent implements OnInit {
   private _refresh$: Subject<boolean> = new Subject();
 
   public ngOnInit(): void {
+    const attendeeType = this.fb.control(null, Validators.required);
+    const education = this.fb.group({
+      id: [null],
+      institution: [null],
+      fieldOfStudy: [null],
+      classification: [null],
+      otherInstitution: [null]
+    });
+    const occupation = this.fb.group({
+      employer: [null],
+      department: [null],
+      position: [null],
+      otherEmployer: [null]
+    });
+
+    this.email = this.fb.control({ value: null, disabled: true });
+    this.attendeeType = attendeeType;
+    this.employer = occupation.controls['employer'];
+
     this.form = this.fb.group(
       {
         user_info: this.fb.group({
           given_name: [null],
           family_name: [null],
-          email: [{ value: null, disabled: true }]
+          email: this.email
         }),
         app_metadata: this.fb.group({
-          gisday: this.fb.group({
-            attendeeType: [null, Validators.required]
-          })
+          gisday: this.fb.group({ attendeeType })
         }),
-        user_metadata: this.fb.group({
-          education: this.fb.group({
-            id: [null],
-            institution: [null],
-            fieldOfStudy: [null],
-            classification: [null],
-            otherInstitution: [null]
-          }),
-          occupation: this.fb.group({
-            employer: [null],
-            department: [null],
-            position: [null],
-            otherEmployer: [null]
-          })
-        })
+        user_metadata: this.fb.group({ education, occupation })
       },
-      { validators: [infoCompletionValidator] }
+      { validators: [infoCompletionValidator(attendeeType, education, occupation)] }
     );
 
-    this.otherInstitutionSelected$ = this.form.get('user_metadata.education.institution').valueChanges.pipe(
+    this.otherInstitutionSelected$ = education.controls['institution'].valueChanges.pipe(
       map((value) => {
         return value === 'other';
       }),
       shareReplay()
     );
 
-    this.otherEmployerSelected$ = this.form.get('user_metadata.occupation.employer').valueChanges.pipe(
+    this.otherEmployerSelected$ = this.employer.valueChanges.pipe(
       map((value) => {
         return value === 'other';
       }),
       shareReplay()
     );
 
-    this.selectedParticipantType$ = this.form.get('app_metadata.gisday.attendeeType').valueChanges.pipe(
+    this.selectedParticipantType$ = attendeeType.valueChanges.pipe(
       map((value) => {
         return value;
       })
@@ -152,6 +165,8 @@ export class MyDetailsComponent implements OnInit {
       switchMap(() => {
         return this.as.user$;
       }),
+      // Signed out there is nobody's details to load; the account pages are only reached signed in.
+      filter(hasSub),
       switchMap((user) => this.us.getUserMetadata(user.sub)),
       shareReplay()
     );
@@ -195,7 +210,7 @@ export class MyDetailsComponent implements OnInit {
         this.form.patchValue(result);
 
         if (result?.user_info?.email === '' || result?.user_info?.email === null || result?.user_info?.email?.length === 0) {
-          this.form.get('user_info.email').enable();
+          this.email.enable();
         }
       },
       error: (e) => {
@@ -211,11 +226,11 @@ export class MyDetailsComponent implements OnInit {
   }
 
   public setAttendeeType(type: string) {
-    this.form.get('app_metadata.gisday.attendeeType').setValue(type);
+    this.attendeeType.setValue(type);
 
     // If attendee type is not student, clear the occupation employer field
     if (type !== 'student') {
-      this.form.get('user_metadata.occupation.employer').setValue(null);
+      this.employer.setValue(null);
     }
   }
 
@@ -225,6 +240,7 @@ export class MyDetailsComponent implements OnInit {
     this.as.user$
       .pipe(
         take(1),
+        filter(hasSub),
         switchMap((user) => {
           return this.us.updateUserMetadata(user.sub, form);
         })
@@ -249,4 +265,9 @@ export class MyDetailsComponent implements OnInit {
         }
       });
   }
+}
+
+/** A signed-in Auth0 user, who always has a subject; signed out, `user$` emits null or undefined. */
+function hasSub(user: User | null | undefined): user is User & { sub: string } {
+  return typeof user?.sub === 'string';
 }

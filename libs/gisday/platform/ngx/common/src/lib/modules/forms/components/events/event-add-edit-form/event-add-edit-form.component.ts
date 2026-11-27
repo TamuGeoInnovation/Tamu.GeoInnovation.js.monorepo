@@ -133,7 +133,7 @@ export class EventAddEditFormComponent implements OnInit {
    */
   public readonly problems = signal<Array<string>>([]);
 
-  public readonly type = input<'create' | 'edit'>(undefined);
+  public readonly type = input.required<'create' | 'edit'>();
 
   /** The session's slides (#3093), uploaded by its speakers, for the admins to download. Set on an existing event. */
   public readonly slides = signal<FilesSource | null>(null);
@@ -192,8 +192,8 @@ export class EventAddEditFormComponent implements OnInit {
    *  The start time of the selected event date. This value is the intersection of the
    * eventDate value and active season days to yield the start time of the selected event date.
    */
-  public selectedEventDateStart$: Observable<Date>;
-  public selectedEventDateEnd$: Observable<Date>;
+  public selectedEventDateStart$: Observable<Date | null>;
+  public selectedEventDateEnd$: Observable<Date | null>;
 
   public eventTypeDict = [
     {
@@ -297,8 +297,9 @@ export class EventAddEditFormComponent implements OnInit {
     );
 
     this.activeSeasonDays$ = this.seasonService.activeSeason$.pipe(
+      // With no active season, or one with no days, there are no days to choose from.
       mergeMap((season) => {
-        return from(season.days).pipe(
+        return from(season?.days ?? []).pipe(
           map((day) => {
             return {
               guid: day.guid,
@@ -320,7 +321,7 @@ export class EventAddEditFormComponent implements OnInit {
       shareReplay()
     );
 
-    const formSpeakerChanges = (this.eventSpeakers$ = this.form.get('speakers').valueChanges.pipe(
+    const formSpeakerChanges = (this.eventSpeakers$ = this.form.controls.speakers.valueChanges.pipe(
       withLatestFrom(this.speakers$),
       map(([speakerGuids, speakers]) => {
         // By last name, as they are added and removed (#2940).
@@ -371,12 +372,8 @@ export class EventAddEditFormComponent implements OnInit {
 
       // Its judges (#3183), from their own route: the public session page does not list them.
       if (this.judgingOn) {
-        this.entity$
-          .pipe(
-            take(1),
-            filter((event) => Boolean(event?.guid)),
-            switchMap((event) => this.judging.eventJudging(event.guid))
-          )
+        this._savedGuid$()
+          .pipe(switchMap((guid) => this.judging.eventJudging(guid)))
           .subscribe((judging) => {
             this.form.patchValue({ judges: judging?.judges ?? [] });
             this.judgesLoaded = true;
@@ -421,9 +418,10 @@ export class EventAddEditFormComponent implements OnInit {
       );
 
       this.seasonService.activeSeason$.pipe(take(1)).subscribe((season) => {
-        this.form.patchValue({
-          season: season.guid
-        });
+        // With no active season, the form's season is left empty.
+        if (season) {
+          this.form.patchValue({ season: season.guid });
+        }
       });
     }
 
@@ -461,12 +459,11 @@ export class EventAddEditFormComponent implements OnInit {
    * edited first in the profile email's window.
    */
   public emailSessionDetails() {
-    this.entity$
+    this._savedGuid$()
       .pipe(
-        take(1),
-        switchMap((event) =>
-          sendSessionDetailsEmail(this.modals, this.speakerEdits.previewSessionDetails(event.guid), (email) =>
-            this.speakerEdits.sendSessionDetails(event.guid, email)
+        switchMap((guid) =>
+          sendSessionDetailsEmail(this.modals, this.speakerEdits.previewSessionDetails(guid), (email) =>
+            this.speakerEdits.sendSessionDetails(guid, email)
           )
         )
       )
@@ -482,12 +479,11 @@ export class EventAddEditFormComponent implements OnInit {
    * upload, and each speaker's own link to upload them, a copy each, read and edited first in the same window.
    */
   public emailSlidesRequest() {
-    this.entity$
+    this._savedGuid$()
       .pipe(
-        take(1),
-        switchMap((event) =>
-          sendSlidesRequestEmail(this.modals, this.speakerEdits.previewSlidesRequest(event.guid), (email) =>
-            this.speakerEdits.sendSlidesRequest(event.guid, email)
+        switchMap((guid) =>
+          sendSlidesRequestEmail(this.modals, this.speakerEdits.previewSlidesRequest(guid), (email) =>
+            this.speakerEdits.sendSlidesRequest(guid, email)
           )
         )
       )
@@ -503,12 +499,11 @@ export class EventAddEditFormComponent implements OnInit {
    * edited first in the same window. Only the judges, never the session's other speakers.
    */
   public emailJudges() {
-    this.entity$
+    this._savedGuid$()
       .pipe(
-        take(1),
-        switchMap((event) =>
-          sendJudgingEmail(this.modals, this.speakerEdits.previewJudging(event.guid), (email) =>
-            this.speakerEdits.sendJudging(event.guid, email)
+        switchMap((guid) =>
+          sendJudgingEmail(this.modals, this.speakerEdits.previewJudging(guid), (email) =>
+            this.speakerEdits.sendJudging(guid, email)
           )
         )
       )
@@ -528,7 +523,8 @@ export class EventAddEditFormComponent implements OnInit {
     this.eventSpeakers$
       .pipe(
         take(1),
-        map((speakers) => speakers.map((s) => s.guid)),
+        // Every speaker listed was chosen from the saved speakers, so each has a guid.
+        map((speakers) => speakers.flatMap((s) => (s.guid ? [s.guid] : []))),
         switchMap((guids) =>
           sendProfileEmail(this.modals, this.speakerEdits.preview(guids), (email) => this.speakerEdits.send(guids, email))
         )
@@ -655,22 +651,32 @@ export class EventAddEditFormComponent implements OnInit {
     this.saves.save('create', this.eventService.createEntity(rawValue));
   }
 
+  /** The saved event's guid, once; nothing for an event that has none, which no email or judging can be about. */
+  private _savedGuid$(): Observable<string> {
+    return this.entity$.pipe(
+      take(1),
+      map((event) => event?.guid),
+      filter((guid): guid is string => Boolean(guid))
+    );
+  }
+
+  /** The chosen day's date, or null when the day is not one of the active season's (or has no date). */
   private _defaultTimeFromSelectedEvent$() {
     return this.selectedEventDate$.pipe(
       take(1),
       withLatestFrom(this.activeSeasonDays$),
-      map(([dayGuid, days]) => {
-        return days.find((day) => day.guid === dayGuid).date;
-      })
+      map(([dayGuid, days]) => days.find((day) => day.guid === dayGuid)?.date ?? null)
     );
   }
 
   private _applyTimeToForm(formProp: 'startTime' | 'endTime') {
     return pipe(
-      tap((date: Date) => {
-        this.form.patchValue({
-          [formProp]: date.toTimeString()
-        });
+      tap((date: Date | null) => {
+        if (date) {
+          this.form.patchValue({
+            [formProp]: date.toTimeString()
+          });
+        }
       })
     );
   }

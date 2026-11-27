@@ -57,7 +57,7 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
     this._onTouched();
   }
 
-  private _onChange = (values: Array<string | number>) => {
+  private _onChange: (values: Array<string | number>) => void = (values) => {
     return values;
   };
 
@@ -116,7 +116,7 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
    * Check to see if provided value exists. If it exists in the group value,
    * remove it, else add it.
    */
-  private toggle(valueToToggle) {
+  private toggle(valueToToggle: string | number) {
     if (!valueToToggle) {
       return;
     }
@@ -143,7 +143,7 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
    * Number inputs as strings will be problematic because the value will be coerced to a string and
    * equality checks will fail.
    */
-  public writeValue(value) {
+  public writeValue(value: string | number | Array<string | number> | null) {
     if (value === null) return;
 
     // The form's own value, so it is not reported back to the form as a change (#2964).
@@ -159,11 +159,11 @@ export class CheckboxGroupComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  public registerOnChange(fn) {
+  public registerOnChange(fn: (values: Array<string | number>) => void) {
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn) {
+  public registerOnTouched(fn: () => void) {
     this._onTouched = fn;
   }
 }
