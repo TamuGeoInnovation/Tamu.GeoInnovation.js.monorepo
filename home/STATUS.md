@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a76**: #3851: by the code, an option change redraws after clearing (currentResult$ re-emits on every travel option); proving it in a browser before changing anything, 10:59 PM Central, 26 November.
+- Waiting on Q-g238-1 (GIS Day) and Q-3851-1 (AggieMap); a72 and a73 next if the bug queue stays empty. Since 11:02 PM Central.
 
 ## Finished
+- **#3851** (report `home/reports/2026-11-26-3851.md`, 11:02 PM Central): not reproduced; the route survives option changes because currentResult\$ redraws after the clear; no branch.
 - **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
 - **Batch a74** (report `home/reports/2026-11-26-a74.md`, 10:25 PM Central): #2846 not reproduced, the route drew 60 of 60 (40 production, 20 development); no branch; two questions.
 - **Batch g127** (report `home/reports/2026-11-26-g127.md`, 10:05 PM Central): branch ready `chore/3796-park-season-day-writes`; check and pre-pr-check Exit 0.
