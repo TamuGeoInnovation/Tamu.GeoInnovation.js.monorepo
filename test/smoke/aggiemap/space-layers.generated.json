@@ -1,0 +1,26 @@
+[
+  {
+    "route": "/parking/accessible-parking",
+    "layerId": "Accessible Parking Space",
+    "service": "accessibleParkingUrl",
+    "layer": "0"
+  },
+  {
+    "route": "/parking/maintenance-parking",
+    "layerId": "maintenance-parking-spaces",
+    "service": "maintenanceParkingUrl",
+    "layer": "0"
+  },
+  {
+    "route": "/parking/motorcycle-parking",
+    "layerId": "motorcycle-parking-space",
+    "service": "motorcycleParkingUrl",
+    "layer": "0"
+  },
+  {
+    "route": "/parking/service-loading",
+    "layerId": "service-parking-spaces",
+    "service": "loadingZonesUrl",
+    "layer": "0"
+  }
+]

@@ -6,7 +6,7 @@ import { SpeakerEditsService, SpeakerService, sendEditLinksToast } from '@tamu-g
 import { NotificationService } from '@tamu-gisc/common/ngx/ui/notification';
 import { DashboardScrollComponent, sendProfileEmail } from '@tamu-gisc/gisday/platform/ngx/common';
 import { ModalService } from '@tamu-gisc/ui-kits/ngx/layout/modal';
-import { Observable, switchMap, take } from 'rxjs';
+import { Observable, map, switchMap, take } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 import { BaseAdminListComponent } from '../../../base-admin-list/base-admin-list.component';
@@ -16,6 +16,26 @@ import { CheckboxComponent } from '@tamu-gisc/ui-kits/ngx/forms';
 import { AsyncPipe } from '@angular/common';
 import { ExistsPipe } from '@tamu-gisc/common/ngx/pipes';
 import { CentralDatePipe } from '@tamu-gisc/gisday/platform/ngx/common';
+
+/**
+ * The tags of these speakers' sessions, each once, by name, after every tag (#440): what the admin Speakers list offers
+ * to show the speakers in one kind of session, as the Events list offers organizations (#434).
+ */
+export function sessionTagChoices(speakers: Array<Partial<Speaker>> | null): Array<{ guid: string; name: string }> {
+  const tags = new Map<string, string>();
+
+  for (const event of (speakers ?? []).flatMap((speaker) => speaker.events ?? [])) {
+    for (const tag of event.tags ?? []) {
+      if (tag?.guid) {
+        tags.set(tag.guid, tag.name ?? '');
+      }
+    }
+  }
+
+  const named = [...tags].map(([guid, name]) => ({ guid, name })).sort((a, b) => a.name.localeCompare(b.name));
+
+  return [{ guid: '', name: 'Every tag' }, ...named];
+}
 
 @Component({
   selector: 'tamu-gisc-speaker-list',
@@ -51,12 +71,32 @@ export class SpeakerListComponent extends BaseAdminListComponent<Speaker> {
    */
   public readonly inSessions = new FormControl('', { nonNullable: true });
 
+  /**
+   * The speakers in a session with one tag (#440): the tag's guid, or '' for every speaker. Organizers inviting past
+   * panelists back needed every speaker of one kind of session, which the list could not show.
+   */
+  public readonly sessionTag = new FormControl('', { nonNullable: true });
+
+  /** The tags of the season's sessions, by name, after every tag, for that choice (#440). */
+  public sessionTagChoices$: Observable<Array<{ guid: string; name: string }>>;
+
   protected override listFilters(): Record<string, FormControl<string>> {
-    return { ...super.listFilters(), sessions: this.inSessions };
+    return { ...super.listFilters(), sessions: this.inSessions, sessionTag: this.sessionTag };
   }
 
   protected override keepEntity(speaker: Partial<Speaker>): boolean {
-    return this.inSessions.value !== 'none' || !speaker.events?.length;
+    const tag = this.sessionTag.value;
+
+    return (
+      (this.inSessions.value !== 'none' || !speaker.events?.length) &&
+      (!tag || (speaker.events ?? []).some((event) => (event.tags ?? []).some((t) => t?.guid === tag)))
+    );
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
+    this.sessionTagChoices$ = this.listed$.pipe(map((speakers) => sessionTagChoices(speakers)));
   }
 
   /**
