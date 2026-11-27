@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **#3851** next (the clear-then-skip route path), then a72, a73, g128, g129. Since 10:51 PM Central.
+- **Batch g127**: the 9:30 note (#3793 7A: DELETE goes too) was missed while the session was down; adding it to the pushed branch now, 10:52 PM Central, 26 November.
 
 ## Finished
 - **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
