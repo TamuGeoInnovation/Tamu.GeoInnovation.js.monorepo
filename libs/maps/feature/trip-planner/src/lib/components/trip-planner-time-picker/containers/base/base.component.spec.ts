@@ -54,7 +54,9 @@ describe('TripPlannerTimePickerComponent (#2608)', () => {
 
     expect(options.value.time_mode).toBe('leave');
     expect(picker(fixture), 'no picker was drawn').not.toBeNull();
-    expect((picker(fixture).componentInstance as DateTimePickerComponent).value?.getTime()).toBeGreaterThanOrEqual(before - 1000);
+    expect((picker(fixture).componentInstance as DateTimePickerComponent).value?.getTime()).toBeGreaterThanOrEqual(
+      before - 1000
+    );
   });
 
   it('shows "Leave at" as the chosen option when the planner leaves at a time', () => {
@@ -70,7 +72,10 @@ describe('TripPlannerTimePickerComponent (#2608)', () => {
 
     expect(picker(fixture), 'no picker was drawn').not.toBeNull();
     expect((picker(fixture).componentInstance as DateTimePickerComponent).value?.getTime()).toBe(at.getTime());
-    expect((picker(fixture).nativeElement as HTMLElement).textContent?.trim().length, 'the picker shows no time').toBeGreaterThan(0);
+    expect(
+      (picker(fixture).nativeElement as HTMLElement).textContent?.trim().length,
+      'the picker shows no time'
+    ).toBeGreaterThan(0);
   });
 
   it('removes the picker when "Leave now" is chosen', async () => {
