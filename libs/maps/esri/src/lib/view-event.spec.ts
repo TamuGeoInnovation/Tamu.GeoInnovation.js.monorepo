@@ -81,6 +81,30 @@ describe('viewEvent', () => {
     second.unsubscribe();
     expect(fake.removals).toBe(2);
   });
+
+  // The test above makes two observables, so each had its own closure and never saw this (#3693). Two subscribers to
+  // ONE observable - `share()`, or an `async` pipe used twice - each get a handle, and each must remove its own: a handle
+  // kept in one variable was overwritten by the second, so the first to leave took the second's off the view.
+  it('lets two subscribers to one observable each remove their own handle', () => {
+    const removed: number[] = [];
+    let issued = 0;
+    const view = {
+      on: () => {
+        const id = ++issued;
+        return { remove: () => void removed.push(id) };
+      }
+    } as unknown as MapServiceInstance['view'];
+
+    const clicks = viewEvent(view, 'click');
+    const first = clicks.subscribe();
+    const second = clicks.subscribe();
+
+    first.unsubscribe();
+    expect(removed).toEqual([1]);
+
+    second.unsubscribe();
+    expect(removed).toEqual([1, 2]);
+  });
 });
 
 describe('viewEventFromStore', () => {

@@ -5,6 +5,8 @@
       <div class="form-section-name">Speakers</div>
       <div class="form-section-actions">
         <tamu-gisc-select class="post-1" placeholder="Season" [floatLabel]="false" [data]="seasons$ | async" displayTemplate="year" valueTemplate="guid" [value]="$safeNavigationMigration((selectedSeason$ | async)?.guid)" (changed)="setSeason($event)"></tamu-gisc-select>
+        <!-- The speakers in one kind of session (#440), by the tags of the season's sessions, as Events offers organizations (#434). -->
+        <tamu-gisc-select class="post-1" placeholder="Session tag" [floatLabel]="false" [data]="sessionTagChoices$ | async" displayTemplate="name" valueTemplate="guid" [value]="sessionTag.value" (changed)="sessionTag.setValue($event)"></tamu-gisc-select>
 
         <a class="post-1" routerLink="edits">Edits to review <span class="material-icons action">rate_review</span></a>
         <a routerLink="add">Add speaker <span class="material-icons action">add</span></a>

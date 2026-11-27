@@ -33,7 +33,7 @@ export class QrCodeComponent {
   /**
    * The downloaded file's name, without `.png`. No download button without it.
    */
-  public readonly downloadName = input<string>(undefined);
+  public readonly downloadName = input<string | undefined>(undefined);
 
   /**
    * Whether to offer a Full Screen button. Escape, or the button shown in full screen, leaves it.
@@ -43,7 +43,7 @@ export class QrCodeComponent {
   /**
    * A line shown under the code in full screen only, such as what to scan it for.
    */
-  public readonly caption = input<string>(undefined);
+  public readonly caption = input<string | undefined>(undefined);
 
   /**
    * The modules' colour. Keep it dark: phones read a QR code by the contrast with its white ground.
@@ -54,7 +54,7 @@ export class QrCodeComponent {
    * An image for the middle of the code, such as a university's logo, from the same site so a PNG can
    * be drawn with it. The code is made with the highest error correction so it still reads around it.
    */
-  public readonly logo = input<string>(undefined);
+  public readonly logo = input<string | undefined>(undefined);
 
   /**
    * Whether this code fills the screen now. The browser can leave full screen on its own (Escape), so
