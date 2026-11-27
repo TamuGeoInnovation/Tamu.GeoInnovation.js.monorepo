@@ -63,7 +63,13 @@ export const CORE_TITLES = ['lists at least'];
 const FEATURES: { paths: RegExp; specs: string[] }[] = [
   {
     paths: /^libs\/maps\/feature\/basemap\//,
-    specs: ['services.spec.ts', 'basemap-zoom.spec.ts', 'campus-basemap.spec.ts', 'basemap-gallery.spec.ts', 'blank-map.spec.ts']
+    specs: [
+      'services.spec.ts',
+      'basemap-zoom.spec.ts',
+      'campus-basemap.spec.ts',
+      'basemap-gallery.spec.ts',
+      'blank-map.spec.ts'
+    ]
   },
   {
     // The campus basemap's address, whose query failure rate is watched (#2702).
@@ -81,10 +87,19 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   {
     // Where the buildings come from, and how the Buildings layer is drawn and filtered (#2707).
-    paths: /^libs\/(common\/datasets\/geographic\/src\/lib\/campus\/campus-basemap|aggiemap\/ngx\/common\/src\/lib\/definitions\/main\.definitions)\.ts$/,
+    paths:
+      /^libs\/(common\/datasets\/geographic\/src\/lib\/campus\/campus-basemap|aggiemap\/ngx\/common\/src\/lib\/definitions\/main\.definitions)\.ts$/,
     specs: ['building-clicks.spec.ts', 'popup.spec.ts']
   },
-  { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts'] },
+  {
+    paths: /^libs\/maps\/feature\/trip-planner\//,
+    specs: ['directions.spec.ts', 'map-coordinates.spec.ts', 'bus-route-fit.spec.ts']
+  },
+  {
+    // How a fit leaves the side panel's part of the map clear, and the panel that registers itself (#2763).
+    paths: /^libs\/(maps\/esri\/src\/lib\/services\/map\/fit\.ts|aggiemap\/ngx\/ui\/desktop\/src\/lib\/modules\/sidebar\/)/,
+    specs: ['bus-route-fit.spec.ts', 'directions.spec.ts']
+  },
   {
     paths: /^libs\/aggiemap\/ngx\/ui\/.*\/(sidebar-trip-planner|trip-planner-top)\//,
     specs: ['directions.spec.ts', 'map-coordinates.spec.ts']
@@ -118,7 +133,8 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {
-    paths: /^libs\/(ui-kits\/ngx\/forms\/src\/lib\/components\/autocomplete|aggiemap\/ngx\/discover\/src\/lib\/components\/all-maps)\//,
+    paths:
+      /^libs\/(ui-kits\/ngx\/forms\/src\/lib\/components\/autocomplete|aggiemap\/ngx\/discover\/src\/lib\/components\/all-maps)\//,
     specs: ['all-maps-search.spec.ts']
   }
 ];

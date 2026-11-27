@@ -35,7 +35,9 @@ async function chooseRoute(page: Page): Promise<void> {
   await page.goto(BUS_PANEL);
   await waitForMapReady(page, `the map at ${BUS_PANEL} never finished loading`);
 
-  const route = page.locator(BUS_ROUTE, { has: page.locator('.route-number', { hasText: new RegExp(`^\\s*${ROUTE}\\s*$`) }) });
+  const route = page.locator(BUS_ROUTE, {
+    has: page.locator('.route-number', { hasText: new RegExp(`^\\s*${ROUTE}\\s*$`) })
+  });
   await expect(route, `route ${ROUTE} is not listed`).toHaveCount(1, { timeout: 60_000 });
   await route.locator('.route-overview').click();
 
