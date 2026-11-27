@@ -23,7 +23,8 @@ const checkbox = (page: Page, label: string): Locator =>
   page.locator('tamu-gisc-checkbox').filter({ has: page.getByText(label, { exact: true }) });
 
 /** Whether a checkbox is ticked, as it shows it: its icon (the hidden input is not bound to the value). */
-const ticked = async (box: Locator) => (await box.locator('.icon-container i.material-icons').textContent())?.trim() === 'check_box';
+const ticked = async (box: Locator) =>
+  (await box.locator('.icon-container i.material-icons').textContent())?.trim() === 'check_box';
 
 /** A plain select of the form, by its control name. */
 const select = (page: Page, name: string): Locator => page.locator(`tamu-gisc-select[formcontrolname="${name}"] select`);
@@ -53,7 +54,10 @@ for (const kind of [
       await field(admin.page, 'type').fill('Another made-up kind');
       await submit(admin.page, 'Create');
 
-      expect((await sentTo(admin, 'POST', new RegExp(`^/${kind.path}$`))).body).toEqual({ guid: '', type: 'Another made-up kind' });
+      expect((await sentTo(admin, 'POST', new RegExp(`^/${kind.path}$`))).body).toEqual({
+        guid: '',
+        type: 'Another made-up kind'
+      });
       await admin.context.close();
     });
 
@@ -136,7 +140,10 @@ test.describe('Sponsors (#3839)', () => {
     await field(admin.page, 'description').fill('A made-up sponsor, edited.');
     await submit(admin.page, 'Update');
 
-    expect((await sentTo(admin, 'PATCH', /^\/sponsors\/sp-1$/)).body).toEqual({ ...sent, description: 'A made-up sponsor, edited.' });
+    expect((await sentTo(admin, 'PATCH', /^\/sponsors\/sp-1$/)).body).toEqual({
+      ...sent,
+      description: 'A made-up sponsor, edited.'
+    });
     await admin.context.close();
   });
 });
@@ -287,10 +294,23 @@ test.describe('Speakers (#3839)', () => {
     images: [],
     season: SEASON
   };
-  const texts = ['firstName', 'lastName', 'email', 'description', 'socialMedia', 'graduationYear', 'degree', 'program', 'affiliation'] as const;
+  const texts = [
+    'firstName',
+    'lastName',
+    'email',
+    'description',
+    'socialMedia',
+    'graduationYear',
+    'degree',
+    'program',
+    'affiliation'
+  ] as const;
   const entered = Object.fromEntries(texts.map((name) => [name, speaker[name]]));
   // A 1-by-1 pixel PNG.
-  const photo = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+  const photo = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+    'base64'
+  );
 
   test('Add sends what was entered, with a photo', async ({ browser, baseURL }) => {
     const admin = await openAdmin(browser, baseURL!, [ACTIVE_SEASON, ...lists]);
@@ -341,6 +361,276 @@ test.describe('Speakers (#3839)', () => {
       isOrganizer: 'false',
       isActive: 'true'
     });
+    await admin.context.close();
+  });
+});
+
+test.describe('Seasons and their days (#3839)', () => {
+  const season = {
+    guid: 's-2031',
+    year: 2031,
+    active: true,
+    days: [
+      { guid: 'd-1', date: '2031-11-18T06:00:00.000Z' },
+      { guid: 'd-2', date: '2031-11-19T06:00:00.000Z' }
+    ]
+  };
+
+  test('Edit opens with the season, and saves every field and day of it with a day added', async ({ browser, baseURL }) => {
+    const admin = await openAdmin(browser, baseURL!, [{ path: '/seasons/s-2031', json: season }, ACTIVE_SEASON]);
+    await open(admin, '/admin/seasons/edit/s-2031', field(admin.page, 'year'));
+
+    await expect(field(admin.page, 'year')).toHaveValue('2031');
+    expect(await ticked(checkbox(admin.page, 'Is active?'))).toBe(true);
+    await expect(admin.page.locator('tamu-gisc-seasons-day-tile [aria-label="Remove event day"]')).toHaveCount(2);
+
+    await admin.page.getByRole('button', { name: 'Add event day' }).click();
+    await submit(admin.page, 'Update');
+
+    const { body } = await sentTo(admin, 'PATCH', /^\/seasons\/s-2031$/);
+    expect(body).toEqual({
+      guid: 's-2031',
+      year: 2031,
+      active: true,
+      days: [...season.days, { date: expect.any(String) }]
+    });
+    await admin.context.close();
+  });
+});
+
+test.describe("The competitions designer's question types (#3839)", () => {
+  const kind = {
+    attribute: 'kind',
+    title: 'Kind of place',
+    instructions: 'Pick one.',
+    type: 'select',
+    enabled: true,
+    isDiscriminator: true,
+    options: [
+      { name: 'Bench', value: 'bench' },
+      { name: 'Tree', value: 'tree' }
+    ]
+  };
+  const notes = {
+    attribute: 'notes',
+    title: 'Notes',
+    instructions: '',
+    type: 'text',
+    enabled: true,
+    isDiscriminator: false,
+    options: []
+  };
+  const competition = {
+    allowSubmissions: true,
+    scoringOpensAt: null,
+    scoringClosesAt: null,
+    form: { guid: 'fm-1', source: 'https://example.test/made-up/FeatureServer/0', model: [kind, notes] }
+  };
+
+  test('Changing one question to each type saves every question as it was, with that type', async ({ browser, baseURL }) => {
+    for (const [label, type] of [
+      ['Checkbox', 'checkbox'],
+      ['Radio', 'radio'],
+      ['Dropdown', 'select'],
+      ['Text', 'text']
+    ] as const) {
+      const admin = await openAdmin(browser, baseURL!, [{ path: '/competitions/forms/active', json: competition }]);
+      const question = admin.page.locator('tamu-gisc-design-question').filter({ hasText: 'Notes' });
+      await open(admin, '/admin/competitions/designer', question);
+
+      await question.locator('tamu-gisc-accordion-header').click();
+      await question.locator('tamu-gisc-select[formcontrolname="type"] select').selectOption({ label });
+      await submit(admin.page, 'Save');
+
+      expect((await sentTo(admin, 'PATCH', /^\/competitions\/forms\/fm-1$/)).body).toEqual({
+        form: { source: competition.form.source, model: [kind, { ...notes, type }] },
+        season: { allowSubmissions: true, scoringOpensAt: null, scoringClosesAt: null }
+      });
+      await admin.context.close();
+    }
+  });
+});
+
+test.describe('Events (#3839)', () => {
+  const day = { guid: 'd-1', date: '2031-11-19T06:00:00.000Z' };
+  const tags = [
+    { guid: 'tg-1', name: 'Workshop' },
+    { guid: 'tg-2', name: 'Panel' }
+  ];
+  const speaker = { guid: 'pe-1', firstName: 'Cy', lastName: 'Lee', organization: { guid: 'or-1', name: 'Example County' } };
+  const location = { guid: 'lo-1', building: 'Example Hall', room: '101', place: { guid: 'pl-1' } };
+  const broadcast = { guid: 'br-1', name: 'Example stream', place: { guid: 'pl-1' } };
+  const lists: Array<ApiAnswer> = [
+    ACTIVE_SEASON,
+    { path: '/tags/season/active', json: tags },
+    { path: '/speakers/season/active', json: [speaker] },
+    { path: '/event-broadcasts/season/active', json: [broadcast] },
+    { path: '/event-locations/season/active', json: [location] }
+  ];
+  /**
+   * The event as `GET /events/:guid` answers. Its recorded attendance is not in it: the API leaves
+   * `observedAttendeeStart` and `observedAttendeeEnd` out of every read but `GET /events/:guid/attendance`.
+   */
+  const event = {
+    guid: 'ev-1',
+    name: 'Mapping with drones',
+    abstract: 'A made-up session.',
+    day,
+    startTime: '09:00:00 GMT-0600',
+    endTime: '10:30:00 GMT-0600',
+    checkInMinutesBefore: 15,
+    checkInMinutesAfter: 10,
+    mode: 'hybrid',
+    eventType: 'open',
+    presentationType: 'group',
+    location,
+    broadcast,
+    requirements: 'A laptop.',
+    resources: 'https://example.edu/slides',
+    active: true,
+    requiresRsvp: true,
+    isAcceptingRsvps: false,
+    isBringYourOwnDevice: true,
+    checkInAnyTime: false,
+    noSlides: false,
+    judgedCompetition: '',
+    judgingClosed: false,
+    tags: [tags[1]],
+    speakers: [speaker]
+  };
+  const editing: Array<ApiAnswer> = [
+    ...lists,
+    { path: '/events/ev-1', json: event },
+    { path: '/events/ev-1/judging', json: { judgedCompetition: null, judgingClosed: false, judges: [] } },
+    { path: '/events/ev-1/attendance', json: { observedAttendeeStart: 12, observedAttendeeEnd: 15 } },
+    { path: '/session-files/event/ev-1', json: [] }
+  ];
+
+  /** Every field the form has, as an edit that changes nothing else must send it. */
+  const unchanged = {
+    guid: 'ev-1',
+    name: event.name,
+    abstract: event.abstract,
+    day: 'd-1',
+    startTime: event.startTime,
+    endTime: event.endTime,
+    checkInMinutesBefore: 15,
+    checkInMinutesAfter: 10,
+    mode: 'hybrid',
+    eventType: 'open',
+    presentationType: 'group',
+    location: 'lo-1',
+    broadcast: 'br-1',
+    requirements: event.requirements,
+    resources: event.resources,
+    active: true,
+    requiresRsvp: true,
+    isAcceptingRsvps: false,
+    isBringYourOwnDevice: true,
+    checkInAnyTime: false,
+    noSlides: false,
+    judgingClosed: false,
+    tags: ['tg-2'],
+    speakers: ['pe-1']
+  };
+
+  async function editAbstract(admin: AdminPage) {
+    await open(admin, '/admin/events/edit/ev-1', field(admin.page, 'name'));
+    await expect(field(admin.page, 'name')).toHaveValue(event.name);
+    await field(admin.page, 'abstract').fill('A made-up session, edited.');
+    await submit(admin.page, 'Update');
+
+    return (await sentTo(admin, 'PATCH', /^\/events\/ev-1$/)).body;
+  }
+
+  test('Edit opens with every field of the event', async ({ browser, baseURL }) => {
+    const admin = await openAdmin(browser, baseURL!, editing);
+    await open(admin, '/admin/events/edit/ev-1', field(admin.page, 'name'));
+
+    for (const name of ['name', 'abstract', 'requirements', 'resources'] as const) {
+      await expect(field(admin.page, name)).toHaveValue(event[name]);
+    }
+    await expect(field(admin.page, 'checkInMinutesBefore')).toHaveValue('15');
+    await expect(select(admin.page, 'mode').locator('option:checked')).toHaveText(/hybrid/i);
+    await expect(select(admin.page, 'location').locator('option:checked')).toHaveText(/Example Hall/);
+    await expect(select(admin.page, 'broadcast').locator('option:checked')).toHaveText('Example stream');
+    expect(await ticked(checkbox(admin.page, 'Requires RSVP?'))).toBe(true);
+    expect(await ticked(checkbox(admin.page, 'Is accepting RSVPs?'))).toBe(false);
+    expect(await ticked(checkbox(admin.page, 'Panel'))).toBe(true);
+    expect(await ticked(checkbox(admin.page, 'Workshop'))).toBe(false);
+    // The chosen speakers, beside the search list (whose rows are presenter cards too).
+    await expect(admin.page.locator('tamu-gisc-select-list + div tamu-gisc-presenter-card')).toHaveCount(1);
+    await admin.context.close();
+  });
+
+  test('An edit of the abstract sends every other field as it was', async ({ browser, baseURL }) => {
+    const admin = await openAdmin(browser, baseURL!, editing);
+
+    expect(await editAbstract(admin)).toMatchObject({ ...unchanged, abstract: 'A made-up session, edited.' });
+    await admin.context.close();
+  });
+
+  test('An edit of the abstract leaves the recorded attendance alone (#3827)', async ({ browser, baseURL }) => {
+    // #3827: the form never reads the attendance, so every update sent both counts as null and erased them. Expected to
+    // fail until the laptop's fix (`fix/3827-event-save-keeps-attendance`, batch g50) is in; then remove this line.
+    test.fail(true, '#3827: saving an event erases its recorded attendance');
+    const admin = await openAdmin(browser, baseURL!, editing);
+    const body = await editAbstract(admin);
+
+    // Either leave the counts out, so the API keeps them, or send them as recorded.
+    for (const [name, recorded] of [
+      ['observedAttendeeStart', 12],
+      ['observedAttendeeEnd', 15]
+    ] as const) {
+      expect(name in body ? body[name] : recorded, name).toBe(recorded);
+    }
+    await admin.context.close();
+  });
+
+  test('Add sends what was entered', async ({ browser, baseURL }) => {
+    const admin = await openAdmin(browser, baseURL!, lists);
+    await open(admin, '/admin/events/add', field(admin.page, 'name'));
+
+    await admin.page.locator('tamu-gisc-seasons-day-tile[role="button"]').first().click();
+    // Picking the day sets both times to its midnight, which the form refuses; each is set with its picker.
+    for (const [heading, time] of [
+      ['Event start time', '9:00 AM'],
+      ['Event end time', '10:30 AM']
+    ] as const) {
+      const picker = admin.page
+        .getByText(heading, { exact: true })
+        .locator('xpath=ancestor::div[1]')
+        .locator('tamu-gisc-date-time-picker');
+      await picker.locator('tamu-gisc-tooltip-trigger').click();
+      // Only the open picker's input is drawn.
+      const input = admin.page.locator('input.date-time-picker-time');
+      await input.fill(time);
+      await input.press('Enter');
+      // Closed by a click outside it, as the tooltip expects: Escape on an admin page asks to leave without saving.
+      await admin.page.getByText(heading, { exact: true }).click();
+      await expect(input).toHaveCount(0);
+    }
+    await field(admin.page, 'name').fill(event.name);
+    await field(admin.page, 'abstract').fill(event.abstract);
+    await select(admin.page, 'mode').selectOption({ label: 'Hybrid' });
+    await select(admin.page, 'eventType').selectOption({ index: 1 });
+    await select(admin.page, 'presentationType').selectOption({ index: 2 });
+    await select(admin.page, 'location').selectOption({ label: 'Example Hall - 101' });
+    await tick(admin.page, 'Panel');
+    await submit(admin.page, 'Create');
+
+    const { body } = await sentTo(admin, 'POST', /^\/events$/);
+    expect(body).toMatchObject({
+      name: event.name,
+      abstract: event.abstract,
+      day: 'd-1',
+      mode: 'hybrid',
+      location: 'lo-1',
+      tags: ['tg-2'],
+      season: 's-2031'
+    });
+    expect(String(body['startTime'])).toMatch(/^09:00:00/);
+    expect(String(body['endTime'])).toMatch(/^10:30:00/);
     await admin.context.close();
   });
 });

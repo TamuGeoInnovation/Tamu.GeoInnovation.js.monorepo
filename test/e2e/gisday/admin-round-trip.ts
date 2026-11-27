@@ -79,7 +79,60 @@ export async function sentTo(admin: AdminPage, method: string, path: RegExp, tim
 }
 
 /** Every permission string the GIS Day site and API name (grep of libs/gisday, as of #3839), so no test is refused by one it did not think of. */
-export const ADMIN_PERMISSIONS = ['create:assets', 'create:checkins', 'create:classes', 'create:competitions', 'create:event-broadcasts', 'create:event-locations', 'create:events', 'create:organizations', 'create:places', 'create:season-days', 'create:seasons', 'create:speakers', 'create:sponsors', 'create:tags', 'create:universities', 'create:users', 'delete:assets', 'delete:checkins', 'delete:classes', 'delete:competitions', 'delete:event-broadcasts', 'delete:event-locations', 'delete:events', 'delete:organizations', 'delete:places', 'delete:season-days', 'delete:seasons', 'delete:speakers', 'delete:sponsors', 'delete:tags', 'delete:universities', 'delete:users', 'read:checkins', 'read:classes', 'read:competitions', 'read:events', 'read:rsvps', 'read:users', 'update:assets', 'update:classes', 'update:competitions', 'update:event-broadcasts', 'update:event-locations', 'update:events', 'update:organizations', 'update:places', 'update:season-days', 'update:seasons', 'update:speakers', 'update:sponsors', 'update:tags', 'update:universities'];
+export const ADMIN_PERMISSIONS = [
+  'create:assets',
+  'create:checkins',
+  'create:classes',
+  'create:competitions',
+  'create:event-broadcasts',
+  'create:event-locations',
+  'create:events',
+  'create:organizations',
+  'create:places',
+  'create:season-days',
+  'create:seasons',
+  'create:speakers',
+  'create:sponsors',
+  'create:tags',
+  'create:universities',
+  'create:users',
+  'delete:assets',
+  'delete:checkins',
+  'delete:classes',
+  'delete:competitions',
+  'delete:event-broadcasts',
+  'delete:event-locations',
+  'delete:events',
+  'delete:organizations',
+  'delete:places',
+  'delete:season-days',
+  'delete:seasons',
+  'delete:speakers',
+  'delete:sponsors',
+  'delete:tags',
+  'delete:universities',
+  'delete:users',
+  'read:checkins',
+  'read:classes',
+  'read:competitions',
+  'read:events',
+  'read:rsvps',
+  'read:users',
+  'update:assets',
+  'update:classes',
+  'update:competitions',
+  'update:event-broadcasts',
+  'update:event-locations',
+  'update:events',
+  'update:organizations',
+  'update:places',
+  'update:season-days',
+  'update:seasons',
+  'update:speakers',
+  'update:sponsors',
+  'update:tags',
+  'update:universities'
+];
 
 async function bodyOf(request: Request): Promise<Record<string, unknown>> {
   const buffer = request.postDataBuffer();
@@ -91,7 +144,7 @@ async function bodyOf(request: Request): Promise<Record<string, unknown>> {
 
   if (type.startsWith('multipart/form-data')) {
     // Node reads a multipart body as the API would.
-    const form = await new Response(buffer, { headers: { 'content-type': type } }).formData();
+    const form = await new Response(Uint8Array.from(buffer), { headers: { 'content-type': type } }).formData();
     const fields: Record<string, unknown> = {};
 
     form.forEach((value, key) => {
