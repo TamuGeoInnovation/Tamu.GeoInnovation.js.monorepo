@@ -1,0 +1,4 @@
+# Type errors in this library's own files under its tsconfig.lib.json, held so they cannot rise (#3581, #3718).
+# Errors in the libraries it imports are theirs, not counted here. Re-measure with:
+#   node scripts/check-strict-libs.mjs --all --write
+3

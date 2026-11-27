@@ -36,10 +36,6 @@ export const accountRoutes: Routes = [
         path: 'vgi-submissions',
         canActivate: [siteFeatureGuard('competitions')],
         loadChildren: () => import('@tamu-gisc/gisday/competitions/ngx/core').then((m) => m.userSubmissionsRoutes)
-      },
-      {
-        path: 'initial-survey',
-        loadChildren: () => import('./pages/initial-survey/initial-survey.routes').then((m) => m.initialSurveyRoutes)
       }
     ]
   }

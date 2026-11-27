@@ -22,7 +22,7 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 ## Where things are written down
 
-Eleven places, each with one job.
+Twelve places, each with one job.
 
 | Where | What belongs there |
 | --- | --- |
@@ -32,6 +32,7 @@ Eleven places, each with one job.
 | [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
 | [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
 | [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
+| [`docs/upgrades/README.md`](docs/upgrades/README.md) | The modernization plan: how far behind each of Angular, NestJS, Nx, TypeScript and ArcGIS is today, the order the remaining steps have to be taken in, and which of them gate the others. Updated in the same pull request as the step it describes. |
 | [`docs/parked-code.md`](docs/parked-code.md) | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once. |
 | [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
 | The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
@@ -266,8 +267,17 @@ alone.
 2. **Checked by a listener** (the lab), like any dependency change: the full check with a clean `npm ci`, the lock diff
    against `development` (only the named packages and their own dependencies may move), and for an image or tool bump,
    the thing actually run (an image started, the smoke suite on the new Playwright). The result goes on the pull request.
+   **The report includes Socket's verdict**: its `Pull Request Alerts` check and its comment, or that it posted none. The
+   security director brings the maintainer any malware or High finding and nothing else, so nobody reads Socket on every
+   pull request.
 3. **A major is brought to the maintainer** with a recommendation, never merged on a green check. Node majors and Nx
    majors are held back in `dependabot.yml` until each is done as its own change.
+
+**Socket is the one required check on `development`** (#2334, #3728). It reads every pull request that changes a lock
+and comments only when one adds a new risk; its policy blocks only known malware, so ordinary work is never held. A
+merge it refuses is a malware finding: stop, and bring it to the maintainer. **Installing an app is not the same as
+setting it up**: Socket was installed on 24 November 2026 and produced nothing for two days, because the link on
+Socket's own side was never finished. Count a new app as working only once its first check or comment has appeared.
 
 Never push to a Dependabot branch: it lives on `TamuGeoInnovation` and Dependabot rewrites it. A fix it needs (for
 example the READMEs that hard-code a Playwright image version) is its own small pull request.

@@ -35,12 +35,15 @@ export class SearchService {
    * Sets service state to a single instance of SearchResult, containing
    * the results of all source queries, which notifies all subscribers.
    */
-  public search<T>(options: SearchPropertiesObservable): Observable<SearchResult<T>>;
-  public search<T>(options: SearchPropertiesPromise): Promise<SearchResult<T>>;
-  public search<T>(options: SearchProperties): SearchResult<T>;
+  //
+  // Each answers `undefined`, having logged why, when the options cannot be searched (no sources, an unknown source, no
+  // values); and a promise resolves `undefined` if its stream completes empty (#3495).
+  public search<T>(options: SearchPropertiesObservable): Observable<SearchResult<T>> | undefined;
+  public search<T>(options: SearchPropertiesPromise): Promise<SearchResult<T> | undefined> | undefined;
+  public search<T>(options: SearchProperties): SearchResult<T> | undefined;
   public search<T>(
     options: SearchPropertiesObservable | SearchPropertiesPromise | SearchProperties
-  ): SearchResult<T> | Promise<SearchResult<T>> | Observable<SearchResult<T>> {
+  ): SearchResult<T> | Promise<SearchResult<T> | undefined> | Observable<SearchResult<T>> | undefined {
     // Check we don't have an array for sources
     if (!(options.sources instanceof Array)) {
       console.error(`Method expected a source array.`);
@@ -64,12 +67,22 @@ export class SearchService {
       return;
     }
 
+    // Every source is queried with its value at the same index; with none there is nothing to search for. This read
+    // `options.values[i]` and threw a TypeError instead (#3495). Checked after the sources, so their errors come first.
+    const values = options.values;
+
+    if (!values) {
+      console.error(`Expected search values for the sources.`);
+      return;
+    }
+
     // Match a SearchSource to every provided source.
     // If the source is a string reference, return the reference source.
     // If the source is a SearchSource, return self
-    const sources: SearchSource[] = options.sources.map((src) => {
-      return typeof src === 'string' ? this._sources.find((s) => s.source === src) : src;
-    });
+    // Every string reference was found above, so nothing is dropped here; the filter only tells the compiler so.
+    const sources: SearchSource[] = options.sources
+      .map((src) => (typeof src === 'string' ? this._sources.find((s) => s.source === src) : src))
+      .filter((s): s is SearchSource => s !== undefined);
 
     // Generate an array of http get observables
     const requests = sources.map((source, index) => {
@@ -82,8 +95,8 @@ export class SearchService {
     // Create an array of http get observables for those search sources
     // that contain a scoring where property
     const scoringRequests = sources
-      .filter((source) => {
-        return source.queryParams && source.queryParams.scoringWhere;
+      .filter((source): source is SearchSource & { queryParams: SearchSourceQueryParamsProperties } => {
+        return Boolean(source.queryParams && source.queryParams.scoringWhere);
       })
       .map((source, index) => {
         // Create a modified SearchProperties object for the single
@@ -93,7 +106,7 @@ export class SearchService {
         if (indexOfSourceValueInOptions > -1) {
           modifiedOptions = {
             sources: [sources[indexOfSourceValueInOptions].source],
-            values: [options.values[indexOfSourceValueInOptions]]
+            values: [values[indexOfSourceValueInOptions]]
           };
         } else {
           // If this block is hit, then it means that the provided options sources list does not
@@ -108,11 +121,11 @@ export class SearchService {
           where: source.queryParams.scoringWhere
         };
 
+        // Remove the excess identical scoringWhere clause for the same of cleanliness.
+        delete modifiedQueryParams.scoringWhere;
+
         // Search source with a modified query params that has the nested scoring where `queryParams`.
         const modifiedScoringSource: SearchSource = { ...source, queryParams: modifiedQueryParams };
-
-        // Remove the excess identical scoringWhere clause for the same of cleanliness.
-        delete modifiedScoringSource.queryParams.scoringWhere;
 
         const query = this._getUrlQueryParams(modifiedOptions, modifiedScoringSource, index);
 
@@ -208,26 +221,29 @@ export class SearchService {
           return of(baseScoringMerged);
         }
       }),
-      switchMap((result: Array<T>) => {
+      // One response per source, in the sources' order: the service's JSON, or `{}` from `_safeRequest`.
+      switchMap((result: Array<object>) => {
         // Create a single SearchResult class instance, where the results of all http results will be placed in
         // the results property.
         return of(
-          new SearchResult({
+          new SearchResult<T>({
             results: result.map((r, index: number) => {
               // `r` may be an empty object when `_safeRequest` swallowed a transport- or envelope-level
               // failure for this source. Treat that the same as a result with no features so the rest
-              // of the search response continues to render normally.
-              const featureCollection = r && r[sources[index].featuresLocation];
+              // of the search response continues to render normally. A response holds its features under
+              // its source's `featuresLocation`, which is a string key, so it is read as a keyed object.
+              const featureCollection =
+                r && (r as Record<string, Array<object> | undefined>)[sources[index].featuresLocation];
 
               return <SearchResultItem<T>>{
                 name: sources[index].name,
                 features: featureCollection
-                  ? this.scoreResults(featureCollection, sources, index, options.values[index] as string)
+                  ? this.scoreResults(featureCollection, sources, index, values[index] as string)
                   : [],
                 displayTemplate: sources[index].displayTemplate,
                 breadcrumbs: {
                   source: sources[index],
-                  value: options.values[index]
+                  value: values[index]
                 }
               };
             })
@@ -336,9 +352,9 @@ export class SearchService {
    * @param {SearchSource} source A valid search source.
    * @param {number} indexOverride Optional index override that determines which source and
    * which values from the collection are used.
-   * @returns {string} Query string.
+   * @returns {string} Query string, or `undefined` for a source with no `queryParams`, as it always has been (#3495).
    */
-  private _getUrlQueryParams(options: SearchProperties, source: SearchSource, indexOverride?: number): string {
+  private _getUrlQueryParams(options: SearchProperties, source: SearchSource, indexOverride?: number): string | undefined {
     // If an index value is provided, use it instead of attempting to determine index.
     //
     // Reference Github Issue: https://github.tamu.edu/AggieMap/dev.aggiemap.tamu.edu/issues/93
@@ -348,25 +364,31 @@ export class SearchService {
     if (source.queryParams) {
       // If instead we have query params object which needs to be converted to a url query string.
 
-      // If no where clause exists in the object, throw error. Any query will fail without it.
-      if ('where' in source.queryParams === false) {
+      // If no where clause exists in the object, throw error. Any query will fail without it. A `where` present but
+      // undefined is the same, and used to fail a line later as a TypeError (#3495).
+      const whereConfig = source.queryParams.where;
+
+      if (!whereConfig) {
         throw new Error('No where property provided.');
       }
 
       //
       // Uses keys from source config
-      const keys = source.queryParams.where.keys;
+      const keys = whereConfig.keys;
       //
       // Uses operators from source config
-      const operators = source.queryParams.where.operators;
+      const operators = whereConfig.operators;
 
       //
       // Uses wildcards (if any) from source config
-      const wildcards = source.queryParams.where.wildcards;
+      const wildcards = whereConfig.wildcards;
 
       //
       // Uses transformations (if any) from source config
-      const transformations = source.queryParams.where.transformations;
+      const transformations = whereConfig.transformations;
+
+      // `search` refuses options without values before it gets here.
+      const optionValues = options.values ?? [];
 
       //
       // Creates a value that matches the number of query param keys.
@@ -376,9 +398,9 @@ export class SearchService {
       //
       // When options.values is an array of string-containing arrays, each inner array is assumed to contain the
       // exact number of matching values for the keys in options.keys.
-      const values = Array.isArray(options.values[srcIndex])
-        ? <Array<string>>options.values[srcIndex]
-        : Array(source.queryParams.where.keys.length).fill(options.values[srcIndex]);
+      const values = Array.isArray(optionValues[srcIndex])
+        ? <Array<string>>optionValues[srcIndex]
+        : Array(whereConfig.keys.length).fill(optionValues[srcIndex]);
 
       // Generate the SQL WHERE clause from defined keys, values, and operators.
       const typed = makeWhere(keys, values, operators, wildcards, transformations);
@@ -422,11 +444,13 @@ export class SearchService {
     searchTerm: string
   ): Array<unknown> {
     const source = sources[responseIndex];
+    // Taken out so the check below holds inside the callbacks.
+    const scoringKeys = source?.scoringKeys;
 
-    if (source && source.scoringKeys) {
+    if (scoringKeys) {
       const ranked = features
         .map((f) => {
-          const points = source.scoringKeys.reduce((acc, curr, i) => {
+          const points = scoringKeys.reduce((acc, curr, i) => {
             const propValue: string = getPropertyValue(f, curr);
 
             if (!propValue) {
@@ -434,7 +458,7 @@ export class SearchService {
             }
 
             if (propValue.toLowerCase() === searchTerm.toLowerCase()) {
-              return acc + source.scoringKeys.length - i;
+              return acc + scoringKeys.length - i;
             } else {
               return acc;
             }
@@ -460,21 +484,23 @@ export class SearchService {
 }
 
 export class SearchResult<T> {
-  public results: SearchResultsProperties<T>['results'];
+  /** Always an array: the constructor gives `[]` when none is passed (#3495). */
+  public results: SearchResultItem<T>[];
 
   constructor(props: SearchResultsProperties<T>) {
     this.results = props.results || [];
   }
 
   /**
-   * Extracts and flattens feature results from every search item in the SearchResult.
+   * Extracts and flattens feature results from every search item in the SearchResult. An item without features
+   * adds none; spreading its `undefined` used to throw (#3495).
    */
-  public features() {
+  public features(): T[] {
     return this.results
       .map((resultItem) => {
-        return resultItem.features;
+        return resultItem.features ?? [];
       })
-      .reduce((prev, curr) => {
+      .reduce((prev: T[], curr) => {
         return [...prev, ...curr];
       }, []);
   }
@@ -955,8 +981,9 @@ export interface SearchResultBreadcrumbSummary {
    *
    * Empty string in cases where the search value is not set (using interface for type adherence) or the value is
    * inherited through some other event and thus no further search query needed (e.g. map view click event).
+   * `undefined` for a typed coordinate pair, which comes from no source (#3495).
    */
-  source: Partial<SearchSource>;
+  source: Partial<SearchSource> | undefined;
 
   /**
    * Term used to perform the search query or a value representation of the result from an inherited event.

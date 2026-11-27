@@ -4,6 +4,8 @@ import { access, mkdir, writeFile } from 'fs/promises';
 import { dirname, join, normalize } from 'path';
 import { DataSource, EntityManager, EntityMetadata, EntityTarget, In, ObjectLiteral } from 'typeorm';
 
+import { GISDAY_SITES } from '@tamu-gisc/gisday/common';
+
 import {
   Asset,
   Event,
@@ -112,6 +114,25 @@ const LINK_KINDS: Record<string, SiteCopyKind> = {
 /** Columns every record has that describe this site's copy, not the record. */
 const ALWAYS_LEAVE_OUT = ['created', 'updated'];
 
+/**
+ * The site a file may name as its `source`, which an import fetches logos and photos from: one of the GIS Day sites, by
+ * its address or another host it answers on, or one of this API's own origins (`ORIGINS`, as CORS reads them, which is
+ * how a local site is allowed: `local.env.sample` lists `http://localhost:4201`). Returned from that list, never from the
+ * file, so nothing a file says can make this server fetch from anywhere else, its own local ports included (CodeQL
+ * js/request-forgery, #3776). Null for anything else.
+ */
+export function copySource(source: unknown, origins = process.env.ORIGINS): string | null {
+  const known = [
+    ...Object.values(GISDAY_SITES).flatMap((site) => [
+      site.address,
+      ...('hosts' in site ? site.hosts.map((host) => `https://${host}`) : [])
+    ]),
+    ...(origins ?? '').split(',').map((origin) => origin.trim().replace(/\/+$/, ''))
+  ].filter(Boolean);
+
+  return known.find((origin) => origin === source) ?? null;
+}
+
 @Injectable()
 export class SiteCopyService {
   private readonly _assetsDir = `${process.env.APP_DATA}`;
@@ -194,6 +215,7 @@ export class SiteCopyService {
    */
   public async import(file: SiteCopyUpload | undefined, apply: boolean): Promise<SiteCopyPlan> {
     this.check(file);
+    const source = this.knownSource(file);
 
     const blockers = await this.blockers(file);
     const go = apply && blockers.length === 0;
@@ -215,7 +237,7 @@ export class SiteCopyService {
 
     const missing = await this.missingFiles(file);
     const files = go
-      ? { missing: missing.length, ...(await this.copyFiles(file.source, missing)) }
+      ? { missing: missing.length, ...(await this.copyFiles(source, missing)) }
       : { missing: missing.length, written: 0, failed: [] };
 
     return { applied: go, blockers, warnings, kinds, files };
@@ -225,10 +247,17 @@ export class SiteCopyService {
     if (file?.format !== 'gisday-site-copy' || file.version !== 1 || !file.records) {
       throw new BadRequestException('This is not a GIS Day site copy file.');
     }
+  }
 
-    if (!/^https:\/\/[^/]+$/.test(file.source ?? '') && !/^http:\/\/localhost(:\d+)?$/.test(file.source ?? '')) {
-      throw new BadRequestException('The file does not say which site it came from.');
+  /** The file's site, as `copySource` gives it; refused when it is not one this site copies from. */
+  private knownSource(file: CheckedSiteCopyUpload): string {
+    const source = copySource(file.source);
+
+    if (!source) {
+      throw new BadRequestException('The file does not come from a GIS Day site this one copies from.');
     }
+
+    return source;
   }
 
   /**

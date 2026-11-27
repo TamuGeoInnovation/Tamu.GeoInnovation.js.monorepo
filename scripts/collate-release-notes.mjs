@@ -99,7 +99,7 @@ function parseEntry(file, source) {
 
   if (!declared) {
     const gisday = GISDAY_HOSTS.filter((host) =>
-      new RegExp(`https?://(?:www\\.)?${host.replace(/\./g, '\\.')}`, 'i').test(head + body)
+      new RegExp(`https?://(?:www\\.)?${host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i').test(head + body)
     );
     if (gisday.length) {
       problems.push(
@@ -170,7 +170,10 @@ if (!fs.existsSync(ENTRIES)) {
   process.exit(1);
 }
 
-const files = fs.readdirSync(ENTRIES).filter((f) => f.endsWith('.md') && f !== 'README.md').sort();
+const files = fs
+  .readdirSync(ENTRIES)
+  .filter((f) => f.endsWith('.md') && f !== 'README.md')
+  .sort();
 const entries = files.map((f) => parseEntry(f, fs.readFileSync(path.join(ENTRIES, f), 'utf8')));
 const broken = entries.filter((e) => e.problems.length);
 
@@ -186,7 +189,9 @@ if (broken.length) {
 
 if (check) {
   const withRow = entries.filter((e) => e.testOnDev).length;
-  console.log(`${entries.length} entr${entries.length === 1 ? 'y' : 'ies'} read, ${withRow} with a What to test on dev row, no problems.`);
+  console.log(
+    `${entries.length} entr${entries.length === 1 ? 'y' : 'ies'} read, ${withRow} with a What to test on dev row, no problems.`
+  );
   if (entries.length === 0) console.log('(Nothing to collate yet.)');
   process.exit(0);
 }
