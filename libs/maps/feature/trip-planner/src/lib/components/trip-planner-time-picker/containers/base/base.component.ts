@@ -25,9 +25,11 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
   public timeMode: Observable<TimeModeOption> = this.plannerService.TravelOptions.pipe(pluck('time_mode'), shareReplay(1));
 
   /**
-   * Date in milliseconds. If a date is set in the trip planner service, it will be converted to milliseconds.
+   * The time the trip leaves at, as the picker takes it: a `Date`, and the same one until the planner's changes, or null
+   * for none. It was the time in milliseconds, which the picker reads as no value, so a shared link's time drew a blank
+   * picker (#2608).
    */
-  public readonly requestedTime = signal<number>(undefined);
+  public readonly requestedTime = signal<Date | null>(null);
   public oldTime: number;
 
   public dateTimePickerVisible = false;
@@ -39,8 +41,8 @@ export class TripPlannerTimePickerComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.plannerService.TravelOptions.pipe(pluck('requested_time'), takeUntil(this.destroy$)).subscribe((date) => {
-      this.requestedTime.set(date ? date.getTime() : undefined);
-      this.oldTime = this.requestedTime() ? this.requestedTime() : undefined;
+      this.requestedTime.set(date ? new Date(date.getTime()) : null);
+      this.oldTime = date ? date.getTime() : undefined;
     });
   }
 

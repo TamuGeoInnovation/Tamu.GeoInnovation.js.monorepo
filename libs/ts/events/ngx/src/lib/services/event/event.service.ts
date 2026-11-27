@@ -581,9 +581,50 @@ export class EventService {
       return false;
     }
 
+    // Found, but a feature with no geometry cannot be selected or zoomed to (#3673): its map service is asked for it.
+    if (!feature.geometry) {
+      feature.geometry = await this.geometryFromMapService(layer, objectId);
+    }
+
     this.showFeature(feature, source, objectId);
 
     return true;
+  }
+
+  /**
+   * The geometry of `layer`'s feature with `objectId`, from its map service's `find`, for a layer whose `query` answers
+   * without one (#3673). Transportation's joined lot layers, which Break / Summer and New Student Conference draw, return
+   * every lot's attributes and no geometry from `query`, whatever is asked (#2520), while `find` and `identify` on the
+   * same MapServer return it. Only a map service has `find`, so any other layer gives `null`, as does a lookup that
+   * fails: the feature then goes on without one, as it did before.
+   */
+  private async geometryFromMapService(layer: esri.FeatureLayer, objectId: number): Promise<esri.Geometry | null> {
+    const url = layer.url;
+
+    if (!url || !/\/MapServer$/i.test(url) || !layer.objectIdField) {
+      return null;
+    }
+
+    type FindResults = { results: Array<{ layerId: number; feature: esri.Graphic }> };
+    const [{ find }] = (await this.moduleProvider.require(['find'])) as [
+      { find: (url: string, parameters: object) => Promise<FindResults> }
+    ];
+
+    try {
+      const { results } = await find(url, {
+        layerIds: [layer.layerId],
+        searchFields: [layer.objectIdField],
+        searchText: `${objectId}`,
+        contains: false,
+        returnGeometry: true,
+        outSpatialReference: this._view?.spatialReference ?? layer.spatialReference
+      });
+
+      return results.find((result) => result.layerId === layer.layerId)?.feature?.geometry ?? null;
+    } catch (err) {
+      console.error(`EventService: The map service could not be asked for the geometry of ${layer.id}:${objectId}`, err);
+      return null;
+    }
   }
 
   /**

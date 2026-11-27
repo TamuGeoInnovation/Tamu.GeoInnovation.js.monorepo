@@ -82,9 +82,32 @@ describe('EventProvider queries, built by typeorm (the rest)', () => {
   it('updates a loaded event whose columns are null', async () => {
     findOneReturning(loadedEvent());
 
-    const saved = await provider.updateEvent('e-1', { name: 'Renamed', speakers: [], tags: [] } as unknown as UpdateEventDto);
+    const saved = await provider.updateEvent('e-1', {
+      name: 'Renamed',
+      speakers: [],
+      tags: []
+    } as unknown as UpdateEventDto);
 
     expect(saved.name).toBe('Renamed');
+  });
+
+  // #3827. The counts are `select: false`, so an event loads without them, and an update that does not send them must not
+  // save them: typeorm writes only the columns an entity holds. The admin form sent both as null, which is what erased them;
+  // it now leaves them out until it has read them. A guard on the API's half, which was already right.
+  it("leaves an event's attendance counts out of an update that does not send them", async () => {
+    const { observedAttendeeStart, observedAttendeeEnd, ...asLoaded } = loadedEvent();
+    expect([observedAttendeeStart, observedAttendeeEnd]).toEqual([null, null]);
+    findOneReturning(Object.assign(new Event(), asLoaded));
+
+    const saved = await provider.updateEvent('e-1', {
+      abstract: 'Changed',
+      speakers: [],
+      tags: []
+    } as unknown as UpdateEventDto);
+
+    expect(saved.abstract).toBe('Changed');
+    expect(saved).not.toHaveProperty('observedAttendeeStart');
+    expect(saved).not.toHaveProperty('observedAttendeeEnd');
   });
 
   it("reads a session's judging", async () => {
