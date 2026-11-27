@@ -227,6 +227,45 @@ if (AVAILABLE) {
   });
 
   /**
+   * A link to a trip in mode 3, driving with a parking pass, finishes (#3875).
+   *
+   * Mode 3 adds the nearest lot the visitor's permit allows as a stop. Nothing in the app chooses a permit, so a link
+   * with `mode=3` took that path with none: the lots were asked for `FAC_CODE = undefined`, the query failed, and the
+   * planner threw before sending a solve. The panel said "Calculating route. Please wait..." for good, on production
+   * and dev (27 November 2026). With no permit there is no lot to add, so it is an ordinary drive between the stops.
+   */
+  test('a trip link in mode 3, with no permit chosen, finishes as a drive between its stops (#3875)', async ({ page }) => {
+    test.setTimeout(150_000);
+
+    const errors: string[] = [];
+    const solved: number[] = [];
+
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error' && /TypeError/.test(message.text())) errors.push(message.text());
+    });
+    page.on('request', (request) => {
+      if (!/\/NAServer\/Route\/solve/.test(request.url())) return;
+
+      const stops =
+        new URL(request.url()).searchParams.get('stops') ?? new URLSearchParams(request.postData() ?? '').get('stops');
+
+      solved.push((JSON.parse(stops ?? '{}') as { features?: unknown[] }).features?.length ?? 0);
+    });
+
+    await blockAnalytics(page);
+    await page.goto(`/map/d/trip?stops=${ROUTE_STOPS}&mode=3`);
+
+    const miles = page.locator('.directions-overview-item', { hasText: 'Miles' }).locator('.quantity');
+
+    await expect(
+      miles,
+      `the mode 3 trip never finished; solves sent with ${JSON.stringify(solved)} stops; errors: ${JSON.stringify(errors)}`
+    ).toBeVisible({ timeout: 120_000 });
+    expect(solved, 'a solve was sent with a stop the link did not give').toContain(2);
+  });
+
+  /**
    * A trip whose two ends are both chosen from the search list solves, and is drawn on the map (#2843, #2846).
    *
    * The case above gives its stops in the address, and the popup cases only open the planner, so none of them ever
