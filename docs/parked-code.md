@@ -52,13 +52,26 @@ In the **same pull request as the deletion**, so the record and the removal go i
 [#1132](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1132), where notes written afterwards
 went in without their images and had to be chased.
 
-1. **Tag the last commit that still has the code**, annotated, with why it went and how to read it:
-   `git tag -a parked/<name> <commit> -F <file>`, then `git push origin parked/<name>`. Tag **before** the deletion
-   merges, while a commit containing the code is still on `development` — then `check-parked-code.mjs` passes on the
-   pull request that adds the row.
-2. **Open an issue**, labelled `parked`, naming the condition for bringing it back. That is what surfaces when the
+1. **Open an issue**, labelled `parked`, naming the condition for bringing it back. That is what surfaces when the
    condition is met, which this page will not do by itself.
-3. **Add the row here**, naming the tag and the issue.
+2. **Add the row here**, naming the tag and the issue, and let the pull request merge.
+3. **Then tag, immediately**, annotated, with why the code went and how to read it. The commit you want is the merge
+   commit's **first parent** — the last commit on `development` that still had the code:
 
-What not to do: delete first and tag afterwards. Once the deletion is on `development`, finding the right commit means
-reading a closed pull request's history — the situation this page exists to avoid.
+   ```bash
+   git tag -a parked/<name> "$(git rev-parse <the merge commit>^)" -F <file>
+   git push origin parked/<name>
+   ```
+
+**Row first, then tag.** This was the other way round until
+[#3717](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3717), which said to tag before the
+deletion merged, on the grounds that finding the commit afterwards meant reading a closed pull request's history. That
+reason was wrong: `git rev-parse <merge>^` is the commit, and it takes a second. Tagging first, meanwhile, opened a
+window the length of a whole pull-request cycle in which a `parked/*` tag existed with no row — and because **tags are
+global and a row is not**, `check-parked-code.mjs` then failed on every branch anybody pushed, for a reason unconnected
+to their change. It did, for 33 minutes, on the second entry ever added to this page.
+
+Tagging straight after the merge makes that window as short as the next command. `check-parked-code.mjs` also tolerates
+a disagreement younger than a day now — it warns and passes — so neither order can break the repository while somebody
+is part-way through these three steps. Past a day it fails, because a park nobody recorded is the drift this page exists
+to catch.
