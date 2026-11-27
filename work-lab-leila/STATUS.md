@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **8:32 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **8:33 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-Nothing: listening for the next batch.
+**Batch g234 (gisday): #3823, Esri's two callers after #3817.** Since 8:33 PM Central, 26 November. Steps 1 and 3's merge were already done under g233's note (`32e9d8905`), but I had made the two callers skip such a layer instead of failing as before; g234 says keep exactly the old behaviour, so step 2 now: putting the failure back, unchanged, with a spec that pins it.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
