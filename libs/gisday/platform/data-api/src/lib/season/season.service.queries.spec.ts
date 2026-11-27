@@ -1,7 +1,14 @@
 import { DataSource, Repository } from 'typeorm';
 
 import { Season, SeasonDay } from '../entities/all.entity';
-import { answering, buildingTransactionFinds, loadedSeason, queryCheckingDataSource, queryCheckingRepository, recordWrites } from '../_base/query-checking-data-source';
+import {
+  answering,
+  buildingTransactionFinds,
+  loadedSeason,
+  queryCheckingDataSource,
+  queryCheckingRepository,
+  recordWrites
+} from '../_base/query-checking-data-source';
 import { SeasonService } from './season.service';
 
 // The service's queries as typeorm builds them, with the real entities. season.service.spec.ts mocks the repositories, so
@@ -81,7 +88,11 @@ describe('SeasonService queries, built by typeorm', () => {
   it('updates a season, turning off the season that was active', async () => {
     answering(seasonRepo, 'findOne', loadedSeason({ guid: 's-0', year: 2025 }));
 
-    await expect(service.updateSeason('s-1', { active: true, year: 2026 })).resolves.toBeUndefined();
+    // Saved, though it sends no days (#3861): it used to save nothing, after switching the active season off.
+    await expect(service.updateSeason('s-1', { active: true, year: 2026 })).resolves.toMatchObject({
+      active: true,
+      year: 2026
+    });
   });
 
   it("sets when a season's competitions close", async () => {

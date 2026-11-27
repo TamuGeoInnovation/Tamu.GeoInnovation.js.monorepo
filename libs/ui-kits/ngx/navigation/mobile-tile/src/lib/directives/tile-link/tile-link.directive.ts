@@ -11,12 +11,12 @@ export class TileLinkDirective {
    * Location of the link to redirect to. Can be internal relative URL or absolute external URL
    *
    */
-  public readonly location = input<string>(undefined);
+  public readonly location = input.required<string>();
 
   /**
    * Used when input location is a relative application link
    */
-  public readonly fragment = input<string>(undefined);
+  public readonly fragment = input<string | undefined>(undefined);
 
   public readonly clicked = output<HTMLElement>();
 

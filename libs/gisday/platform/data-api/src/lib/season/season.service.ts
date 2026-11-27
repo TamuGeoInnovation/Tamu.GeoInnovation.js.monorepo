@@ -468,13 +468,21 @@ export class SeasonService extends BaseProvider<Season> {
       throw new NotFoundException();
     }
 
-    const existingActive = await this.seasonRepo.findOne({ where: { active: true } });
+    // Its year, which the edit form's Year box sends as text (#3861): it was never read, so a changed year answered 200
+    // and stayed as it was. Refused, with nothing changed, when it is not a whole number or another season holds it.
+    const sentYear = updateSeasonDto.year as unknown;
+    const year = sentYear === undefined || sentYear === null || `${sentYear}`.trim() === '' ? undefined : Number(sentYear);
 
-    // If the incoming has active set to true, and there is an existing active season,
-    // and the existing active season is not the same as the incoming season, disable the existing active season.
-    if (existingActive && updateSeasonDto.active && existingActive.year !== updateSeasonDto.year) {
-      existingActive.active = false;
-      await this.seasonRepo.save(existingActive);
+    if (year !== undefined && !Number.isInteger(year)) {
+      throw new BadRequestException("A season's year is a whole number.");
+    }
+
+    if (year !== undefined && year !== existingCurrent.year) {
+      const holder = await this.seasonRepo.findOne({ where: { year } });
+
+      if (holder && holder.guid !== existingCurrent.guid) {
+        throw new ConflictException(`There is already a ${year} season.`);
+      }
     }
 
     if (updateSeasonDto.days) {
@@ -521,12 +529,27 @@ export class SeasonService extends BaseProvider<Season> {
           return existing;
         });
 
-      // Left as it is when the update does not say.
-      existingCurrent.active = updateSeasonDto.active ?? existingCurrent.active;
       existingCurrent.days = [...newDays, ...updateDays];
-
-      return existingCurrent.save();
     }
+
+    // Only once nothing can be refused: the season that was active is switched off when this one becomes active. It
+    // compared years, and the form sends its year as text, so a season saved as active switched itself off first.
+    const existingActive = await this.seasonRepo.findOne({ where: { active: true } });
+
+    if (existingActive && updateSeasonDto.active && existingActive.guid !== existingCurrent.guid) {
+      existingActive.active = false;
+      await this.seasonRepo.save(existingActive);
+    }
+
+    // Left as it is when the update does not say. Saved whether or not it sent days (#3861): without them, it saved
+    // nothing, after switching the active season off.
+    existingCurrent.active = updateSeasonDto.active ?? existingCurrent.active;
+
+    if (year !== undefined) {
+      existingCurrent.year = year;
+    }
+
+    return existingCurrent.save();
   }
 
   /**
