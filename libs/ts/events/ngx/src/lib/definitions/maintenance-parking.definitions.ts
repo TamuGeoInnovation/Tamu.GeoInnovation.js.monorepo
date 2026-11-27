@@ -62,7 +62,12 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
       }
     },
     native: {
-      outFields: ['*']
+      outFields: ['*'],
+      // The service holds every parking space on campus, 44,980, and its symbology draws only service and loading
+      // spaces (427 on 26 November); the rest were loaded and never drawn, and the map took 89 to 141 s to finish drawing
+      // (#3824, as #1897 found on two other maps). Same spaces drawn, and only those loaded. `parking-spaces.spec.ts` in
+      // the smoke suite fails if the symbology starts drawing a type this leaves out.
+      definitionExpression: `Spc_Type IN ('Loading', 'Serv')`
     }
   },
   {
