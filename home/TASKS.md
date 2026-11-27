@@ -5,6 +5,62 @@
 
 **Q-g130-1: (c), with a swap.** Batch g130 moved to the laptop, which signs in to txgisday-dev. You take the half of the laptop's g54 that needs no sign-in (below). **The GIS Day local stack's containers (`gisday-db`, `gisday-api`, `gisday-redis`, and the web) are yours to start and stop for GIS Day batches**: they're GIS Day's, and I'm the GIS Day director. Leave any other session's containers alone, as before. Q-g238-1 was answered last night in this file (#3862, now fixed and opening).
 
+
+## Batch a78 (aggiemap: #1856 reproduce-or-close, then #1933; 27 November 2026, 3:40 PM Central, from `work (aggiemap)`) (Medium) — **now**
+
+**a77 is accepted and both branches are in a check chain on the work computer.** Two things in it I want repeated:
+
+- **You pushed back on the issue.** #2763 says to allow for the panel in `goTo`; you found `goTo` takes no padding, and
+  said so rather than implementing what was asked. Then you declined the obvious fix — a permanent `view.padding` —
+  because it would move every map's first framing, and put the padding in `MapService.fit` for the move only, with the
+  panel registering itself through `coverWith`. That is the shared-place answer, and three callers now use it.
+- **You reported what you could not conclude.** "Two `directions.spec` failures fail the same way without the fix, so
+  they are not this change" and "a check of the two together was not run" are both worth more than a clean summary.
+
+**I resolved one conflict for you:** `#2763` met `development`'s strict-null-checks retyping of `_store` in
+`map.service.ts`. Kept both — your `_covers` and its new `_store`. Flagging it because that file is now shared ground
+and the next branch touching it will meet the same thing.
+
+**a72's re-run:** you are right that the comparison was not quiet, and it needs an idle machine. Do not re-run it here —
+I will take it when a machine is genuinely free.
+
+**Standing:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running now** in
+the same commit, branch from today's `development`.
+
+### #1856 first, and it may well end in a close rather than a branch
+
+[#1856](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1856) — the trip planner reads
+`.centroid` from parking lots that arrive from the search service as plain JSON, which has no `centroid`.
+
+**Its own body says "found by reading the code, not yet reproduced".** That is #3851's shape, and #3851 cost a round
+trip and a wrong note on #2846 before it was disproved. So:
+
+1. **Try to reproduce it first**, by hand. A lot chosen from the search as a trip stop is the path; the issue names
+   `trip-planner.service.ts` around lines 1005 to 1023 before #1854, so check what #1854 changed there before anything
+   else — it may already be gone.
+2. **If it reproduces:** fix it, red first, with before and after.
+3. **If it does not:** write the close rather than a fix — what you ran, how many times, what the code does now, and why
+   it cannot happen. That is a finished piece of work and I will post it. Do not fix a fault nobody has seen.
+
+### Then #1933
+
+[#1933](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1933) — the routing connection
+service throws `TypeError: Cannot read properties of undefined (reading 'name')` when the routing folder lists no
+network, as on production and local builds. Seen on `/map/d?bldg=0468`.
+
+4. **This one is observed**, so reproduce it and fix it. Red first.
+5. **Say what a visitor sees**, if anything. A console error with no visible effect still gets fixed, but the
+   release-notes entry and the images depend on the answer, and the issue does not say.
+
+### Both
+
+**Dead code** goes as a row on **#1899** and nothing else.
+
+Branches `fix/1856-lot-centroid` (only if it reproduces) and `fix/1933-routing-no-network`, each from today's
+`development`. `check-in-volume.sh` then **`pre-pr-check.sh`**, and give me each last line. Bodies in the report with
+`Title:` lines, `.pr-body.md` **not** committed. **Open no pull request.**
+
+**Report** `home/reports/2026-11-27-a78.md`. Questions `Q-a78-<n>`.
 ## Batch g131 (gisday: bug hunt, every public page on every GIS Day site, at phone and desktop width, no sign-in) (High) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; never wait for a fix to merge, stack on it. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed.
