@@ -1,6 +1,17 @@
 # work-lab-leila: current tasks
 
 
+## Batch g240 (gisday: bug hunt, the admin forms' edge cases, with no sign-in; 27 November 2026, 3:50 PM Central, from `work (gisday)`) (High) - **after g239**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; never wait for a fix to merge, stack on it. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed.
+
+The laptop, the only machine that signs in, is out of service, so this uses the shared admin helper instead (`test/e2e/gisday/admin-capture.ts`, `admin-round-trip.ts`, #3806 and #3839): the real admin pages from a static build, with Auth0 and the API stubbed. No sign-in, no credentials.
+
+For each admin area (`docs/gisday-admin-capture.md` shows how to open one):
+1. **Lists:** sort and filter. Give a list 30 or more made-up records through the stub and page through it. Search with no results, and with odd input (`'`, `%`, emoji).
+2. **Forms:** submit with required fields empty (the form must refuse and say why, not send); a very long value; a wrong file type in an upload; double-click Save (one request, not two); cancel half-way; Back from an edit page.
+3. **Errors from the API:** stub a 400, a 404, a 500 and a 503 on save. The page must say something useful, and never look saved.
+4. Each fault becomes an issue and a fix, with a spec red first that becomes part of the E2E suite beside `admin-round-trips.spec.ts`. Report `reports/<date>-g240.md`: a table of area by check, ok or the issue.
 ## Batch g239 (gisday: bug hunt, the API's 500s on bad input; 27 November 2026, 3:30 PM Central, from `work (gisday)`) (High) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never wait for a fix to merge, stack on it; dead code is deleted and features are parked, never asked about. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed. Anything that isn't a bug, list in the report; don't build it.
