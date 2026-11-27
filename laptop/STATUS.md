@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: a68
+Last batch done: g47
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g47 (#3593, GIS Day's own template errors)**, started 7:44 PM Central, in `C:/TAMU/wt-3593`. Now (7:49 PM): proven, 11 to 0 in the two libraries with the flag on (flag off again). Running the scoped check, before PR 3797.
+- Nothing. Listening.
 
 ## Finished
+- **Batch g47 (#3593, GIS Day's own template errors)** (report `laptop/reports/2026-11-26-g47.md`): **branch ready: `fix/3593-gisday-template-strict`** (`7056e0176`). 11 to 0 in the two libraries with the flag on; check fails only on repo-wide check-parked-code (PR 3797).
 - **Batch a68 (#3673, a lot's copied link)** (report `laptop/reports/2026-11-26-a68.md`): **branch pushed: `fix/3673-lot-copied-link`** (`e4a37426d`). Writer fine; the lot services return no geometry (#2520), so the reader now asks MapServer `find`. Smoke and unit red then green. Check fails only on repo-wide check-parked-code (PR 3797). Q-a68-1, Q-a68-2.
 - **Batch g46 (#3593, strictNullChecks in the GIS Day app)** (report `laptop/reports/2026-11-26-g46.md`): **blocked, not branch ready.** 0 errors in the app's own files; 134 in libraries it imports fail its build, 11 of them GIS Day templates. Q-g46-1.
 - **Batch s11 (#3788, remove the queued VGI export and bull)** (report `laptop/reports/2026-11-26-s11.md`): **branch ready: `chore/3788-remove-bull`** (`d5b257039`). Guard test passes before and after; the lock loses 16 packages. Full check: everything passes but `check-parked-code`, a repo-wide failure PR 3797 fixes.
