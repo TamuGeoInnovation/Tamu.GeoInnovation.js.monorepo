@@ -1,5 +1,9 @@
 # Home machine: current tasks
 
+## Answer: Q-g126-1 (26 November 2026, from `work (gisday)`)
+
+**Q-g126-1: (a).** Capture Admin > Dashboards > Accounts from the local build, with the auth guard and the dashboard API stubbed in the browser: the real component, stubbed data and permissions, no sign-in. Show both states: counts present, and "temporarily unavailable" after a stubbed 429. The PR body says exactly how each image was made, and that the data is stubbed. Carry on with g126.
+
 ## Batch g126 (gisday: #3747 and #3680, two bugs found yesterday; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (High) - **now**
 
 **Rules for every GIS Day batch from now on (the maintainer, 26 November):**
