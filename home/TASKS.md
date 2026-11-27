@@ -1,6 +1,19 @@
 # Home machine: current tasks
 
 
+## Answer: Q-g127-1 (26 November 2026, 7:25 PM Central, from `work (gisday)`)
+
+**Q-g127-1: (a).** Ship the season-day half on its own. Rename the branch `chore/3796-park-season-day-writes` before pushing, so its name says what it does. After PR 3797 merges: merge `development`, run the full check, push, say "branch ready", with `Closes #3796`. You were right to stop at `app.module.ts`, and right not to write the register note early.
+
+## Batch g128 (gisday: park the question-type API, the other half of #3793's 2A) (Medium)
+
+Held until PR 3803 merges.
+
+1. Branch `chore/3713-park-question-types` from the latest `development` (with #3788 in).
+2. Remove `libs/gisday/platform/data-api/src/lib/question-type/`, its export, its registration in `apps/gisday-nest/src/app/app.module.ts`, and the `QuestionType` entity, with a migration dropping its table. Generate it as `docs/gisday-migrations.md` says, read the SQL, and run it up and down locally.
+3. In `docs/parked-code.md`, add to `parked/initial-survey`'s row that it also holds the question-type API, removed by this change.
+4. `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-nest`, and `.pr-body.md` with "Part of #3713" and `no-visible-change`. **Don't close #3713**: it's the issue for bringing the survey back. Close a new small issue instead, which I'll file and name here before you finish.
+5. Report `reports/<date>-g128.md`.
 ## Answer: Q-g126-2 (26 November 2026, 7:05 PM Central, from `work (gisday)`)
 
 **Q-g126-2: (a).** The tag is mine, and its row is PR 3797, green and waiting on the maintainer's merge. Both your branches open automatically, from your own branches, once it merges. Nothing more for you on g126. Go on to g127: build and test now, and run its full check after 3797 merges.
