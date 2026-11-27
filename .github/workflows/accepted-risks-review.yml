@@ -1,0 +1,63 @@
+name: Accepted risks review
+
+# Once a month, lists every finding we accepted in .github/security/accepted-risks.json in one
+# security-health issue, so that nothing accepted stays accepted forever (#3789; the maintainer chose
+# monthly). Socket's free plan has no API, so it cannot read Socket itself: the issue links to Socket's
+# Resolved tab and GitHub's dismissed alerts, and a person settles each entry.
+on:
+  schedule:
+    # 14:17 UTC on the 1st: 8:17 AM College Station in winter, 9:17 AM in summer. The offset minute
+    # avoids :00, the most contended slot on GitHub's schedulers, as in security-scan.yml.
+    - cron: '17 14 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: accepted-risks-review
+  cancel-in-progress: false
+
+env:
+  ACCEPTED: .github/security/accepted-risks.json
+  TITLE: 'Monthly review: security findings we accepted'
+
+jobs:
+  review:
+    name: Open or update the review issue
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Write the issue body
+        run: |
+          {
+            echo "Every finding in \`$ACCEPTED\`, for this month's review ($(date -u +%Y-%m))."
+            echo
+            echo "Settle each entry one of three ways, then edit the file in a pull request:"
+            echo "- **gone**: the finding no longer appears, so remove the entry;"
+            echo "- **still tolerable**: the reason still holds, so set \`reviewed\` to today;"
+            echo "- **now fixable**: file an issue, and point the entry at it."
+            echo
+            echo "Where to look: [Socket's Resolved alerts](https://socket.dev/dashboard/org/tamugeoinnovation/alerts), and [GitHub's dismissed code-scanning alerts](https://github.com/${GITHUB_REPOSITORY}/security/code-scanning?query=is%3Aclosed)."
+            echo
+            echo "| Source | Finding | Through | Revisit when | Last reviewed | Tracked in |"
+            echo "| --- | --- | --- | --- | --- | --- |"
+            jq -r '.accepted[] | "| \(.source) | \(.finding) | \(.via) | \(.revisitWhen) | \(.reviewed) | #\(.issue) |"' "$ACCEPTED"
+            echo
+            echo "Opened by \`.github/workflows/accepted-risks-review.yml\` (#3789). Close it once every entry is settled."
+          } > body.md
+
+      - name: Open the issue, or update this month's if it is still open
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --state open --label security-health --search "in:title \"$TITLE\"" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file body.md
+            gh issue comment "$existing" --body "Still open at this month's review ($(date -u +%Y-%m)); the list above is refreshed."
+          else
+            gh issue create --title "$TITLE" --label security-health --body-file body.md
+          fi
