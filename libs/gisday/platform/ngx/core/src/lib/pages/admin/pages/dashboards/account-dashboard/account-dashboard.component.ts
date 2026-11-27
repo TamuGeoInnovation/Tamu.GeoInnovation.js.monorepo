@@ -40,6 +40,25 @@ export function accountFileName(year: number | null | undefined, rowName: string
 }
 
 /**
+ * What the page says when Auth0 is limiting how often accounts can be read: the API answers 503 with Retry-After
+ * (#3747). Null for any other failure.
+ */
+export function busyMessage(err: unknown): string | null {
+  const response = err as { status?: unknown; headers?: { get(name: string): string | null } } | null | undefined;
+
+  if (response?.status !== 503) {
+    return null;
+  }
+
+  const seconds = Number(response.headers?.get('Retry-After'));
+
+  return (
+    'The account counts are temporarily unavailable: the sign-in service is busy.' +
+    (seconds > 0 ? ` Try again in ${seconds} seconds.` : ' Try again in a minute.')
+  );
+}
+
+/**
  * The User accounts dashboard (#2892): the accounts with a GIS Day profile made between the previous GIS Day and this
  * one, by university or employer and person type, how they grew, and, one row at a time, who they are.
  */
@@ -138,7 +157,7 @@ export class AccountDashboardComponent implements OnInit {
           this.users.getDashboardForSeason(season.guid).pipe(
             catchError((err) => {
               this.failed.set(true);
-              this.refusal.set(readRefusal(err));
+              this.refusal.set(readRefusal(err) ?? busyMessage(err));
 
               return of(null);
             })
