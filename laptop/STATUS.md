@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: s10
+Last batch done: s11
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch s11 (#3788, remove the queued VGI export and bull)**, started 6:01 PM Central, in `C:/TAMU/wt-3788`. Now (6:02 PM): writing the guard test for GET /competitions/export/zip (mapped: 3 queued routes, processor, DTOs, BullModule in two places, REDIS_* in two env samples, gisday-local.sh's Redis container, two docs).
+- **Batch g46 (#3593, strictNullChecks in the GIS Day app)**, next.
 
 ## Finished
+- **Batch s11 (#3788, remove the queued VGI export and bull)** (report `laptop/reports/2026-11-26-s11.md`): **branch ready: `chore/3788-remove-bull`** (`d5b257039`). Guard test passes before and after; the lock loses 16 packages. Full check: everything passes but `check-parked-code`, a repo-wide failure PR 3797 fixes.
 - **Batch s10 (#3757, ArcGIS 5.2.9 with amCharts 5.20.8)** (report `laptop/reports/2026-11-26-s10.md`): **branch ready: `chore/arcgis-5.2`** (`32440fdd0`). One amCharts copy; full check exit 0; pre-pr-check exit 0. Release tier stopped as told (454 of 1,139; failures are timeouts and the local banner); the lab runs it. Q-s10-1.
 - **Batch g45 (#3718)** (report `laptop/reports/2026-11-26-g45.md`): **branch ready: `fix/3718-strict-lib-counts`** (`e24595799`). Own-files counts beside each library; only a rise fails. 32 libraries re-measured: 4 hold counts. Two branches merged either order with no re-count. pre-pr-check exit 0.
 - **Batch g44 (GIS Day wrap-up)** (report `laptop/reports/2026-11-26-g44.md`): nothing from today is broken; RSVP and submission types add and edit. Filed #3747 and #3748 (Low, both older). Health committed (red only for ssh, by design). wt-3327 deleted; 3593 kept (4 files never in development).
