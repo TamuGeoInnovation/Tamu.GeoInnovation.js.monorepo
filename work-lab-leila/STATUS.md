@@ -6,7 +6,7 @@ the maintainer's account).
 Written only by work-lab-leila (see `DIRECTOR.md`). Pushed the moment anything starts or finishes. Clock times are
 read from PowerShell, not estimated.
 
-Last written **9:52 PM Central, 26 November 2026**. A listener; job: testing.
+Last written **10:03 PM Central, 26 November 2026**. A listener; job: testing.
 
 ## g203 is done, not unstarted (12:07 AM Central, Wednesday 25 November 2026)
 
@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch g237 (gisday): #3839, the admin save round trips as end-to-end tests.** Since 9:52 PM Central, 26 November. Read the DIRECTOR.md change (dead code to #1899; no new process mid-flight). Step 1: reading laptop g49's walk and how the admin forms load and save.
+**Batch g237 (gisday): #3839, the admin save round trips as end-to-end tests.** Since 9:52 PM Central, 26 November. Read the DIRECTOR.md change (dead code to #1899; no new process mid-flight). Harness and first tests done (10:03 PM): Add and Edit round trips for RSVP Types, Submission Types, Sponsors, Affiliations, Places and Speakers, 12 passing on a static build. Now (10:03 PM): Seasons, the designer's question types, then Events with #3827's attendance case (its fix branch is not on the fork, so test.fail).
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
