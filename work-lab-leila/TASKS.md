@@ -2,6 +2,10 @@
 
 
 
+## Paused by the maintainer: a student is using this machine (27 November 2026, 4:15 PM Central, from `work (gisday)`)
+
+**Stop at the next safe point**: finish or abandon the step you're on, without leaving a container running or a half-pushed branch. Push your state. Then write `blocked: paused by the maintainer (a student is using the machine)` under **Running now** in `STATUS.md`, and start nothing else. **Batch g239, Batch g240 and Batch g241 are withdrawn for now**, and come back when the maintainer says the lab is free again. Keep listening; heartbeats are fine.
+
 ## NOT AVAILABLE: a student is on this machine (27 November 2026, 3:45 PM Central, the maintainer)
 
 **Take no batch from this file until the maintainer says this machine is good to go again.** His words, relayed by
