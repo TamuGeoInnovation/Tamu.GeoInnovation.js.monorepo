@@ -1,6 +1,16 @@
 # work-lab-leila: current tasks
 
 
+## Batch g235 (gisday: #3829, amCharts' "multiple Roots on the same DOM node" on the admin dashboards; 26 November 2026, 9:40 PM Central, from `work (gisday)`) (Low) - **after g234**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed, and I open the pull request.
+
+The laptop's g49: on the RSVP, Check-ins and Accounts dashboards, amCharts logs "multiple Roots on the same DOM node" on about 5 of 10 loads under load. The chart still draws. That usually means a chart is created again before the previous Root on that element is disposed, for example when its data arrives twice, or under zoneless re-rendering.
+
+1. Branch `fix/3829-amcharts-single-root`. Find the shared chart component (`libs/ui-kits/ngx/charts` or wherever the dashboards' charts live) and how it creates and disposes its Root.
+2. Make it dispose any existing Root before creating one, or create once and update the data. Keep the interface.
+3. A spec, red first: data arriving twice creates no second Root on the element (count Roots, or spy on dispose).
+4. `no-visible-change`. `scripts/check-in-volume.sh <branch> <the chart library>,gisday-angular`. Report `reports/<date>-g235.md`.
 ## Batch g234 (gisday: #3823, the two Esri callers the geometry change exposes; 26 November 2026, 8:40 PM Central, from `work (gisday)`) (Medium) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step. My note under g233 reached you after you'd finished, so `fix/3804-maps-esri-strict` doesn't yet include the laptop's `fix/3804-geometry-esri-strict` (#3817). That branch makes `cleanPortalJSONLayer` return `| undefined`, as it always could, and adds 2 errors at its callers in `libs/maps/esri`.
