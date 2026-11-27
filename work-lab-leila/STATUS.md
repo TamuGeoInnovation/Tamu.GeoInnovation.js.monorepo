@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-**Batch g230 (gisday): #3346, PowerPoint previews through a conversion service.** Since 6:58 PM Central, 26 November. Step 1: reading the PDF preview (#3090) and the 415 for PowerPoint.
+**Batch g230 (gisday): #3346, PowerPoint previews through a conversion service.** Since 6:58 PM Central, 26 November. Steps 1 to 3 done (7:07 PM): the service `apps/gisday-pptx-preview` (7 tests, image built, the made-up deck converted end to end in 0.9 s), and the API converting a PowerPoint on its first preview, keeping the PDF beside it and falling back to 415 (4 new tests red first, 177 of 177 now), committed as 8abeeb7fb. Step 4 started 7:07 PM: the review page previews PowerPoint and downloads it on a 415. Read Q-g229-1's answer and g231, queued after this.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
