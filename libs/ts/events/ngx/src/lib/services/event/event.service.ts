@@ -599,7 +599,9 @@ export class EventService {
    * fails: the feature then goes on without one, as it did before.
    */
   private async geometryFromMapService(layer: esri.FeatureLayer, objectId: number): Promise<esri.Geometry | null> {
-    if (!/\/MapServer$/i.test(layer.url ?? '') || !layer.objectIdField) {
+    const url = layer.url;
+
+    if (!url || !/\/MapServer$/i.test(url) || !layer.objectIdField) {
       return null;
     }
 
@@ -609,7 +611,7 @@ export class EventService {
     ];
 
     try {
-      const { results } = await find(layer.url, {
+      const { results } = await find(url, {
         layerIds: [layer.layerId],
         searchFields: [layer.objectIdField],
         searchText: `${objectId}`,
