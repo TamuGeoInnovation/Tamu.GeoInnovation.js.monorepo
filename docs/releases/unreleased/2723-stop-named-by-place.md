@@ -14,6 +14,6 @@ what a click landed on. It now asks every layer on the map that opens a popup, s
 clicked, a building is still the building, and open ground is still its coordinates.
 ([#2723](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2723))
 
-| Before                                                                                                              | After                                                                                                   |
-| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Before                                                                                                                     | After                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | ![Eli Whitely Park's marker clicked: the stop reads 30.6146, -96.3493](../screenshots/2723-stop-named-by-place/before.png) | ![The same click: the stop reads Eli Whitely Park](../screenshots/2723-stop-named-by-place/after.png) |

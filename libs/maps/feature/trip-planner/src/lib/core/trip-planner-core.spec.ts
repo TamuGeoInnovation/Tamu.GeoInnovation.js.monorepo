@@ -43,7 +43,9 @@ describe('a stop set by a map click', () => {
   });
 
   it('is still named after a building or a lot', () => {
-    expect(clicked({ bldgname: 'Harrington Education Center Office Tower' })).toBe('Harrington Education Center Office Tower');
+    expect(clicked({ bldgname: 'Harrington Education Center Office Tower' })).toBe(
+      'Harrington Education Center Office Tower'
+    );
     expect(clicked({ lotname: 'Lot 100g' })).toBe('Lot 100g');
   });
 

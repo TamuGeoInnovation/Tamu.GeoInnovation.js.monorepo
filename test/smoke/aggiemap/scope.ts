@@ -84,7 +84,10 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths: /^libs\/(common\/datasets\/geographic\/src\/lib\/campus\/campus-basemap|aggiemap\/ngx\/common\/src\/lib\/definitions\/main\.definitions)\.ts$/,
     specs: ['building-clicks.spec.ts', 'popup.spec.ts']
   },
-  { paths: /^libs\/maps\/feature\/trip-planner\//, specs: ['directions.spec.ts', 'map-coordinates.spec.ts', 'trip-stop-names.spec.ts'] },
+  {
+    paths: /^libs\/maps\/feature\/trip-planner\//,
+    specs: ['directions.spec.ts', 'map-coordinates.spec.ts', 'trip-stop-names.spec.ts']
+  },
   {
     // What a click landed on, asked of the layers: the popup's, and the trip planner's stop names (#2707, #2723).
     paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/click-query\.ts$/,

@@ -156,7 +156,9 @@ async function spotInView(page: Page, kind: 'building' | 'ground'): Promise<Spot
           ['buildings-layer', 'surface-lots-layer'].map(async (id) => {
             const layer = view.map.findLayerById(id);
 
-            return layer ? (await layer.queryFeatures({ geometry: point, spatialRelationship: 'intersects' })).features.length : 0;
+            return layer
+              ? (await layer.queryFeatures({ geometry: point, spatialRelationship: 'intersects' })).features.length
+              : 0;
           })
         );
 
