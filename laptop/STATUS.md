@@ -5,7 +5,7 @@
 
 Written only by the laptop session, while it listens (see `DIRECTOR.md`).
 
-Last batch done: g48
+Last batch done: g49
 
 ## What this is
 
@@ -33,9 +33,10 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g49 (signed-in walk of GIS Day on today's development)**, started 8:28 PM Central. Now (9:21 PM): found a real one - editing an event in admin erases its recorded attendance (proven in the DB; since #351, 2024). Walking Seasons, registration, designer, modal, judging; issues filed at the end.
+- Nothing. Listening.
 
 ## Finished
+- **Batch g49 (signed-in walk of GIS Day)** (report `laptop/reports/2026-11-26-g49.md`): filed #3827 (High: an admin event save erases attendance), #3828 (Low: admin VGI map on an empty season), #3829 (Low: amCharts multiple Roots). Everything else ok.
 - **Batch g48 (#3804, five shared libraries strict)** (report `laptop/reports/2026-11-26-g48.md`): **branch ready, all five** (location, geometry-esri, pipes, mobile-tile, device). Each 0 own errors and 0 under the app flag; checks fail only on repo-wide check-parked-code (PR 3797). maps-esri +2: a real latent fault surfaced.
 - **Batch g47 (#3593, GIS Day's own template errors)** (report `laptop/reports/2026-11-26-g47.md`): **branch ready: `fix/3593-gisday-template-strict`** (`7056e0176`). 11 to 0 in the two libraries with the flag on; check fails only on repo-wide check-parked-code (PR 3797).
 - **Batch a68 (#3673, a lot's copied link)** (report `laptop/reports/2026-11-26-a68.md`): **branch pushed: `fix/3673-lot-copied-link`** (`e4a37426d`). Writer fine; the lot services return no geometry (#2520), so the reader now asks MapServer `find`. Smoke and unit red then green. Check fails only on repo-wide check-parked-code (PR 3797). Q-a68-1, Q-a68-2.
