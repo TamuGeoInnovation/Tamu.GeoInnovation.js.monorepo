@@ -23,17 +23,15 @@ import esri = __esri;
 export function viewEvent<T>(view: MapServiceInstance['view'], name: string): Observable<T> {
   // `on` is overloaded per event name, and the name here is a parameter, so neither overload applies.
   const on = view.on as unknown as (event: string, handler: (value: T) => void) => esri.Handle;
-  let handle: esri.Handle | undefined;
 
-  const add = (handler: (value: T) => void) => {
-    handle = on.call(view, name, handler);
-  };
+  // The handle is per subscription: `fromEventPattern` hands `remove` whatever `add` returned, so each subscriber
+  // removes its own. One kept in a variable here was shared by every subscriber to this observable, and the first to
+  // leave took the last one's handler off the view and left its own registered (#3693). `watchAsObservable` is written
+  // the same way.
+  const add = (handler: (value: T) => void) => on.call(view, name, handler);
 
   // A subscription can end before ArcGIS returns the handle, and then there is nothing to remove.
-  const remove = () => {
-    handle?.remove();
-    handle = undefined;
-  };
+  const remove = (_handler: (value: T) => void, handle?: esri.Handle) => handle?.remove();
 
   return fromEventPattern<T>(add, remove);
 }

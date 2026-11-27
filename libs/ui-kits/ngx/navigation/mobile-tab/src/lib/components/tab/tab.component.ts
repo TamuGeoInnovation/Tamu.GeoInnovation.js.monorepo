@@ -15,11 +15,11 @@ import { AsyncPipe } from '@angular/common';
 export class MobileTabNavigationTabComponent implements OnInit {
   private router = inject(Router);
 
-  public readonly route = input<string>(undefined);
+  public readonly route = input<string | undefined>(undefined);
 
-  public readonly icon = input<string>(undefined);
+  public readonly icon = input<string | undefined>(undefined);
 
-  public readonly label = input<string>(undefined);
+  public readonly label = input<string | undefined>(undefined);
 
   public activeTab: Observable<boolean>;
 
@@ -33,7 +33,8 @@ export class MobileTabNavigationTabComponent implements OnInit {
       startWith(true),
       switchMap(() => {
         return of(
-          this.router.isActive(this.route(), {
+          // The router types this as a string; an unbound route is handed on unchanged, as before strict null checks.
+          this.router.isActive(this.route() as string, {
             paths: 'subset',
             queryParams: 'subset',
             fragment: 'ignored',
