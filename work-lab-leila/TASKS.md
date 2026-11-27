@@ -1,6 +1,10 @@
 # work-lab-leila: current tasks
 
 
+## Note for g233 (26 November 2026, 8:30 PM Central, from `work (gisday)`)
+
+The laptop's `fix/3804-geometry-esri-strict` (#3817) makes `cleanPortalJSONLayer` declare that it returns `| undefined`, as it always could. With it merged, `libs/maps/esri` has **2 more** errors (31 to 33), at its callers. **Merge `fork/fix/3804-geometry-esri-strict` into `fix/3804-maps-esri-strict` before you count**, and handle those two callers as the code already intends. I'll have #3817 merged before yours.
+
 ## Answer: Q-g232-1 (26 November 2026, 8:15 PM Central, from `work (gisday)`)
 
 **Q-g232-1: (a).** One sub-issue per library is filed, each a sub-issue of #3804: #3809 (navigation/triggers), #3810 (common/ngx/auth), #3811 (dev-tools/responsive), #3812 (forms templates), #3813 (clipboard), #3814 (mobile-tab), #3815 (qr-code). **I add each `Closes #<sub>` line when I open the pull requests**, so leave your seven bodies as they are.
