@@ -36,13 +36,13 @@ import * as gju from 'geojson-utils';
 
 import { LayerSource } from '@tamu-gisc/common/types';
 import { parseLatLon } from '@tamu-gisc/common/utils/geometry';
-import { findNearestIndex, getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
-import { centroidFromPolygonGeometry } from '@tamu-gisc/common/utils/geometry/esri';
+import { getGeolocation } from '@tamu-gisc/common/utils/geometry/generic';
 import { pairwiseOverlap } from '@tamu-gisc/common/utils/collection';
 
 import { trackEvent } from '@tamu-gisc/common/ngx/analytics';
 
 import { DoorPoint, firstRoutableDoor, rankDoorsByDistance, refineStops } from './trip-planner-door-choice';
+import { nearestLot, permitChosen } from './trip-planner-parking-stop';
 import { timeStringForDate } from '@tamu-gisc/common/utils/date';
 
 import { EnvironmentService } from '@tamu-gisc/common/ngx/environment';
@@ -1045,7 +1045,7 @@ export class TripPlannerService implements OnDestroy {
             } else if (
               mode.determinants &&
               mode.determinants.parking_pass &&
-              this._TravelOptions.getValue().parking_pass_permit !== ''
+              permitChosen(this._TravelOptions.getValue().parking_pass_permit)
             ) {
               // Return the service stops with an added  point of the location of the nearest permitted parking lot/deck
               // based on their set parking permit preferences.
@@ -1055,37 +1055,24 @@ export class TripPlannerService implements OnDestroy {
                 switchMap((result) => {
                   const stops = this._Stops.getValue().map((stop) => stop);
 
-                  // If no result, return with existing stops
-                  if (!result) {
+                  const destination = stops[stops.length - 1].geometry;
+                  const nearest = nearestLot(result, { latitude: destination.latitude, longitude: destination.longitude });
+
+                  // No lot the permit allows: the stops as they are, rather than a trip that never finishes (#3875).
+                  if (!nearest) {
                     return of({
                       mode,
                       stops
                     });
                   }
 
-                  // The lots are the search service's JSON, not Polygon instances, so they have rings
-                  // and no centroid of their own; the shared helper handles both.
-                  const centroids = result.map((f) => {
-                    return {
-                      geometry: centroidFromPolygonGeometry(<esri.Polygon>f.geometry)
-                    };
-                  });
-
-                  const nearest = findNearestIndex(
-                    {
-                      latitude: stops[stops.length - 1].geometry.latitude,
-                      longitude: stops[stops.length - 1].geometry.longitude
-                    },
-                    centroids
-                  );
-
-                  const nearestGeometry = centroids[nearest].geometry;
+                  const nearestGeometry = nearest.centre;
 
                   // If nearby bike returns a result, compose a trip point with its location
                   // and splice it into the other stops.
                   const parkingStop = new TripPoint({
                     source: 'coordinates',
-                    originAttributes: result[nearest].attributes as TripPointAttributes,
+                    originAttributes: nearest.lot.attributes as TripPointAttributes,
                     originGeometry: { ...nearestGeometry },
                     originParameters: {
                       type: 'coordinates',
