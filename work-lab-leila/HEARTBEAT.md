@@ -3,5 +3,5 @@ agent: Claude Code desktop app (Opus, the maintainer's account). On
 machine: a Windows 11 workstation, new to this branch on 20 October 2
 state: idle
 accepting: yes
-seen_utc: 2026-11-27T18:03:25Z
-next_utc: 2026-11-27T18:48:25Z
+seen_utc: 2026-11-27T18:35:23Z
+next_utc: 2026-11-27T19:20:23Z
