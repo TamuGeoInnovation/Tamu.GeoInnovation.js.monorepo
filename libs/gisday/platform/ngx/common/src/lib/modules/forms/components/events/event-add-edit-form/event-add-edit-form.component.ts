@@ -73,6 +73,11 @@ import {
 } from '../../../../modals/review-email-modal/profile-email';
 import { FilesSource, SubmissionFilesComponent } from '../../../../submission-files/submission-files.component';
 
+/** An attendance box's count as the column holds it: a whole number, or none for an empty box (#3827). */
+function countOrNull(value: unknown): number | null {
+  return value === null || value === undefined || `${value}`.trim() === '' ? null : Number(value);
+}
+
 @Component({
   selector: 'tamu-gisc-event-add-edit-form',
   templateUrl: './event-add-edit-form.component.html',
@@ -127,6 +132,13 @@ export class EventAddEditFormComponent implements OnInit {
    * clearing them with the empty list the form starts with.
    */
   private judgesLoaded = false;
+
+  /**
+   * Whether the event's observed attendance has been read (#3827). The API never returns the two counts with the event
+   * (`select: false`), so until they are read from the event's attendance route a save leaves them as they are, rather
+   * than clearing them with the empty boxes the form starts with: that erased every session's counts on its next edit.
+   */
+  private attendanceLoaded = false;
 
   /**
    * What stops the event being saved, shown above the buttons after a save is tried (#1773).
@@ -380,6 +392,17 @@ export class EventAddEditFormComponent implements OnInit {
           });
       }
 
+      // Its observed attendance (#3827), from its own route, as a session's page records it.
+      this._savedGuid$()
+        .pipe(switchMap((guid) => this.eventService.getEventAttendance(guid)))
+        .subscribe((counts) => {
+          this.form.patchValue({
+            observedAttendeeStart: counts?.observedAttendeeStart ?? null,
+            observedAttendeeEnd: counts?.observedAttendeeEnd ?? null
+          });
+          this.attendanceLoaded = true;
+        });
+
       this.selectedEventDateStart$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('startTime'), shareReplay());
 
       this.selectedEventDateEnd$ = this.entity$.pipe(take(1), this._timeStringFromEvent$('endTime'), shareReplay());
@@ -404,8 +427,9 @@ export class EventAddEditFormComponent implements OnInit {
         );
     } else {
       this.eventSpeakers$ = formSpeakerChanges;
-      // A new session has no judges to keep.
+      // A new session has no judges and no attendance to keep.
       this.judgesLoaded = true;
+      this.attendanceLoaded = true;
 
       this.selectedEventDateStart$ = this._defaultTimeFromSelectedEvent$().pipe(
         this._applyTimeToForm('startTime'),
@@ -622,15 +646,21 @@ export class EventAddEditFormComponent implements OnInit {
 
   /**
    * The form as it is saved: its judges only those among its speakers, and left out until they have been read, so the
-   * save leaves them as they were (#3183).
+   * save leaves them as they were (#3183). Its attendance counts likewise (#3827), as whole numbers, an empty box none.
    */
   public payload() {
-    const { judges, ...value } = this.form.getRawValue();
+    const { judges, observedAttendeeStart, observedAttendeeEnd, ...value } = this.form.getRawValue();
     // A number box holds text; the columns are whole numbers (#3209). The form refuses anything else before saving.
     const rawValue = {
       ...value,
       checkInMinutesBefore: Number(value.checkInMinutesBefore),
-      checkInMinutesAfter: Number(value.checkInMinutesAfter)
+      checkInMinutesAfter: Number(value.checkInMinutesAfter),
+      ...(this.attendanceLoaded
+        ? {
+            observedAttendeeStart: countOrNull(observedAttendeeStart),
+            observedAttendeeEnd: countOrNull(observedAttendeeEnd)
+          }
+        : {})
     };
     const speakers: Array<string> = rawValue.speakers ?? [];
 

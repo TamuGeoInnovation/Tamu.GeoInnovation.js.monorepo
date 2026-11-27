@@ -105,6 +105,14 @@ export class FileComponent implements ControlValueAccessor {
    */
   public writeValue(val: File | boolean | null) {
     this._value.set(val);
+
+    // A form that resets, or is given no file, takes the chosen file away: its name and Clear link go with it (#3680).
+    if (!val) {
+      this.fileName = undefined;
+      this.dataType = undefined;
+      this.fileExtension = undefined;
+      this._changes.markForCheck();
+    }
   }
 
   /**

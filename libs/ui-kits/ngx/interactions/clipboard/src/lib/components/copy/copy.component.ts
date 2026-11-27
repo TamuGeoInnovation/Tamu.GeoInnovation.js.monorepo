@@ -16,10 +16,10 @@ import { AsyncPipe } from '@angular/common';
 export class CopyComponent {
   private analytics = inject(Angulartics2);
 
-  public readonly text = input<string>(undefined);
+  public readonly text = input<string | undefined>(undefined);
 
   // A model rather than an input: the copy directive inside sets it.
-  public readonly copying = model<Observable<boolean>>(undefined);
+  public readonly copying = model<Observable<boolean> | undefined>(undefined);
 
   public copyCoordsClick() {
     const label = {

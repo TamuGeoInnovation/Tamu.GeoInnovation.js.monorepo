@@ -8,6 +8,7 @@ the plain-language account of what this project tests and why, with current coun
 
 ```
 test/e2e/gisday/     Playwright, run against a GIS Day dev server this repo starts. Gates PRs.
+test/e2e/gisday/captures/  Playwright, by hand: admin pages photographed without signing in (docs/gisday-admin-capture.md). Never in CI.
 test/smoke/gisday/   Playwright, run against the DEPLOYED txgisday.org. Does not gate PRs.
 test/smoke/aggiemap/ Playwright, run against DEPLOYED AggieMap, dev and production. Does not gate PRs.
 test/visual/         Playwright screenshot comparison against committed baselines. Run by hand.
@@ -69,7 +70,7 @@ Playwright container, because its baselines are platform-specific; see the comme
 ## Hermetic suites and deployed suites do different jobs
 
 **Unit tests and `test/e2e`** are hermetic. They build and run the code in the commit, so a failure
-means *this change* broke something. They can block a merge.
+means _this change_ broke something. They can block a merge.
 
 **`test/smoke`** talks to a deployed environment. A failure means the deployment is unhealthy,
 which may have nothing to do with any commit, so it must never gate a PR. It is read-only and must
@@ -77,17 +78,17 @@ stay that way - it runs against production on a schedule.
 
 ## CI
 
-| Workflow | Trigger | Gates a PR | What it does |
-| --- | --- | --- | --- |
-| `main.yml` ("Quabity Assuance") | every push, and PRs from forks | yes | Calls `lint.yml`, `test.yml` and `build.yml` on the affected projects; `publish.yml` on pushes only |
-| `test.yml` | called by `main.yml` | yes | `nx affected:test`, writing JUnit XML; a summary table on the run and the XML as an artifact |
-| `test-report.yml` | after "Quabity Assuance" completes | no | Publishes that XML as the **Test results** check on the PR |
-| `e2e.yml` | push/PR touching GIS Day or the suite | yes | GIS Day Playwright, `test/e2e` |
-| `require-linked-issue.yml` | every PR | yes | The body must close an issue |
-| `require-screenshots.yml` | every PR | yes | Before/after images, or the `no-visible-change` label |
-| `testing-page.yml` | PR touching `test/smoke` or `docs/testing.md` | yes | `docs/testing.md` must name every AggieMap smoke spec |
-| `aggiemap-smoke.yml` | daily at 11:17 UTC, plus manual | no | AggieMap smoke against dev and production; a failure opens a `dev-health` or `prod-health` issue |
-| `smoke.yml` | every 6 hours, plus manual | no | GIS Day smoke against txgisday.org |
+| Workflow                        | Trigger                                       | Gates a PR | What it does                                                                                        |
+| ------------------------------- | --------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| `main.yml` ("Quabity Assuance") | every push, and PRs from forks                | yes        | Calls `lint.yml`, `test.yml` and `build.yml` on the affected projects; `publish.yml` on pushes only |
+| `test.yml`                      | called by `main.yml`                          | yes        | `nx affected:test`, writing JUnit XML; a summary table on the run and the XML as an artifact        |
+| `test-report.yml`               | after "Quabity Assuance" completes            | no         | Publishes that XML as the **Test results** check on the PR                                          |
+| `e2e.yml`                       | push/PR touching GIS Day or the suite         | yes        | GIS Day Playwright, `test/e2e`                                                                      |
+| `require-linked-issue.yml`      | every PR                                      | yes        | The body must close an issue                                                                        |
+| `require-screenshots.yml`       | every PR                                      | yes        | Before/after images, or the `no-visible-change` label                                               |
+| `testing-page.yml`              | PR touching `test/smoke` or `docs/testing.md` | yes        | `docs/testing.md` must name every AggieMap smoke spec                                               |
+| `aggiemap-smoke.yml`            | daily at 11:17 UTC, plus manual               | no         | AggieMap smoke against dev and production; a failure opens a `dev-health` or `prod-health` issue    |
+| `smoke.yml`                     | every 6 hours, plus manual                    | no         | GIS Day smoke against txgisday.org                                                                  |
 
 `test.yml` skips a fixed list of projects; the list is
 `EXCLUDED_PROJECTS` at the top of the workflow. It runs with `--coverage=false`;
