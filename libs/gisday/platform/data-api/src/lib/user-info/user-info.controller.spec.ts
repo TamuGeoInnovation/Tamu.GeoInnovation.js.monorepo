@@ -8,7 +8,7 @@ import { JwtGuard, ManagementService, PermissionsGuard } from '@tamu-gisc/common
 import { Organization, University, UserInfo } from '../entities/all.entity';
 import { UserInfoController } from './user-info.controller';
 import { UserInfoProvider } from './user-info.provider';
-import { AccountDashboardProvider } from './account-dashboard.provider';
+import { AccountDashboardProvider, AccountsRateLimitedException } from './account-dashboard.provider';
 
 /**
  * `GET /users`, which Admin -> Users reads, through Nest's real routing, the real provider and the real
@@ -127,4 +127,56 @@ describe('UserInfoController, GET /users (#2574)', () => {
     expect(Reflect.getMetadata(GUARDS_METADATA, handler)).toEqual([JwtGuard, PermissionsGuard]);
     expect(Reflect.getMetadata('Permissions', handler)).toEqual([['read:users'], 'some']);
   });
+});
+
+/**
+ * The accounts dashboard's two routes when Auth0 rate-limits the API (#3747): 503 with Retry-After, which the page reads to
+ * say how long to wait, rather than the 500 they answered.
+ */
+describe('UserInfoController, the accounts dashboard when Auth0 rate-limits it (#3747)', () => {
+  let app: INestApplication;
+  let url: string;
+
+  beforeAll(async () => {
+    const limited = async () => {
+      throw new AccountsRateLimitedException(12);
+    };
+
+    const module = await Test.createTestingModule({
+      controllers: [UserInfoController],
+      providers: [
+        { provide: UserInfoProvider, useValue: {} },
+        { provide: AccountDashboardProvider, useValue: { getSeason: limited, getRow: limited } }
+      ]
+    })
+      .overrideGuard(JwtGuard)
+      .useValue({
+        canActivate: (context: ExecutionContext) => {
+          context.switchToHttp().getRequest().user = { sub: 'admin-1', permissions: ['read:users'] };
+          return true;
+        }
+      })
+      .overrideGuard(PermissionsGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
+
+    app = module.createNestApplication({ logger: false });
+    await app.listen(0, '127.0.0.1');
+    url = await app.getUrl();
+  });
+
+  afterAll(async () => {
+    await app?.close();
+  });
+
+  it.each(['dashboard/season/s-2026', 'dashboard/season/s-2026/row/esri'])(
+    '/users/%s answers 503 with Retry-After',
+    async (path) => {
+      const response = await fetch(`${url}/users/${path}`);
+
+      expect(response.status).toBe(503);
+      expect(response.headers.get('retry-after')).toBe('12');
+      expect((await response.json()).message).toMatch(/temporarily unavailable/i);
+    }
+  );
 });
