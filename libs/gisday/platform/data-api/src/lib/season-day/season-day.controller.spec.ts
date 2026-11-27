@@ -45,13 +45,21 @@ describe('SeasonDayController (#3796)', () => {
   });
 
   it('has no POST route', async () => {
-    const response = await fetch(`${url}/season-days`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
+    const response = await fetch(`${url}/season-days`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: '{}'
+    });
 
     expect(response.status).toBe(404);
   });
 
   it('has no PATCH route', async () => {
-    const response = await fetch(`${url}/season-days/d-1`, { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: '{}' });
+    const response = await fetch(`${url}/season-days/d-1`, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: '{}'
+    });
 
     expect(response.status).toBe(404);
   });
