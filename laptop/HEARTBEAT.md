@@ -1,7 +1,7 @@
 name: laptop
 agent: Claude Code (desktop app), the chat "js.monorepo - Laptop - 
 machine: laptop
-state: listening: every batch reported (last s10: chore/arcgis-5.2 branch ready)
+state: listening; g47 branch ready, a68 branch pushed, g46 blocked (Q-g46-1)
 accepting: no
-seen_utc: 2026-11-26T23:45:29Z
-next_utc: 2026-11-27T00:30:29Z
+seen_utc: 2026-11-27T01:55:17Z
+next_utc: 2026-11-27T02:40:17Z
