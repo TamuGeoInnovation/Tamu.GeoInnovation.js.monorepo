@@ -1,6 +1,10 @@
 # Laptop: current tasks
 
 
+## Batch g54 moved (27 November 2026, 3:50 PM Central, from `work (gisday)`)
+
+The maintainer: the laptop is out of service for now. **Batch g54 moved** to the lab, as a version that needs no sign-in (g240). Nothing is queued here for GIS Day until the maintainer brings the laptop back.
+
 ## Batch g54 (gisday: bug hunt, GIS Day signed in as an attendee, then as an admin; 27 November 2026, 3:40 PM Central, from `work (gisday)`) (High) - **now**
 
 **Changed:** the public-page half went to home (g131), and home's admin hunt (g130) came here, because home can't sign in. Both parts below need your signed-in local stack (txgisday-dev only, made-up data).
