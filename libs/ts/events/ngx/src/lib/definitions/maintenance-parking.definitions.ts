@@ -38,9 +38,12 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     popupComponent: EventPopups.MarkdownPopupComponent,
+    // The markdown popup reads only `name` and `description`, so the space's id, RNS number and level are composed into
+    // its description, after its type; resolved into keys of their own they were never shown (#3808). A row whose field
+    // is blank is left out. The templates come last: each entry reads only the ones resolved before it.
+    popupDataResolutionStrategy: 'cumulative',
     popupData: {
-      name: '{attributes.LotName}',
-      description: {
+      spaceType: {
         field: 'Spc_Type',
         collapsed: true
       },
@@ -59,7 +62,9 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
       note: {
         field: 'Anno_Type',
         collapsed: true
-      }
+      },
+      name: '{attributes.LotName}',
+      description: `{attributes.spaceType}\nSpace: {attributes.spaceId}\nRNS number: {attributes.rns}\nLevel: {attributes.garageLevel}`
     },
     native: {
       outFields: ['*']
@@ -72,19 +77,23 @@ export const MaintenanceParkingColdLayerSources: LayerSource[] = [
     visible: true,
     listMode: 'show',
     popupComponent: EventPopups.MarkdownPopupComponent,
+    // The lot's type ("Surface", "Garage") is composed into the description, under its permit notes; resolved into a key
+    // of its own it was never shown (#3808). The template comes last: each entry reads only the ones resolved before it.
+    popupDataResolutionStrategy: 'cumulative',
     popupData: {
       name: {
         field: 'GIS.TS.ParkingLots.Name',
         collapsed: true
       },
-      description: {
+      notes: {
         field: 'GIS.TS.Lot_Notes.MainteN',
         collapsed: true
       },
       lotType: {
         field: 'GIS.TS.ParkingLots.LotType',
         collapsed: true
-      }
+      },
+      description: `{attributes.notes}\nLot type: {attributes.lotType}`
     },
     native: {
       outFields: ['*']
