@@ -5,6 +5,80 @@
 
 **Q-g238-1: (a).** Filed as one Medium bug, #3862. g238 stops here, and the laptop fixes all nine together. Thanks: the "nobody calls it with part of a record" finding is what made one issue right.
 
+
+## Answer: Q-3851-1 is **A**, and the mistake was mine (26 November 2026, 11:10 PM Central, from `work (aggiemap)`)
+
+**#3851 is closed with your evidence.** Disproving your own candidate by hand and *then* explaining from the code why it
+cannot happen is the right order, and `currentResult$` being `TravelOptions.pipe(switchMap(...))` is the step the issue
+was missing.
+
+**The error was mine, not yours.** You offered it as *"a separate candidate from reading the code, not shown to
+happen"* — which is exactly the right way to report it. I wrote it up on #2846 as "probably what you saw" and asked the
+maintainer to confirm it. A candidate is not a diagnosis. #2846 now carries a correction saying so in those terms, and
+withdrawing the question I put to him.
+
+**#2846 stays closed** on its sixty runs — 40 of 40 on production, 20 of 20 on development — and is recorded as
+unexplained rather than explained. That is the honest state.
+
+**The lesson for both of us, and it is now twice tonight:** a fault found only by reading code is reproduced before it
+is written up as a cause, and if it will not reproduce it is closed. a77's third item below is the same shape, and the
+batch says so.
+
+## Batch a77 (aggiemap: #2723 and #2763, two more trip-planner bugs; 26 November 2026, 11:10 PM Central, from `work (aggiemap)`) (Medium) — **now**
+
+Same library you are already in, which is the point — a74, a75 and now these, without relearning it each time. **a72 and
+a73 still wait.**
+
+**Standing:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running now** in
+the same commit, branch from today's `development`.
+
+### #2723 — a routing stop is named by coordinates, not by the place
+
+[#2723](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2723). Clicking a Nature Rx marker
+in the routing panel sets a stop reading `30.6146, -96.3493` instead of the space's name. **The lab measured it: Eli
+Whitely Park's marker clicked in 24 loads, 23 of them named by coordinates.** So this one is observed, not inferred —
+start from its numbers.
+
+**The route itself is correct**, which is the tell: the stop resolves to the right place and only its *label* is wrong.
+Fix the naming, not the routing.
+
+1. **Reproduce it**, and say how many of how many — the issue's 23 of 24 means a sometimes-right path exists, and
+   whichever load gets it right will tell you where the name is available.
+2. **A regression test, proven red.** Assert the stop's name, over several loads if it is intermittent. One passing load
+   proves nothing here.
+3. **Before and after images**, and a release-notes entry with its row.
+
+### #2763 — a fitted bus route can finish behind the side panel
+
+[#2763](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2763). Choosing a bus route fits the
+map to it without allowing for the side panel, so a long route's far end sits behind the panel. Found by the lab while
+building the bus map, and **not caused by that change.**
+
+4. **Reproduce on a long route** and capture it.
+5. **Fix the fit to allow for the panel.** Check whether anything else fits a geometry the same way — if the padding
+   belongs in a shared place, put it there rather than in the bus path only.
+6. **A regression test, proven red**, asserting the fitted extent clears the panel.
+7. **Before and after images**, and a release entry.
+
+### Then, and read this before touching it
+
+**[#1856](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1856) is the same shape as
+#3851**: its own body says *"found by reading the code, not yet reproduced"*. So **reproduce it first, and if it will not
+reproduce, close it with the evidence** — do not write a fix for a fault nobody has seen. That is twice tonight that a
+code-reading candidate cost real time. [#1933](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1933)
+is better evidenced: a `TypeError` seen on `/map/d?bldg=0468`.
+
+Take them as a78 after these two, and tell me which of the two outcomes #1856 had.
+
+### Both
+
+**Dead code you find** goes as a row on **#1899** and nothing else. Never a question for me.
+
+**Two branches**, `fix/2723-stop-named-by-place` and `fix/2763-bus-route-fit`, each from today's `development`.
+`check-in-volume.sh` then **`pre-pr-check.sh`** on each, and give me both last lines. Body per branch in the report with
+a `Title:` line, `.pr-body.md` **not** committed. **Open no pull request** — I open them.
+
+**Report** `home/reports/2026-11-26-a77.md`. Questions `Q-a77-<n>`.
 ## Answer: Q-g127-2 (26 November 2026, 10:50 PM Central, from `work (gisday)`)
 
 **Q-g127-2: (a).** Fold the DELETE removal into g129 when the bug pass is done: remove `remove()`, the spec expects 404, and the `parked/season-day-writes` row gains DELETE. g238 now is right.
