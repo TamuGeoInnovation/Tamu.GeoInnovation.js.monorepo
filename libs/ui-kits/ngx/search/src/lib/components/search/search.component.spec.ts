@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { Angulartics2 } from 'angulartics2';
 
@@ -160,5 +160,58 @@ describe('SearchComponent: the arrow keys', () => {
 
     press('ArrowUp');
     expect(document.activeElement, 'up from the box moved focus').toBe(box());
+  });
+});
+
+/**
+ * A coordinate typed into the box, latitude first, is placed on the map rather than searched for (#3615). While it was
+ * being typed, its first part ("30.6,") was searched as a name and found nothing, and that "No results found" stayed
+ * under the box after the whole coordinate had been placed.
+ */
+describe('SearchComponent: a typed coordinate (#3615)', () => {
+  let component: SearchComponent;
+  let store: BehaviorSubject<SearchResult<unknown>>;
+  let clear: ReturnType<typeof vi.fn>;
+
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    store = new BehaviorSubject({ results: [] } as unknown as SearchResult<unknown>);
+    clear = vi.fn(() => store.next({ results: [] } as unknown as SearchResult<unknown>));
+
+    const searchService = { search: vi.fn(), clear, getSources: vi.fn().mockReturnValue(of([])), store, searching: of(false) };
+
+    // The component provides its own SearchService, so the stub replaces that one.
+    await TestBed.configureTestingModule({
+      imports: [SearchComponent],
+      providers: [
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
+        { provide: EnvironmentService, useValue: { value: vi.fn() } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    })
+      .overrideComponent(SearchComponent, { set: { providers: [{ provide: SearchService, useValue: searchService }] } })
+      .compileComponents();
+
+    component = TestBed.createComponent(SearchComponent).componentInstance;
+    component.ngOnInit();
+  });
+
+  afterEach(() => vi.useRealTimers());
+
+  it('leaves no "No results found" under the box once the coordinate is placed', () => {
+    // The search for the partial text "30.6," answered with nothing.
+    store.next({ results: [{ features: [] }] } as unknown as SearchResult<unknown>);
+    expect(component.searchResultStatus).toBe(false);
+
+    const placed = vi.fn();
+    component.result.subscribe(placed);
+
+    component.input.next('30.6, -96.3');
+    vi.advanceTimersByTime(300);
+
+    expect(placed).toHaveBeenCalledTimes(1);
+    expect(clear).toHaveBeenCalled();
+    expect(component.searchResultStatus).toBe(true);
   });
 });
