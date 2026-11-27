@@ -6,6 +6,87 @@
 g128 closes **#3807** ("Park the question-type API with the initial survey"). Put `Closes #3807` and "Part of #3713" in its `.pr-body.md`.
 
 
+
+## Answer: Q-a70-1, and a70 accepted (26 November 2026, 8:20 PM Central, from `work (aggiemap)`)
+
+**a70 is accepted.** You did the four steps in the order they were given and the order paid for itself: capturing first
+told you motorcycle showed only its layer title and that service lots were already correct, which no amount of reading
+the definitions would have. Asking the services told you three of motorcycle's fields are empty. Neither fact was in
+#3808.
+
+### Q-a70-1: **B** — file it. I have, as [#3825](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3825)
+
+I am overruling your recommendation, and the reason is a standing rule rather than a judgement about this field.
+
+CLAUDE.md: **"If the field is missing or empty, that is a data fault for the GIS team: file it."** And the reason it says
+so is recorded beside it — of the 27 differences found between our two GIS servers, **every one had been written down as
+a workaround so a map would draw, and not one had been reported.** "We checked, and they are blank on all 1,016
+records" is worth a great deal in an issue and nothing at all in a batch report, because the next person to wonder
+re-measures it.
+
+Your A is reasonable on its own terms: your popup hides a blank row, so nothing a visitor sees is wrong, and the fields
+may never be populated for motorcycle spaces. But that is exactly the open question, and only the GIS team can answer
+it. #3825 is filed as a **question**, Low, not blocking anything, and it says plainly that nothing is broken for a
+visitor today. It records your measurement and makes the decision explicit: if those fields are never populated for
+motorcycle spaces, the three rows come out of the definition.
+
+**What made filing it easy to argue** is your own second measurement: the same three fields *are* populated on the same
+service for other types — 3,454 ids, 2,427 RNS numbers, 12,680 levels of 44,980. Fields in use everywhere except one
+category read as a gap, not a design. That comparison is what turns "they are empty" into something answerable, and you
+would not have had it if you had only queried the motorcycle filter.
+
+### Your "seen in passing" was the biggest thing in the batch
+
+Filed as [#3824](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3824), **High**, and it is
+your next batch below. I verified it before filing: `maintenance-parking` and `service-and-loading-zones` carry **no
+`definitionExpression`**, `motorcycle-parking` carries #1897's, and #1897 is **closed**.
+
+So #1897 — *"both maps loaded all 44,980 spaces and took up to four minutes to finish drawing"* — was fixed on two maps
+and is still live on two others. And `parking-spaces.spec.ts`, the check written to catch exactly this, is scoped to the
+accessible and `motorcycle-parking-space` layers: **the guard was built around the two that were fixed**, so it has
+never looked at the two that were not.
+
+You reported it as unmeasured rather than leaving it out, which is the only reason anyone knows. That is the behaviour I
+want every time.
+
+## Batch a71 (aggiemap: #3824, two more maps load all 44,980 spaces; 26 November 2026, 8:20 PM Central, from `work (aggiemap)`) (High) — **now**
+
+**Standing, today:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running
+now** in the same commit, answers in `TASKS.md`, branch from today's `development`.
+
+### The order, and step 1 cannot be taken later
+
+1. **Measure before you change anything.** Time to finish drawing, on a quiet machine, for `maintenance-parking` and
+   `service-and-loading-zones`, several loads each. CLAUDE.md: a single duration proves nothing, and **the "before"
+   cannot be taken afterwards**. #1897's four minutes is a measurement, and the case for this change is the comparison,
+   not the diff.
+2. **Work the filter out from each map's own symbology**, as #1897 did. The filter must leave in **every type the
+   renderer has a symbol for**, or the map silently stops drawing something — which is worse than the slowness, because
+   nothing complains.
+3. **Widen `parking-spaces.spec.ts` to every layer drawn from that service**, rather than a named pair. This is the part
+   that stops a sixth map repeating it, and it is the reason this is one change and not two.
+4. **Measure again**, and put the before and after in [`docs/build-times.md`](docs/build-times.md) with what it shows.
+   `BUILD_TIMES_RECORD=1` if you run a check or smoke run you want recorded — you are measuring, so this is the case
+   where recording is right.
+5. **Before and after images**, and a release-notes entry with its *What to test on dev* row. "Opens in N seconds rather
+   than N minutes" is a visible result even though nothing moves on the page, so say in the row what to time and how.
+
+### Check first, don't assume
+
+- **`media-parking` also has no `definitionExpression`.** Whether it draws from the same 44,980-space service is not
+  established — ask the service before including or excluding it, and say which in the report.
+- **Say what each layer's renderer actually has symbols for**, and how many records match your filter. A filter that is
+  right for the data today and wrong for the symbology is the failure in step 2.
+
+### Do not
+
+**Do not delete anything that looks dead** — marked as potentially parked, the maintainer decides.
+
+**Branch** `fix/3824-parking-space-filters` from today's `development`. `check-in-volume.sh`, then **`pre-pr-check.sh`**,
+and give me its last line; `check-parked-code` may still be the only red, which is fine — say so. Body text in the
+report with a `Title:` line, `.pr-body.md` **not** committed. **Open no pull request** — I open it.
+
+**Report** `home/reports/2026-11-26-a71.md`. Questions `Q-a71-<n>`.
 ## Batch a70 (aggiemap: #3808, the four parking maps whose popup keys nothing reads; 26 November 2026, 7:55 PM Central, from `work (aggiemap)`) (Medium) — **now**
 
 **a69 is accepted.** Putting the caption **inside** the image, with a README beside it, answers the objection I actually
