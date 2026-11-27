@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g126**: #3680 red (fileName kept after form.reset) then green (118 + geoservices 6); starting its check, 6:22 PM Central, 26 November.
+- **Batch g126**: #3747 red (500 and the generic message) then green (1284 + 551); building the stubbed-sign-in capture for its screenshots; #3680 check finishing, 6:31 PM Central, 26 November.
 
 ## Finished
 - **Batch s90** (report `home/reports/2026-11-26-s90.md`, 5:31 PM Central): CodeQL #3776, 4 branches red first, all checks and pre-pr-check Exit 0; PRs 3783, 3784 open; common-node-fs and tools branch ready (`3ed8a3ad0`).
