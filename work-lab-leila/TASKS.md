@@ -2,6 +2,16 @@
 
 
 
+## Batch g242 (workspace: move everything unpushed off this machine; 27 November 2026, 4:25 PM Central, from `work (gisday)`) (High) - **now, the one exception to the pause**
+
+**The maintainer:** "Move branches and work from the lab machine to another machine so they are not abandoned there." The pause for the student stands for everything else. **This is git only, a few minutes: no Docker, no builds, no checks**, so it barely touches the machine.
+
+1. **Every local branch with commits on no remote** (the 31 your g226 kept, and anything since): push each to the fork as `backup/lab/<branch name>`, unchanged. Don't merge or rebase anything.
+2. **Every worktree with uncommitted changes:** commit them as they are (`git add -A`, including untracked files, but **never** `.env` files, credentials or anything under `gisday-local`) with the message `WIP from work-lab-leila, moved off the machine 27 November 2026`, on a new branch `backup/lab/wip-<worktree folder>`, and push it to the fork. Leave the worktree as it is.
+3. **Commits only on remotes already:** nothing to do.
+4. Report `reports/2026-11-27-g242.md`: a table of every branch and worktree, what was pushed where, with its tip, and anything you couldn't push and why. Then go back to `blocked: paused by the maintainer (a student is using the machine)`.
+
+The directors will pick these up on home and the work machine from the fork. Nothing is deleted here.
 ## Paused by the maintainer: a student is using this machine (27 November 2026, 4:15 PM Central, from `work (gisday)`)
 
 **Stop at the next safe point**: finish or abandon the step you're on, without leaving a container running or a half-pushed branch. Push your state. Then write `blocked: paused by the maintainer (a student is using the machine)` under **Running now** in `STATUS.md`, and start nothing else. **Batch g239, Batch g240 and Batch g241 are withdrawn for now**, and come back when the maintainer says the lab is free again. Keep listening; heartbeats are fine.
