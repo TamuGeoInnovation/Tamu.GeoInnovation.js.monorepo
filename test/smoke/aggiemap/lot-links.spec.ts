@@ -214,3 +214,44 @@ test.describe('lot links on the parking maps', () => {
     expect(opened.searchParams.get('feature')).toBe(feature);
   });
 });
+
+/**
+ * A lot's copied link reopens that lot on the event parking maps whose service returns its lots without geometry
+ * (#3673).
+ *
+ * Break / Summer and New Student Conference draw Transportation's joined lot layers, whose `query` answers each lot with
+ * its attributes and no geometry (#2520), so the link found the lot by its object id and then could not select it: the
+ * map opened with nothing selected. The object id is the lot's own, asked of the service here, so the check is that the
+ * popup the link opens shares the same lot back, which a popup for any other feature cannot do.
+ */
+const NO_GEOMETRY_LOT_LINKS: Array<Omit<LotLink, 'path'> & { mapPath: string }> = [
+  {
+    name: 'Break / Summer',
+    mapPath: '/parking/break-summer/map/d',
+    layerId: 'Break-Summer Parking Lots',
+    url: `${connections.breakSummerParkingUrl}/0`,
+    where: `GIS.TS.ParkingLots.Name = '100g'`,
+    objectIdField: 'GIS.TS.ParkingLots.OBJECTID'
+  },
+  {
+    name: 'New Student Conference',
+    mapPath: '/events/nsc-parking/map/d',
+    layerId: 'NSC Parking Lots',
+    url: `${connections.nscParkingUrl}/0`,
+    where: `GIS.TS.ParkingLots.Name = '100g'`,
+    objectIdField: 'GIS.TS.ParkingLots.OBJECTID'
+  }
+];
+
+test.describe('copied lot links on the event parking maps', () => {
+  for (const link of NO_GEOMETRY_LOT_LINKS) {
+    test(`a copied link to lot 100g on ${link.name} reopens that lot`, async ({ page, request }) => {
+      const [objectId] = await expectedObjectIds(request, { ...link, path: link.mapPath });
+      const feature = `${link.layerId}:${objectId}`;
+
+      const { link: opened } = await openedPopup(page, `${link.mapPath}?feature=${encodeURIComponent(feature)}`);
+
+      expect(opened.searchParams.get('feature'), `${link.mapPath} opened a popup for another feature`).toBe(feature);
+    });
+  }
+});
