@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g48 (#3804, five shared libraries strict)**, started 7:58 PM Central. Now (7:59 PM): measured (location 5, geometry-esri 9, pipes 8, mobile-tile 10, device 10, own files, own config); fixing, location first.
+- **Batch g48 (#3804, five shared libraries strict)**, started 7:58 PM Central. Now (8:03 PM): all five at 0 own errors and committed; proving with the app flag on locally (one scratch build of all five, not pushed).
 
 ## Finished
 - **Batch g47 (#3593, GIS Day's own template errors)** (report `laptop/reports/2026-11-26-g47.md`): **branch ready: `fix/3593-gisday-template-strict`** (`7056e0176`). 11 to 0 in the two libraries with the flag on; check fails only on repo-wide check-parked-code (PR 3797).
