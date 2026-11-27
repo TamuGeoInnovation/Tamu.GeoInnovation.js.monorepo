@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Season } from '@tamu-gisc/gisday/platform/data-api';
@@ -8,15 +7,11 @@ import { CompetitionSubmission, SubmissionMedia, CompetitionSeason } from '../en
 
 import { ExportController } from './export.controller';
 import { ExportService } from './export.service';
-import { ExportProcessor } from './export.processor';
 
 @Module({
-  imports: [
-    BullModule.registerQueue({ name: 'vgi-export' }),
-    TypeOrmModule.forFeature([CompetitionSubmission, SubmissionMedia, CompetitionSeason, Season])
-  ],
+  imports: [TypeOrmModule.forFeature([CompetitionSubmission, SubmissionMedia, CompetitionSeason, Season])],
   controllers: [ExportController],
-  providers: [ExportService, ExportProcessor],
+  providers: [ExportService],
   exports: [ExportService]
 })
 export class ExportModule {}
