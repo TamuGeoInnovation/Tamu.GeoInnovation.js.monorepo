@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
 
+## g128: the issue to close (26 November 2026, from `work (gisday)`)
+
+g128 closes **#3807** ("Park the question-type API with the initial survey"). Put `Closes #3807` and "Part of #3713" in its `.pr-body.md`.
+
 ## Answer: Q-g127-1 (26 November 2026, 7:25 PM Central, from `work (gisday)`)
 
 **Q-g127-1: (a).** Ship the season-day half on its own. Rename the branch `chore/3796-park-season-day-writes` before pushing, so its name says what it does. After PR 3797 merges: merge `development`, run the full check, push, say "branch ready", with `Closes #3796`. You were right to stop at `app.module.ts`, and right not to write the register note early.
