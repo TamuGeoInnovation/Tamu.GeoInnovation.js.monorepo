@@ -1,5 +1,30 @@
 # Home machine: current tasks
 
+## Batch g126 (gisday: #3747 and #3680, two bugs found yesterday; 26 November 2026, 6:20 PM Central, from `work (gisday)`) (High) - **now**
+
+**Rules for every GIS Day batch from now on (the maintainer, 26 November):**
+- **Announce every step, before and after,** in `STATUS.md` and a one-line commit, with the time from PowerShell (`DIRECTOR.md`). Reread `TASKS.md` before each step: answers and changes arrive there.
+- **Merge the latest `development` into any branch before its check.** Today's lock moved every package to its latest.
+- **Leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone** until #3788 merges.
+- **Never delete dead code.** If you find any, list it in the report as "potentially parked", with what it is and the last commit that has it. The maintainer decides.
+- **An issue that's already fixed or no longer makes sense:** say so in the report with the evidence, and don't build for it. Questions go under **Questions for the director**, with options and a recommendation.
+- **Each branch ends with `.pr-body.md`, drafted from the template, as its last commit,** first line `Title: <title>`. Push it to the fork. I open the pull requests.
+- **A visible change carries before and after screenshots** in `docs/screenshots/<slug>/`, and a release entry in `docs/releases/unreleased/` with `app: gisday`.
+
+**1. #3747: the accounts dashboard answers 500 when Auth0 rate-limits** (`libs/gisday/platform/data-api`). Branch `fix/3747-accounts-dashboard-rate-limit`.
+- Handle Auth0's `TooManyRequestsError` on the dashboard path: either a bounded retry with backoff, or a 503 with `Retry-After`. Say in the body which you chose and why.
+- The dashboard page (`gisday-platform-ngx-core`) says the account counts are temporarily unavailable, rather than drawing nothing.
+- A spec, red first, in which the management client throws `TooManyRequestsError`.
+- **It's visible:** a before and after of Admin > Dashboards > Accounts, signed in locally (txgisday-dev only). Forcing the 429 by stubbing the client locally is fine.
+- `scripts/check-in-volume.sh <branch> gisday-platform-data-api,gisday-platform-ngx-core,gisday-nest,gisday-angular` at `CHECK_PARALLEL=1`.
+
+**2. #3680: the file picker keeps the chosen file's name after its form resets** (`libs/ui-kits/ngx/forms`, `file.component.ts`). Branch `fix/3680-file-picker-reset-name`.
+- `writeValue` with no file clears the shown name, type and extension, keeping the component's interface (Geoservices' subclass reads `fileName`).
+- A spec, red first: choose a file, then `form.reset()`, then no name and no Clear link.
+- Is it visible? Check whether any GIS Day or Geoservices form resets after a file is chosen. If one does, take before and after images of it; if none does, use `no-visible-change` and say why in the body.
+- `scripts/check-in-volume.sh <branch> ui-kits-ngx-forms,gisday-angular,geoservices-angular`.
+
+Report `reports/2026-11-26-g126.md`, and say "branch ready: <names>".
 ## Batch s90 (security: #3776, CodeQL's first scan, deployed code first; 26 November 2026, 4:12 PM Central, from `work (security)`) (High) - **after s89**
 
 CodeQL has just run on this repository for the first time and found 1 critical and 25 high. [#3776](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3776) lists them, and the alerts themselves are under the repository's **Security → Code scanning** (`gh api repos/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/code-scanning/alerts?state=open`). Announce every step, before and after.
