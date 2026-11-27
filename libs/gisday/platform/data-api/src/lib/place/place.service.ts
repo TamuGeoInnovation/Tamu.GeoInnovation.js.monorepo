@@ -172,7 +172,7 @@ export class PlaceService extends SeasonScopedProvider<Place> {
 
       // An update changes only what it is sent (#3862): links and visibility left out keep what they were, rather than
       // emptying the links and nulling the visibility. Sent, even as an empty list, they replace them as before.
-      let links: Array<Partial<PlaceLink>> = place.links === undefined ? (existing.links ?? []) : [];
+      let links: Array<Partial<PlaceLink>> = place.links === undefined ? existing.links : [];
       const visibilitySettings =
         place.visibilitySettings === undefined
           ? existing.visibilitySettings
