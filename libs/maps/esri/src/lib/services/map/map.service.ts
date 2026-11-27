@@ -324,7 +324,9 @@ export class EsriMapService {
    * landed on. It asked one layer, the buildings, so a click on anything else found nothing (#2723).
    */
   public featuresAtPoint(point: esri.Point): Promise<esri.Graphic[]> {
-    return queryPopupLayersAtClick(this._modules.view, point, { drawn: true });
+    // `currentView` rather than `_modules.view`: #3804 turned strict null checks on here, and this reads the view the
+    // same way every other post-`makeMap` caller does.
+    return queryPopupLayersAtClick(this.currentView, point, { drawn: true });
   }
 
   /**
