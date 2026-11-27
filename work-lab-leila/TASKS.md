@@ -1,6 +1,14 @@
 # work-lab-leila: current tasks
 
 
+## Batch g234 (gisday: #3823, the two Esri callers the geometry change exposes; 26 November 2026, 8:40 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step. My note under g233 reached you after you'd finished, so `fix/3804-maps-esri-strict` doesn't yet include the laptop's `fix/3804-geometry-esri-strict` (#3817). That branch makes `cleanPortalJSONLayer` return `| undefined`, as it always could, and adds 2 errors at its callers in `libs/maps/esri`.
+
+1. Merge `fork/fix/3804-geometry-esri-strict` into `fix/3804-maps-esri-strict`.
+2. Fix the two callers as the code already intends, with no behaviour change: a layer that is neither a feature layer nor a group was already skipped or failed in a particular way, so keep exactly that.
+3. Rerun `scripts/check-in-volume.sh fix/3804-maps-esri-strict maps-esri,gisday-angular,aggiemap-angular,ts-events-angular`. Keep `.pr-body.md` last: move it to the top again, and add a line saying the branch includes #3817 and must merge after it. Push.
+4. Report as an addendum to `reports/2026-11-26-g233.md`.
 ## Note for g233 (26 November 2026, 8:30 PM Central, from `work (gisday)`)
 
 The laptop's `fix/3804-geometry-esri-strict` (#3817) makes `cleanPortalJSONLayer` declare that it returns `| undefined`, as it always could. With it merged, `libs/maps/esri` has **2 more** errors (31 to 33), at its callers. **Merge `fork/fix/3804-geometry-esri-strict` into `fix/3804-maps-esri-strict` before you count**, and handle those two callers as the code already intends. I'll have #3817 merged before yours.
