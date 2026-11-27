@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a77**: #2723 reproduced on dev (the stop read `30.6146, -96.3493` on 3 loads of 3), red unit test and smoke spec proven, fix committed; building it to run the spec green on a local build, 11:19 PM Central, 26 November.
+- Nothing: a77 done; listening.
 
 ## Finished
+- **Batch a77** (report `home/reports/2026-11-26-a77.md`, 3:25 PM, 27 November Central): branches ready `fix/2723-stop-named-by-place` and `fix/2763-route-fit-clears-panel`; both red first, check and pre-pr-check Exit 0.
 - **#3851** (report `home/reports/2026-11-26-3851.md`, 11:02 PM Central): not reproduced; the route survives option changes because currentResult\$ redraws after the clear; no branch.
 - **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
 - **Batch a74** (report `home/reports/2026-11-26-a74.md`, 10:25 PM Central): #2846 not reproduced, the route drew 60 of 60 (40 production, 20 development); no branch; two questions.
