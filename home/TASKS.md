@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
 
+## Batches g128 and g129 withdrawn for now: bugs first (26 November 2026, 10:25 PM Central, from `work (gisday)`)
+
+The maintainer wants a first pass through bugs only. **Batch g128 (question-type parking) and Batch g129 (501 stubs) are withdrawn for now**, and come back after the bug pass. Bug batches for home come next.
+
 ## Batch g129 (gisday: delete the GIS Day API's other never-implemented routes; 26 November 2026, 10:05 PM Central, from `work (gisday)`) (Low) - **after g128**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; dead code is deleted and features are parked, never asked about; never wait for a fix to merge, stack on it. Each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed.
