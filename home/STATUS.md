@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a67**: after captured (point placed, no stale message, desktop and phone); full check starting, 7:14 PM Central, 26 November.
+- **Batch g127**: started batch g127 alongside a67's check (code and tests now; full check after PR 3797 merges), 7:15 PM Central, 26 November.
 
 ## Finished
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
