@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a69**: Q-a69-1 B: spec render committed as a test artifact, release entry says it cannot be checked until #2520; pushed; pre-pr-check running, 7:46 PM Central, 26 November.
+- **g127** (`chore/3796-park-season-day-writes`): done but for its full check, which waits for PR 3797 (or 3805) to merge; then push and branch ready. **g128** held until PR 3803 merges. Otherwise idle since 7:52 PM Central.
 
 ## Finished
+- **Batch a69** (report `home/reports/2026-11-26-a69.md`, 7:52 PM Central): branch ready `fix/3671-nsc-permit-instructions` at `bfcd92a6f`; one line, red first; no-visible-change (#2520), spec render as test artifact; #3808 filed by the director.
 - **Batch a67** (report `home/reports/2026-11-26-a67.md`, 7:37 PM Central): branch ready `fix/3615-coordinate-search` at `9f99c7023`; two causes fixed, red first; check passes but for check-parked-code (PR 3797).
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
 - **Batch s90** (report `home/reports/2026-11-26-s90.md`, 5:31 PM Central): CodeQL #3776, 4 branches red first, all checks and pre-pr-check Exit 0; PRs 3783, 3784 open; common-node-fs and tools branch ready (`3ed8a3ad0`).
