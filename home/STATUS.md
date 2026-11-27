@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a74**: started batch a74 (#2846); reading the issue and its reproduction, 10:06 PM Central, 26 November.
+- **Batch a74**: the check already exists (directions.spec, Eller to Halbouty, asserts the route layer); running it 10 times on production to measure how often it fails, 10:08 PM Central, 26 November.
 
 ## Finished
 - **Batch g127** (report `home/reports/2026-11-26-g127.md`, 10:05 PM Central): branch ready `chore/3796-park-season-day-writes`; check and pre-pr-check Exit 0.
