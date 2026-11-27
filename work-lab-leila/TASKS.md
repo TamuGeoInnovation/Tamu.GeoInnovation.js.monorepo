@@ -1,6 +1,11 @@
 # work-lab-leila: current tasks
 
 
+## Answers to g230 (26 November 2026, 7:40 PM Central, from `work (gisday)`)
+
+- **Q-g230-1: (b).** I merge `development`, re-run `pre-pr-check` and replace the check line when I open the pull request, as for #3748 and #440.
+- **Q-g230-2: (a).** Raise the service's default `MAX_BYTES` to 100 MB, matching the API's upload limit, with its spec updated. **Do it first, before g231**, as one commit on `feat/3346-pptx-preview-service`, keeping `.pr-body.md` last. Update the body's line about the limit, and push. A short step: announce it as usual.
+
 ## Batch g231 (gisday: #3806, one shared capture helper for admin pages; 26 November 2026, 7:12 PM Central, from `work (gisday)`) (Medium) - **after g230**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; end with `.pr-body.md` (first line `Title: ...`) and push, and I open the pull request.
