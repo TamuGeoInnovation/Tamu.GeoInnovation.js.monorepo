@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g127**: Q-g127-1 A: branch renamed chore/3796-park-season-day-writes; waits for PR 3797, then merge, check, push, 7:41 PM Central, 26 November.
+- **Batch a69**: Q-a69-1 B: spec render committed as a test artifact, release entry says it cannot be checked until #2520; pushed; pre-pr-check running, 7:46 PM Central, 26 November.
 
 ## Finished
 - **Batch a67** (report `home/reports/2026-11-26-a67.md`, 7:37 PM Central): branch ready `fix/3615-coordinate-search` at `9f99c7023`; two causes fixed, red first; check passes but for check-parked-code (PR 3797).
