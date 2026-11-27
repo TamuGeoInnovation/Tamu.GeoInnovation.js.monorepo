@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'dateRange' })
 export class DateRangePipe implements PipeTransform {
-  public transform(dates: Array<ParseableDate>): string {
+  public transform(dates: Array<ParseableDate>): string | null {
     if (dates === undefined || dates === null) {
       return null;
     }
@@ -39,61 +39,73 @@ export class DateRangePipe implements PipeTransform {
 
     // With every parsed date, group it into year, month, and day buckets.
 
-    const grouped = sortedDates.reduce((acc, curr) => {
-      const year = curr.getUTCFullYear();
-      const month = curr.getUTCMonth();
-      const day = curr.getUTCDate();
+    const grouped = sortedDates.reduce(
+      (acc, curr) => {
+        const year = curr.getUTCFullYear();
+        const month = curr.getUTCMonth();
+        const day = curr.getUTCDate();
 
-      if (acc[year] === undefined) {
-        acc[year] = {};
-      }
+        if (acc[year] === undefined) {
+          acc[year] = {};
+        }
 
-      if (acc[year][month] === undefined) {
-        acc[year][month] = [];
-      }
+        if (acc[year][month] === undefined) {
+          acc[year][month] = [];
+        }
 
-      acc[year][month].push(day);
+        acc[year][month].push(day);
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {} as Record<string, Record<string, Array<number>>>
+    );
 
     // For each year, month, and day bucket, determine the range of days.
-    const ranges = Object.keys(grouped).reduce((acc, year) => {
-      const months = Object.keys(grouped[year]).reduce((acc, month) => {
-        const days = grouped[year][month];
+    const ranges = Object.keys(grouped).reduce(
+      (acc, year) => {
+        const months = Object.keys(grouped[year]).reduce(
+          (acc, month) => {
+            const days = grouped[year][month];
 
-        const ranges = days.reduce((acc, day, index) => {
-          if (index === 0) {
-            acc.push([day]);
+            const ranges = days.reduce(
+              (acc, day, index) => {
+                if (index === 0) {
+                  acc.push([day]);
+                  return acc;
+                }
+
+                const lastRange = acc[acc.length - 1];
+
+                if (day - lastRange[lastRange.length - 1] === 1) {
+                  lastRange.push(day);
+                } else {
+                  acc.push([day]);
+                }
+
+                return acc;
+              },
+              [] as Array<Array<number>>
+            );
+
+            acc.push({
+              month: parseInt(month, 10),
+              ranges
+            });
+
             return acc;
-          }
-
-          const lastRange = acc[acc.length - 1];
-
-          if (day - lastRange[lastRange.length - 1] === 1) {
-            lastRange.push(day);
-          } else {
-            acc.push([day]);
-          }
-
-          return acc;
-        }, []);
+          },
+          [] as Array<{ month: number; ranges: Array<Array<number>> }>
+        );
 
         acc.push({
-          month: parseInt(month, 10),
-          ranges
+          year: parseInt(year, 10),
+          months
         });
 
         return acc;
-      }, []);
-
-      acc.push({
-        year: parseInt(year, 10),
-        months
-      });
-
-      return acc;
-    }, []);
+      },
+      [] as Array<{ year: number; months: Array<{ month: number; ranges: Array<Array<number>> }> }>
+    );
 
     // For each year, month, and range of days, format the range of days.
     const formatted = ranges.map((range) => {
