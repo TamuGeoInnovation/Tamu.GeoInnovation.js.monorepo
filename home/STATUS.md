@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a78** (#1856 reproduce-or-close, then #1933), started 3:26 PM Central, 27 November. **g130 held** on Q-g130-1 (sign-in and the gisday containers), asked of the GIS Day director.
+- Nothing: a78 done. Next g131 (GIS Day, no sign-in). g130 went to the laptop; g132 (sign-in) waits for the maintainer's own word in the home chat.
 
 ## Finished
+- **Batch a78** (report `home/reports/2026-11-27-a78.md`, 4:03 PM Central): #1856 and #1933 closed, not reproduced (fixed by #1854 and #2259); #1856's path gave new bug #3875, branch ready `fix/3875-mode-3-never-finishes`, check and pre-pr-check Exit 0.
 - **Batch a77** (report `home/reports/2026-11-26-a77.md`, 3:25 PM, 27 November Central): branches ready `fix/2723-stop-named-by-place` and `fix/2763-route-fit-clears-panel`; both red first, check and pre-pr-check Exit 0.
 - **#3851** (report `home/reports/2026-11-26-3851.md`, 11:02 PM Central): not reproduced; the route survives option changes because currentResult\$ redraws after the clear; no branch.
 - **Batch a75** (report `home/reports/2026-11-26-a75.md`, 10:51 PM Central): branch ready `fix/2608-leave-at` at `f86cbad54`; two causes fixed, red first; check and pre-pr-check Exit 0.
