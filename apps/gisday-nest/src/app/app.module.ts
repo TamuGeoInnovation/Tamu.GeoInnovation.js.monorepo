@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BullModule } from '@nestjs/bull';
 
 import {
   GISDAY_ENTITIES,
@@ -105,14 +104,7 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
     EventLocationModule,
     PlaceModule,
     AssetsModule,
-    ContactModule,
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST || 'localhost',
-        // A port that is not set reads as NaN, as parseInt(undefined) did, and falls back to 6379 (#3495).
-        port: parseInt(process.env.REDIS_PORT ?? '', 10) || 6379
-      }
-    })
+    ContactModule
   ],
   controllers: [],
   providers: [

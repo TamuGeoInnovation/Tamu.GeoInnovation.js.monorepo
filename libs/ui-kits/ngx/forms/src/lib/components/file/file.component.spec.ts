@@ -1,5 +1,6 @@
-import { provideZonelessChangeDetection } from '@angular/core';
+import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { FileComponent } from './file.component';
 
@@ -93,5 +94,54 @@ describe('FileComponent, zoneless', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.textContent).not.toContain('poster.pdf');
+  });
+});
+
+@Component({
+  imports: [FileComponent, ReactiveFormsModule],
+  template: `<form [formGroup]="form"><tamu-gisc-file formControlName="file">Choose a file</tamu-gisc-file></form>`
+})
+class FormHost {
+  public readonly form = new FormGroup({ file: new FormControl<File | null>(null) });
+  public readonly picker = viewChild.required(FileComponent);
+}
+
+// A form that resets after a file was chosen, as one does once it is submitted, left the old file's name and its Clear
+// link on screen, though the form's value was empty (#3680).
+describe('FileComponent in a form that resets (#3680)', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [FormHost], providers: [provideZonelessChangeDetection()] });
+  });
+
+  it('shows no file name and no Clear link after form.reset()', async () => {
+    const fixture = TestBed.createComponent(FormHost);
+    fixture.autoDetectChanges(true);
+    await fixture.whenStable();
+
+    fixture.componentInstance.picker().handleFileChange({ target: { files: [new File(['x'], 'poster.pdf')], value: '' } });
+    fixture.componentInstance.picker()['_changes'].markForCheck();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.textContent).toContain('poster.pdf');
+
+    fixture.componentInstance.form.reset();
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.form.value.file).toBeNull();
+    expect(fixture.componentInstance.picker().fileName).toBeUndefined();
+    expect(fixture.nativeElement.textContent).not.toContain('poster.pdf');
+    expect(fixture.nativeElement.textContent).not.toContain('Clear');
+    expect(fixture.nativeElement.textContent).toContain('Choose a file');
+  });
+
+  it('still shows the name of a file the form is given', async () => {
+    const fixture = TestBed.createComponent(FormHost);
+    fixture.autoDetectChanges(true);
+    await fixture.whenStable();
+
+    fixture.componentInstance.picker().handleFileChange({ target: { files: [new File(['x'], 'slides.pptx')], value: '' } });
+    fixture.componentInstance.picker()['_changes'].markForCheck();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.textContent).toContain('slides.pptx');
   });
 });

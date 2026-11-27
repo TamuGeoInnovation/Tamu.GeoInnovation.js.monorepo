@@ -139,6 +139,9 @@ function alreadyFoundLayer(api_url: string): LayerSource {
     loadOnInit: true,
     visible: true,
     native: {
+      // An empty season gives an empty FeatureCollection, from which a GeoJSONLayer cannot infer its geometry, and the
+      // layer then fails to build (#3748). The API writes every feature here as a Point (map.service.ts).
+      geometryType: 'point',
       renderer: {
         type: 'simple',
         symbol: {
@@ -186,6 +189,8 @@ function submissionsLayer(title: string, url: string, except: Array<string> = []
     loadOnInit: true,
     visible: true,
     native: {
+      // Stated, not inferred, so an empty season still builds the layer (#3748): see alreadyFoundLayer.
+      geometryType: 'point',
       ...(guids.length > 0 ? { definitionExpression: `guid NOT IN (${guids.map((g) => `'${g}'`).join(', ')})` } : {}),
       renderer: {
         type: 'simple',
@@ -235,6 +240,8 @@ function myLayer(url: string): LayerSource {
     loadOnInit: true,
     visible: true,
     native: {
+      // Stated, not inferred, so a participant with no submissions yet still gets the layer (#3748): see alreadyFoundLayer.
+      geometryType: 'point',
       renderer: {
         type: 'simple',
         symbol: {

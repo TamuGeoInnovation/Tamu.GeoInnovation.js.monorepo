@@ -159,6 +159,100 @@ describe('SpeakerListComponent, the sessions each speaker is in (#441)', () => {
 });
 
 /**
+ * #440: to invite last year's panelists back, the organizers needed every speaker who spoke in a session of one kind, and
+ * the list could not show them. A Session tag choice, beside "Only speakers in no session", lists only the speakers in a
+ * session carrying that tag, offering the tags of the season's sessions, as the Events list offers organizations (#434).
+ * Red on today's code.
+ */
+describe('SpeakerListComponent, speakers by the tags of their sessions (#440)', () => {
+  const panel = { guid: 't-panel', name: 'Panel' };
+  const workshop = { guid: 't-workshop', name: 'Workshop' };
+  const speakers = [
+    {
+      guid: 'sp-1',
+      firstName: 'Ana',
+      lastName: 'Ruiz',
+      events: [
+        { guid: 'e-1', name: 'Mapathon', tags: [workshop] },
+        { guid: 'e-2', name: 'Industry panel', tags: [panel, workshop] }
+      ]
+    },
+    { guid: 'sp-2', firstName: 'Ben', lastName: 'Ortiz', events: [{ guid: 'e-3', name: 'Alumni panel', tags: [panel] }] },
+    { guid: 'sp-3', firstName: 'Cy', lastName: 'Lee', events: [{ guid: 'e-4', name: 'Drone flights', tags: [] }] },
+    { guid: 'sp-4', firstName: 'Di', lastName: 'Park', events: [] }
+  ];
+
+  /** The page as this test reads it: its Session tag choice and the choices it offers. */
+  type Page = {
+    sessionTag: { setValue(value: string): void; value: string };
+    sessionTagChoices$: import('rxjs').Observable<Array<{ guid: string; name: string }>>;
+    clearFilters(): void;
+  };
+
+  function open() {
+    TestBed.configureTestingModule({
+      imports: [SpeakerListComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: SpeakerService,
+          useValue: {
+            getEntitiesForActiveSeason: () => of(speakers),
+            getEntitiesForSeason: () => of(speakers),
+            getEntitiesWithSessionsForActiveSeason: () => of(speakers),
+            getEntitiesWithSessionsForSeason: () => of(speakers),
+            getEntities: () => of(speakers)
+          }
+        },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SeasonService, useValue: { seasons$: of([]), activeSeason$: of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} }, queryParams: of({}) } },
+        { provide: ModalService, useValue: {} },
+        { provide: NotificationService, useValue: { toast: vi.fn() } }
+      ]
+    });
+
+    const fixture = TestBed.createComponent(SpeakerListComponent);
+    fixture.detectChanges();
+
+    const names = () => {
+      fixture.detectChanges();
+
+      return Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('tbody tr')).map(
+        (row) => speakers.find((s) => row.textContent?.includes(s.firstName))?.firstName
+      );
+    };
+
+    return { fixture, names, page: fixture.componentInstance as unknown as Page };
+  }
+
+  it("offers the tags of the season's sessions, each once, by name, after every tag", () => {
+    const { fixture, page } = open();
+    let choices: Array<{ guid: string; name: string }> = [];
+    page.sessionTagChoices$.subscribe((c) => (choices = c));
+
+    expect(choices).toEqual([{ guid: '', name: 'Every tag' }, panel, workshop]);
+    expect((fixture.nativeElement as HTMLElement).querySelector('tamu-gisc-select[placeholder="Session tag"]')).toBeTruthy();
+  });
+
+  it('lists only the speakers in a session with the chosen tag, and every speaker again when cleared', () => {
+    const { names, page } = open();
+
+    expect(names()).toEqual(['Ana', 'Ben', 'Cy', 'Di']);
+
+    page.sessionTag.setValue('t-panel');
+    expect(names()).toEqual(['Ana', 'Ben']);
+
+    page.sessionTag.setValue('t-workshop');
+    expect(names()).toEqual(['Ana']);
+
+    page.clearFilters();
+    expect(page.sessionTag.value).toBe('');
+    expect(names()).toEqual(['Ana', 'Ben', 'Cy', 'Di']);
+  });
+});
+
+/**
  * #3370: at 390 px the list was 566 px wide, so the page scrolled sideways, and the season select was squeezed to a
  * sliver beside the heading. The table now scrolls in the admin dashboards' own box, whose specs show it scrolls content
  * wider than itself, so the page does not; and the toolbar wraps, putting the actions under the heading rather than
