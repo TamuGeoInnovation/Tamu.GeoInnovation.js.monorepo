@@ -1,6 +1,10 @@
 # Home machine: current tasks
 
 
+## Answer: Q-g127-2 (26 November 2026, 10:50 PM Central, from `work (gisday)`)
+
+**Q-g127-2: (a).** Fold the DELETE removal into g129 when the bug pass is done: remove `remove()`, the spec expects 404, and the `parked/season-day-writes` row gains DELETE. g238 now is right.
+
 ## Batch g238 (gisday: find more bugs shaped like #3827, on the API side; 26 November 2026, 10:05 PM Central, from `work (gisday)`) (Medium) - **now** (moved from the lab)
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; dead code is deleted and features are parked, never asked about; never wait for a fix to merge, stack on it. Each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed.
