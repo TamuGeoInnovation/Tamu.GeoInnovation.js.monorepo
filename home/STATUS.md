@@ -14,6 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
+- **Batch a73** (#3687, park the bus UI the retired API fed): started, reading which of the three components anything live reaches, %s Central, 27 November.
 - GIS Day sign-in: prerequisites present; signing in held for the maintainer's own word (4:05 PM Central, 27 November).
 
 ## Finished
