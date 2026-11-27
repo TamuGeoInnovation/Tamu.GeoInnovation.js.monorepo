@@ -570,9 +570,14 @@ generators are configured with `skipTests`.
 **Deleting code we expect back parks it, in the same pull request as the deletion.** An annotated `parked/*` tag on the
 last commit that still has it, a row in [`docs/parked-code.md`](docs/parked-code.md), and an issue labelled `parked`
 naming the condition for its return. `scripts/check-parked-code.mjs` fails when those three disagree, so none can go
-stale; `git tag -l "parked/*"` lists them. **Tag before the deletion merges**, while a commit containing the code is
-still on `development` — afterwards, finding the right commit means reading a closed pull request's history, which is
-the situation this avoids. The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
+stale; `git tag -l "parked/*"` lists them. **Merge the row, then tag immediately**: the commit you want is the merge
+commit's first parent, `git tag -a parked/<name> "$(git rev-parse <merge>^)"`. The rule used to be the other way round
+and was wrong twice over (#3717) — the commit was never hard to find, and because tags are global while a row is not,
+tagging first left a `parked/*` tag with no row for a whole pull-request cycle, failing lint on **every branch in the
+repository** for 33 minutes on its second use. The check now warns instead of failing while a disagreement is under a
+day old, so neither order can break everyone's branch mid-park; past a day it fails, which is the point of it.
+
+The code stays out of the repository on purpose: code nothing calls cannot stay healthy, and
 the usual reason for parking it is that it calls a retired service, which is a trap for the next reader. What the tag
 preserves is the working out, not code to paste back. See #3704, which parked the bus timetable.
 
