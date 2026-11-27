@@ -40,7 +40,9 @@ export async function queryPopupLayersAtClick(
 ): Promise<esri.Graphic[]> {
   const layerViews = view.allLayerViews.toArray();
   const layers = (view.map?.allLayers.toArray() ?? [])
-    .filter((layer) => (layer as PopupLayer).popupComponent && typeof (layer as esri.FeatureLayer).queryFeatures === 'function')
+    .filter(
+      (layer) => (layer as PopupLayer).popupComponent && typeof (layer as esri.FeatureLayer).queryFeatures === 'function'
+    )
     .filter((layer) => {
       const layerView = layerViews.find((candidate) => candidate.layer === layer);
 
