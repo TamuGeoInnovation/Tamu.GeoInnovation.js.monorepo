@@ -29,6 +29,173 @@ stack first ([`docs/gisday-local.md`](../gisday-local.md)). That makes the check
 
 ## Summary
 
+### The presenter and session searches' Copy link shows keyboard focus
+
+**Copy link** in the presenter and session searches showed nothing when reached with Tab, so a keyboard user could
+not tell it held focus. It now shows a maroon outline from the keyboard, and nothing extra after a click.
+([#1001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1001))
+
+| Before                                                                                                                                         | After                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| ![The presenter search with Copy link focused from the keyboard and no outline](../screenshots/1001-focus-visible/before-gisday-copy-link.png) | ![The same Copy link with a maroon outline](../screenshots/1001-focus-visible/after-gisday-copy-link.png) |
+
+### The phone menu's tiles can be reached and opened with the keyboard
+
+On a phone-width screen, GIS Day's menu is a grid of tiles. A tap anywhere on a tile already opened it (#3198), but
+the keyboard skipped the tiles altogether: Tab went past the menu to the page behind it, and nothing showed where
+focus was. Each tile is now one link (or, for About, one button) that Tab reaches, Enter opens, and a maroon
+outline marks. A screen reader names it by its title alone, without the icon's name. The same tiles serve
+Geoservices' phone menu, which gets the same change.
+([#2588](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2588))
+
+| Before                                                                                                                                                                                        | After                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![GIS Day's phone menu after Tab is pressed: no tile shows focus, and the menu has shifted because focus went to the page behind it](../screenshots/2588-tile-tap-target/menu-390-before.png) | ![The same menu after Tab is pressed three times: the Competitions tile has a maroon outline](../screenshots/2588-tile-tap-target/menu-390-after.png) |
+
+### The GEOSAT logo shows on the Light Pole Challenge page
+
+The GEOSAT logo is white on a transparent background, and its maroon backing was written as a quoted string, which
+browsers ignore, so on the white page the logo could not be seen at all. It now sits on Texas A&M maroon.
+([#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337))
+
+| Before                                                                                                                           | After                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ![The prizes section with an empty-looking space where the logo is](../screenshots/3337-quoted-background/before-light-pole.png) | ![The white GEOSAT logo on a maroon block](../screenshots/3337-quoted-background/after-light-pole.png) |
+
+### The competition pages no longer lead into a session they cannot name
+
+On the Posters and Presentation pages, the awards announcement read "Winners will be announced at the awards
+session:" even when the page found no awards session, so the sentence ended in a colon with nothing after it but a
+pointer to the schedule. That happens when the season has not chosen an awards session in Admin and its awards
+session's name does not mention posters or presentations, for example "AWARDS: Winner Announcements". The sentence
+now shows only when there is a session to name, and the presentation sessions' sentences work the same way.
+([#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412))
+
+| Before                                                                                                                                                                                         | After                                                                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The Posters page's Awards Announcement: "Winners will be announced at the awards session:", then only the schedule line](../screenshots/3412-awards-sentence/posters-awards-1280-before.png) | ![The same section with no sentence ending in a colon, only the schedule line](../screenshots/3412-awards-sentence/posters-awards-1280-after.png) |
+
+### GIS Day: the Paper competition's page no longer ends a sentence in a colon and nothing
+
+When the site could not find the season's awards session, the Paper competition's page still said "Winners will be
+announced at the awards session:" and went straight on to "The day, time and room are on the schedule." The sentence now
+shows only when there is a session to name, as #3415 did on the Posters and Presentation pages
+([#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412)).
+
+| | Before | After |
+| --- | --- | --- |
+| No awards session found, at 1280 | ![Before: the sentence ends in a colon, then the schedule line](../screenshots/3412-awards-sentence/papers-awards-1280-before.png) | ![After: only the schedule line](../screenshots/3412-awards-sentence/papers-awards-1280-after.png) |
+| No awards session found, at 390 | ![Before on a phone](../screenshots/3412-awards-sentence/papers-awards-390-before.png) | ![After on a phone](../screenshots/3412-awards-sentence/papers-awards-390-after.png) |
+| An awards session found, at 1280 | | ![After: the sentence leads into the session](../screenshots/3412-awards-sentence/papers-awards-1280-after-found.png) |
+| An awards session found, at 390 | | ![After on a phone](../screenshots/3412-awards-sentence/papers-awards-390-after-found.png) |
+
+GIS Day has no dev site, so this was checked on the local site, signed out, with a made-up awards session named so that it
+is not found, then so that it is.
+
+### GIS Day's dates are Central time wherever the visitor is
+
+GIS Day's pages showed dates in the visitor's own time zone. A season day is stored as midnight Central, which is the
+evening before anywhere west of Central, so a visitor in Pacific time read the home page and About as "November
+15-19" for a GIS Day held on the 16th to the 20th. Every date on the site, in 26 templates, now goes through one
+shared `centralDate` pipe and reads as it does in Central time, wherever the visitor is.
+([#3552](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3552))
+
+In Pacific time:
+
+| Before                                                                                                                                   | After                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The home page in Pacific time, reading November 15-19, 2026](../screenshots/3552-central-dates/home-before-pacific-1280.png)           | ![The home page in Pacific time, reading November 16-20, 2026](../screenshots/3552-central-dates/home-after-pacific-1280.png)           |
+| ![About in Pacific time: five event-packed days, November 15-19, 2026](../screenshots/3552-central-dates/about-before-pacific-1280.png)  | ![About in Pacific time: five event-packed days, November 16-20, 2026](../screenshots/3552-central-dates/about-after-pacific-1280.png)  |
+| ![The home page on a phone in Pacific time, reading November 15-19, 2026](../screenshots/3552-central-dates/home-before-pacific-390.png) | ![The home page on a phone in Pacific time, reading November 16-20, 2026](../screenshots/3552-central-dates/home-after-pacific-390.png) |
+
+In Central time nothing changes: both builds read November 16-20.
+
+| Before                                                                                                                         | After                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| ![About in Central time before, reading November 16-20, 2026](../screenshots/3552-central-dates/about-before-central-1280.png) | ![About in Central time after, reading November 16-20, 2026](../screenshots/3552-central-dates/about-after-central-1280.png) |
+
+### Add season leaves only the new season active
+
+**Add season** copies the latest season into the next year and makes the copy active. It turned off the latest season
+only, so when the active season was an earlier one, both stayed active. It now turns off whichever season is active.
+Production was not affected yet: its latest season is also its active one.
+([#3571](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3571))
+
+| Before                                                                                                    | After Add season, unfixed                                                                                           |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| ![The seasons list with 2026 the only active season](../screenshots/980-season-create/before-list.png) | ![The same list after Add season: 2032 and 2026 both active](../screenshots/980-season-create/after-create.png) |
+
+The fixed behaviour is shown by a test, `season.service.clone.active.spec.ts`, rather than a capture: reproducing it
+needs a made-up later season on a local stack.
+
+### A presenter with no first name shows the initial they have, not "..."
+
+A session's presenters each have a round avatar with their initials when there is no photo. For a presenter whose first
+or last name was missing, it showed "..." instead. It now shows the initial of the name they have. Found while making GIS
+Day's shared front-end library check for missing values everywhere
+([#3611](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3611)).
+
+| Before                                                                                                                                | After                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| ![Two presenters; the one with no first name has "..." in their avatar](../screenshots/3611-presenter-initials/before-presenters.png) | ![The same two presenters; the second shows "S"](../screenshots/3611-presenter-initials/after-presenters.png) |
+
+### The competitions designer opens a form with a question saved without its options
+
+A competition form holding a question saved without its `options` stopped the admin designer as it opened: it showed
+nothing after **Fetch Schema**, with an error in the console. It now opens with that question and no options, beside
+the others. Saving a season that had no form yet also failed, and now creates one. Seasons used in practice were not
+affected. ([#3614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3614))
+
+| Before                                                                                                       | After                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| ![The designer stopping after Fetch Schema](../screenshots/3614-designer-no-options/before-designer.png) | ![The designer with its settings, three questions and Save](../screenshots/3614-designer-no-options/after-designer.png) |
+
+### Admin pages handle a missing season, guid or name instead of failing
+
+Several GIS Day pages, mostly in Admin, failed when a record was missing a value the page assumed was there. A class with no
+professor's name could not export its attendance, and a submission saved without its acceptance could not be opened. A session
+check-in with no account, an initial-survey question saved with no options, and a homepage with no active season also failed. Each
+now does the sensible thing: the export is named without a professor, the submission shows as not accepted, and the rest load.
+Nothing renders differently where the data is complete. Where it is not, the survey shows the question it used to drop:
+
+| Before                                                                                                   | After                                                                                                                  |
+| -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| ![The survey without its option question](../screenshots/3627-admin-missing-values/before-survey-option-question.png) | ![The survey with the option question and no options](../screenshots/3627-admin-missing-values/after-survey-option-question.png) |
+
+([#3627](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3627))
+
+### The initial survey page shows one heading
+
+The survey page showed both of its headings, "Pre-Event User Impact Survey" and "Event User Impact Survey", one above the other, and
+logged an error. The second heading is meant only for a visitor who has not taken the survey yet; it now shows only then.
+([#3636](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3636))
+
+| Before                                                                                              | After                                                                                            |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| ![The survey page with both headings](../screenshots/3636-initial-survey/before-initial-survey.png) | ![The survey page with one heading](../screenshots/3636-initial-survey/after-initial-survey.png) |
+
+### UCGIS's site no longer opens Texas A&M's High School Portal by its address
+
+On [gisday.ucgis.org](https://gisday.ucgis.org), typing `/highschool` still opened the **TxGIS Day High School Portal**, which belongs
+to Texas A&M's site. Nothing linked to it, but every other page UCGIS's site leaves out already sent the visitor to the homepage. Now
+this one does too. txgisday.org's portal is unchanged.
+([#3643](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3643))
+
+| Before | After |
+| --- | --- |
+| ![UCGIS's site at /highschool, showing the TxGIS Day High School Portal](../screenshots/3643-highschool-guard/before-ucgis-highschool.png) | ![The same address now shows UCGIS's homepage](../screenshots/3643-highschool-guard/after-ucgis-highschool.png) |
+
+### The footer keeps its Past Years when no season is active
+
+Between seasons, when no GIS Day season is active, the footer's **Past Years** list disappeared and every page logged an error. The list is
+now the seasons before this year, newest first, until a season is active again; with one active it is the seasons before that one, as
+it always was.
+([#3659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3659))
+
+| Before                                                                                          | After                                                                                                             |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| ![The footer with no Past Years](../screenshots/3659-footer-no-active-season/before-footer.png) | ![The footer listing TxGIS Day 2025, 2024 and 2023](../screenshots/3659-footer-no-active-season/after-footer.png) |
+
 ### GIS Day: The admin Speakers list shows each speaker's sessions, and the speakers in none
 
 The admin Speakers list did not say which sessions a speaker was in, so an admin could not see who was speaking in
@@ -3178,6 +3345,19 @@ check on the local stack before a promotion, and on these pages after one.
 
 | Change | Open this on dev | Look for |
 | --- | --- | --- |
+| Keyboard focus on Copy link ([#1001](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1001)) | GIS Day dev site: Presenters, or Sessions | Type in the search, then Tab: **Copy link** has a maroon box around it. Clicking it with the mouse draws no box |
+| The phone menu's tiles work by keyboard ([#2588](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2588)) | GIS Day dev site at phone width (390 px in the browser's device toolbar), menu open | Tab moves from tile to tile (Sessions, Presenters, Competitions, FAQs, About) with a maroon outline on the one in focus; Enter opens a linked tile's page, and Enter or Space opens About's submenu. A tap anywhere on a tile still opens it. Login works as before |
+| The GEOSAT logo on the Light Pole Challenge ([#3337](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3337)) | GIS Day dev site: `/competitions/lightpole` (linked from the VGI page's 2021 entry), the prizes section | The white GEOSAT logo on a maroon block. Before, the space looked empty, because the logo was white on a white page |
+| A sentence leading into a session shows only with the session ([#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412)) | GIS Day dev site: Competitions > Posters, *Awards Announcement*; Competitions > Presentation, *Presentation Competition Session* and *First Place Award Announcement* | With an awards session found (chosen in Admin, or named `AWARDS:` with poster or presentation), "Winners will be announced at the awards session:" and the session's name, day, time and room. With none found, no sentence ending in a colon, only "The day, time and room are on the schedule." The same for each presentation session |
+| GIS Day: the Papers page's awards sentence ([#3412](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3412)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on production: Competitions, Papers, First Place Award Announcement | With an awards session on the schedule, "Winners will be announced at the awards session:" leads into its name, day, time and room. Without one, only "The day, time and room are on the schedule." shows, with no sentence ending in a colon |
+| Dates in Central time ([#3552](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3552)) | GIS Day dev site: the home page and About, with the browser's time zone set to Pacific (Chrome DevTools, More tools, Sensors, Location: a Pacific location, or the computer's time zone) | The season's days read the same as in Central time: the home page's heading and About's "five event-packed days, November …" name the same days as the Sessions page, not each one a day earlier. Admin, Seasons lists the same days too |
+| One active season after Add season ([#3571](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3571)) | GIS Day dev site: Admin, Seasons | Only with a later season that is not active (for example one added ahead of time): click **Add season**, and only the new season shows **ACTIVE**. Do not add a season on dev unless one is wanted: it copies the latest season |
+| A presenter's initials from the names they have ([#3611](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3611)) | GIS Day dev site: a session's page (`/sessions/details/<guid>`) whose presenter has no first name or no last name, and the Presenters page | The round avatar shows the initial of the name the presenter has, such as "S" for "Sample", not "..." |
+| The competitions designer with an option-less question ([#3614](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3614)) | GIS Day dev site, signed in as an admin: Admin, Competitions, the designer | Only a form with a question saved without its options shows the difference: the designer now shows its settings, every question and Save, where it stopped after Fetch Schema. Ordinary forms look as before |
+| Attendance export with no professor ([#3627](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3627)) | GIS Day dev site: Admin > Classes, a class with no professor's name | **Export as CSV** downloads `<code>-<number>-_gisday_attendance.csv` instead of doing nothing |
+| The initial survey's heading ([#3636](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3636)) | GIS Day dev site, signed in: Account, then the initial survey (`/account/initial-survey`) | **One** heading: "Pre-Event User Impact Survey" once you have taken the survey, "Event User Impact Survey" if you have not, never both; and no "templateRef.createEmbeddedViewImpl" error in the browser console |
+| The High School Portal only on Texas A&M's sites ([#3643](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3643)) | GIS Day has no dev site: `scripts/gisday-local.sh web --static --site ucgis`, then `/highschool`; and the same without `--site ucgis` | On UCGIS's site, `/highschool` goes to the homepage. On txgisday.org's, it still opens the **TxGIS Day High School Portal** |
+| The footer's Past Years with no active season ([#3659](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3659)) | GIS Day dev site, any page, while no season is active (between seasons) | The footer lists **Past Years** (the seasons before this year, newest first), and the browser console has no "Cannot read properties of null (reading 'year')". With a season active, the list is the seasons before it, as before |
 | GIS Day: each speaker's sessions on the admin Speakers list ([#441](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/441), [#439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/439)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, on production, as an admin: Admin, Speakers | A Sessions column lists each speaker's sessions in the selected season, or "None"; ticking "Only speakers in no session" leaves only the "None" rows, and unticking it shows every speaker again |
 | GIS Day: VGI submission counts ([#3244](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3244)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin: Admin, VGI Competition, Submissions | Above the list, "Submissions by category" has a row per category and a Total, with Submissions, Verified, Needs a look and Discarded. Pressing Needs a look or Top finishers changes the list but not the counts |
 | GIS Day admin: check-ins by hour ([#3314](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3314)) | Not on dev: GIS Day has no dev site yet ([#1525](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1525)). After release, as an admin open Admin > Dashboards > Check-ins for 2026 | Under **Check-ins over time**, a second chart, **Check-ins by hour**, runs from midnight on the first day of the season's events to the end of the last, in Central time. Hovering an hour gives its check-ins; opening an event below adds its own line |
