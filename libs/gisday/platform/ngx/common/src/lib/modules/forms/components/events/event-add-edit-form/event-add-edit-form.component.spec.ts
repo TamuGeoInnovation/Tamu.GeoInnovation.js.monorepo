@@ -778,6 +778,88 @@ describe('EventAddEditFormComponent, the Judging section (#3183)', () => {
   });
 });
 
+/**
+ * #3827. An event's observed attendance, which a session's page records, is kept when the event is saved from here.
+ *
+ * The API never returns the two counts with an event (`select: false`), so the form opened with them empty and every save
+ * sent both as null, erasing them: 12 and 15 in the database became NULL after an update that changed only the abstract.
+ * The form now reads them from the event's own attendance route, as it reads its judges, and leaves them out of a save
+ * until it has.
+ */
+describe('EventAddEditFormComponent, the attendance counts (#3827)', () => {
+  // A made-up event, as the API returns it: no counts.
+  const event = { guid: 'event', name: 'A workshop', abstract: 'Made up', speakers: [], tags: [] };
+
+  function create(
+    type: 'create' | 'edit',
+    attendance: ReturnType<typeof of> | typeof NEVER = of({
+      guid: 'event',
+      observedAttendeeStart: 12,
+      observedAttendeeEnd: 15
+    })
+  ) {
+    const getEventAttendance = vi.fn(() => attendance);
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { params: of({ guid: 'event' }) } },
+        { provide: SeasonService, useValue: { activeSeason$: of({ guid: 'season', days: [] }) } },
+        { provide: SpeakerService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: TagService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: LocationService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: BroadcastService, useValue: { getEntitiesForActiveSeason: () => of([]) } },
+        { provide: EventService, useValue: { getEntity: () => of(event), getEventAttendance } },
+        { provide: NotificationService, useValue: { toast: vi.fn() } },
+        { provide: SpeakerEditsService, useValue: {} },
+        { provide: SessionFilesService, useValue: { forEvent: () => of([]) } },
+        { provide: JudgingService, useValue: judgingService() },
+        { provide: ModalService, useValue: {} }
+      ]
+    });
+    TestBed.overrideTemplate(EventAddEditFormComponent, '');
+
+    const fixture = TestBed.createComponent(EventAddEditFormComponent);
+    fixture.componentRef.setInput('type', type);
+    fixture.componentInstance.ngOnInit();
+
+    return { form: fixture.componentInstance, getEventAttendance };
+  }
+
+  it("opens an event with its recorded counts, read from the event's attendance route", () => {
+    const { form, getEventAttendance } = create('edit');
+
+    expect(getEventAttendance).toHaveBeenCalledWith('event');
+    expect(form.form.getRawValue()).toEqual(expect.objectContaining({ observedAttendeeStart: 12, observedAttendeeEnd: 15 }));
+  });
+
+  it('saves the counts it opened with when only the abstract was changed', () => {
+    const { form } = create('edit');
+
+    form.form.patchValue({ abstract: 'Changed' });
+
+    expect(form.payload()).toEqual(
+      expect.objectContaining({ abstract: 'Changed', observedAttendeeStart: 12, observedAttendeeEnd: 15 })
+    );
+  });
+
+  it('leaves the counts out of a save until they have been read, so it does not clear them', () => {
+    const { form } = create('edit', NEVER);
+
+    expect(form.payload()).not.toHaveProperty('observedAttendeeStart');
+    expect(form.payload()).not.toHaveProperty('observedAttendeeEnd');
+  });
+
+  it('saves counts typed into a new event as whole numbers, and an empty box as none', () => {
+    const { form, getEventAttendance } = create('create');
+
+    form.form.patchValue({ observedAttendeeStart: '12', observedAttendeeEnd: '' });
+
+    expect(getEventAttendance).not.toHaveBeenCalled();
+    expect(form.payload()).toEqual(expect.objectContaining({ observedAttendeeStart: 12, observedAttendeeEnd: null }));
+  });
+});
+
 /** The Judging section from the page's own template. */
 function judgingSection(): string {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
