@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a70**: services asked: all six layers have geometry (no #2520 fault); motorcycle's id, level and RNS fields are empty on all 1016; capturing what each popup shows today, 7:56 PM Central, 26 November.
+- **Batch a70**: before captured (motorcycle popup shows only its layer title; spaces lose their id; lots their type); the check written and running red, 7:58 PM Central, 26 November.
 
 ## Finished
 - **Batch a69** (report `home/reports/2026-11-26-a69.md`, 7:52 PM Central): branch ready `fix/3671-nsc-permit-instructions` at `bfcd92a6f`; one line, red first; no-visible-change (#2520), spec render as test artifact; #3808 filed by the director.
