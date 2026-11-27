@@ -655,3 +655,98 @@ describe('EventService, a popup opened from a link reads the same as one opened 
     });
   });
 });
+
+/**
+ * A link to a lot whose service answers `query` without geometry selects the lot, with its geometry from the map
+ * service's `find` (#3673).
+ *
+ * Break / Summer and New Student Conference draw Transportation's joined lot layers, whose `query` returns every lot's
+ * attributes and no geometry (#2520). The link found the lot by its object id, and selecting a feature with no geometry
+ * threw, so the map opened with nothing selected. The layer here stands in for that service: its query answers as the
+ * service does, and `find` as the same MapServer does.
+ */
+describe('EventService, a link to a lot whose service answers without geometry (#3673)', () => {
+  const LAYER_ID = 'Break-Summer Parking Lots';
+  const OID_FIELD = 'GIS.TS.ParkingLots.OBJECTID';
+  const LOT = { [OID_FIELD]: 26116, 'GIS.TS.ParkingLots.Name': '100g' };
+  const FOUND_GEOMETRY = new Point({ x: -96.3447, y: 30.6051 });
+
+  /** A lot layer at `url`, answering `query` with the lot and no geometry. */
+  function geometrylessLayer(url: string) {
+    return {
+      id: LAYER_ID,
+      url,
+      layerId: 0,
+      objectIdField: OID_FIELD,
+      spatialReference: { wkid: 2278 },
+      load: () => Promise.resolve(),
+      createQuery: () => ({ where: '1=1' }),
+      queryFeatures: vi.fn().mockResolvedValue({ features: [new Graphic({ attributes: { ...LOT } })] })
+    };
+  }
+
+  /** Opens the lot's `feature=` link on a map holding `layer`, with `find` answering as given. */
+  async function openLink(layer: ReturnType<typeof geometrylessLayer>, find: ReturnType<typeof vi.fn>) {
+    const selectFeatures = vi.fn();
+
+    TestBed.resetTestingModule().configureTestingModule({
+      providers: [
+        { provide: EnvironmentService, useValue: {} },
+        { provide: EsriModuleProviderService, useValue: { require: vi.fn().mockResolvedValue([{ find }]) } },
+        { provide: LayerSourcesService, useValue: {} },
+        { provide: EsriMapService, useValue: { store: NEVER, selectFeatures, selectFeaturesFromUrl: vi.fn() } },
+        {
+          provide: EventSettingsService,
+          useValue: {
+            eventConfiguration: () => undefined,
+            eventOptions: () => [],
+            settings: () => ({}),
+            getVisibleOptions: () => [],
+            eventLayerReferences: () => ({}),
+            configuredSearchSources: () => []
+          }
+        },
+        EventService
+      ]
+    });
+
+    const service = TestBed.inject(EventService) as unknown as {
+      _map: { findLayerById: (id: string) => unknown };
+      selectFeatureFromUrl: (sources: LayerSource[]) => Promise<void>;
+    };
+
+    service._map = { findLayerById: (id) => (id === LAYER_ID ? layer : undefined) };
+    window.history.replaceState(null, '', `/parking/break-summer/map/d?feature=${encodeURIComponent(`${LAYER_ID}:26116`)}`);
+
+    await service.selectFeatureFromUrl([{ type: 'feature', id: LAYER_ID } as LayerSource]);
+
+    return selectFeatures.mock.calls.flatMap(([{ graphics }]) => graphics as Graphic[]);
+  }
+
+  afterEach(() => window.history.replaceState(null, '', '/'));
+
+  it("selects the lot with its geometry from the map service's find", async () => {
+    const mapService = 'https://example.test/arcgis/rest/services/TS_Events/SummerBreakParking/MapServer';
+    const find = vi
+      .fn()
+      .mockResolvedValue({ results: [{ layerId: 0, feature: new Graphic({ geometry: FOUND_GEOMETRY }) }] });
+
+    const selected = await openLink(geometrylessLayer(mapService), find);
+
+    expect(find).toHaveBeenCalledWith(
+      mapService,
+      expect.objectContaining({ layerIds: [0], searchFields: [OID_FIELD], searchText: '26116', contains: false })
+    );
+    expect(selected.map((graphic) => graphic.attributes[OID_FIELD])).toEqual([26116]);
+    expect(selected[0].geometry).toBe(FOUND_GEOMETRY);
+  });
+
+  it('selects nothing, and does not throw, when the layer is not a map service', async () => {
+    const find = vi.fn();
+
+    const selected = await openLink(geometrylessLayer('https://example.test/arcgis/rest/services/Lots/FeatureServer'), find);
+
+    expect(find).not.toHaveBeenCalled();
+    expect(selected).toEqual([]);
+  });
+});

@@ -195,7 +195,13 @@ test.describe('lot links on the parking maps', () => {
       await page.waitForTimeout(LATE_SERVICE_MS + 3_000);
 
       const shared = new URL(
-        ((await page.locator(POPUP).getByRole('button', { name: 'Click to copy to clipboard.' }).filter({ hasText: /^https?:/ }).textContent()) ?? '').trim()
+        (
+          (await page
+            .locator(POPUP)
+            .getByRole('button', { name: 'Click to copy to clipboard.' })
+            .filter({ hasText: /^https?:/ })
+            .textContent()) ?? ''
+        ).trim()
       );
 
       expect(
