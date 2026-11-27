@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing: a77 done; listening.
+- **Batch a78** (#1856 reproduce-or-close, then #1933), started 3:26 PM Central, 27 November. **g130 held** on Q-g130-1 (sign-in and the gisday containers), asked of the GIS Day director.
 
 ## Finished
 - **Batch a77** (report `home/reports/2026-11-26-a77.md`, 3:25 PM, 27 November Central): branches ready `fix/2723-stop-named-by-place` and `fix/2763-route-fit-clears-panel`; both red first, check and pre-pr-check Exit 0.
