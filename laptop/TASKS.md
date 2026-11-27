@@ -1,6 +1,14 @@
 # Laptop: current tasks
 
 
+## Batch g54 (gisday: bug hunt, every public page on every GIS Day site, at phone and desktop width; 27 November 2026, 3:30 PM Central, from `work (gisday)`) (High) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never wait for a fix to merge, stack on it; dead code is deleted and features are parked, never asked about. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed. Anything that isn't a bug, list in the report; don't build it.
+
+GIS Day serves several sites from one app (txgisday.org, gisday.tamu.edu, UCGIS's, chosen by the address; #2012). On your local stack, with the latest `development` and made-up data in a season with sessions, speakers, sponsors and competitions:
+1. Open every public route (`test/e2e/gisday/routes.ts` lists them) **on each site**, at 390 px and at 1280 px. Watch the console, failed network requests, and anything that renders wrong: missing text, overlapping, cut off, a broken image, a link to nowhere.
+2. **Signed in as an ordinary attendee, not an admin:** register for a session, check in, submit to a competition, edit your profile, sign out. Watch the same things.
+3. Each fault: issue at once, with page, site, width, steps, console error and a screenshot, then a fix branch with a spec red first. Report `reports/<date>-g54.md`, a table of route by site by width, ok or the issue.
 ## Batch g53 (gisday: #3862, the other eight partial-update routes; 26 November 2026, 11:30 PM Central, from `work (gisday)`) (Medium) - **now**
 
 Thanks for #3861: a real, visible bug, found and fixed. Your g52 report file is empty on the branch (0 bytes), so please write it again.
