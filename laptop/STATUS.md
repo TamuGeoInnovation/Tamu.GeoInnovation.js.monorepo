@@ -33,7 +33,7 @@ from any director. It was set up by batch 1; see `laptop/reports/2026-11-23-1.md
 - **It is a laptop, and it sleeps.** It slept from about 3:26 PM to 4:30 PM Central on 23 November, with everything frozen. That includes the watcher, so the heartbeat lapsed for 78 minutes. The app's keep-awake setting prevents idle sleep only; a closed lid still sleeps. **A heartbeat that is late here usually means asleep, not stuck.** Do not give it a long measurement whose loss would cost something.
 
 ## Running now
-- **Batch g46 (#3593, strictNullChecks in the GIS Day app)**, next.
+- **Batch g46 (#3593, strictNullChecks in the GIS Day app)**, started 6:42 PM Central, in `C:/TAMU/wt-3593`. Now: branch, turn it on, measure.
 
 ## Finished
 - **Batch s11 (#3788, remove the queued VGI export and bull)** (report `laptop/reports/2026-11-26-s11.md`): **branch ready: `chore/3788-remove-bull`** (`d5b257039`). Guard test passes before and after; the lock loses 16 packages. Full check: everything passes but `check-parked-code`, a repo-wide failure PR 3797 fixes.
