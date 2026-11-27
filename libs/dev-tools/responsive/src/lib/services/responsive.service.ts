@@ -29,19 +29,10 @@ export class ResponsiveService {
       .subscribe(this._state);
   }
 
-  private _checkWidth(event: Event | { target: Window }) {
-    const ret = {
-      screenWidth: (event.target as Window).innerWidth,
-      isMobile: undefined
-    };
+  private _checkWidth(event: Event | { target: Window }): ResponsiveSnapshot {
+    const screenWidth = (event.target as Window).innerWidth;
 
-    if (ret.screenWidth <= 768) {
-      ret.isMobile = true;
-    } else {
-      ret.isMobile = false;
-    }
-
-    return ret;
+    return { screenWidth, isMobile: screenWidth <= 768 };
   }
 
   public get snapshot(): ResponsiveSnapshot {

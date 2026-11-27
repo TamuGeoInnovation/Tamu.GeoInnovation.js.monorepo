@@ -18,15 +18,12 @@ export class LegacyAuthService {
   private http = inject(HttpClient);
   private env = inject(EnvironmentService);
 
-  // Default auth options so they can be overwritten.
-  public authOptions: AuthOptions = {
-    url: undefined,
-    attach_href: undefined
-  };
+  // Set by the constructor, from auth_url or auth_options, or the constructor throws.
+  public authOptions: AuthOptions;
 
   constructor() {
     if (this.env.value('auth_url', true)) {
-      this.authOptions.url = this.env.value('auth_url', true);
+      this.authOptions = { url: this.env.value('auth_url', true), attach_href: undefined };
     } else if (this.env.value('auth_options', true)) {
       this.authOptions = this.env.value('auth_options', true);
     } else {

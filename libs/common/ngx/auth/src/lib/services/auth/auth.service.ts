@@ -24,7 +24,8 @@ export class AuthService {
    */
   public readonly configured = !inject(AuthClientConfig).get()?.domain?.startsWith('___');
 
-  public user$: Observable<User>;
+  /** As Auth0's SDK gives it: null or undefined while nobody is signed in. */
+  public user$: Observable<User | null | undefined>;
   public isAuthenticated$: Observable<boolean>;
   public userRoles$: Observable<Array<string>>;
 
