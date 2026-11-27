@@ -182,7 +182,7 @@ export class BusService {
     );
   }
 
-  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops' | 'buses')[], zoomToRoute = true): void {
+  public toggleMapRoute(short_name: string, symbols?: ('route' | 'stops')[], zoomToRoute = true): void {
     // Check if there are any existing graphics at all in the bus layer.
     const existingGraphics = this._busLayer.getValue().graphics.length > 0;
 
@@ -280,8 +280,6 @@ export class BusService {
         if (symbols == null || symbols.indexOf('stops') !== -1) {
           this._busLayer.getValue().addMany(stopGraphics);
         }
-
-        // 'buses' (live vehicle locations) is intentionally a no-op: the ArcGIS source has no live GPS.
       }
     );
   }
@@ -499,18 +497,6 @@ export interface TSRouteGroup {
    * Specifies display order of containing bus group.
    */
   Order: number;
-}
-
-export interface BusStop {
-  name: string;
-  point: esri.Point;
-  time?: Date;
-}
-
-export interface TimetableRow {
-  first: number;
-  last: number;
-  stops: BusStop[];
 }
 
 /**

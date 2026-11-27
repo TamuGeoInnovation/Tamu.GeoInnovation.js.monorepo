@@ -7,8 +7,6 @@
 
 @if (modeSwitch(); as modeSwitch) {
 <div>
-  <!-- If modeSwitch does not have a result, it means it has no other types of data to display other than the directions list. -->
-  @if (!modeSwitch.results) {
   <div>
     <div class="directions-container">
       @for (direction of modeSwitch.directions; track direction) {
@@ -21,12 +19,5 @@
       }
     </div>
   </div>
-  }
-  <!-- If mode switch has results, and subsequently contains a `bus` key, display the bus timetable -->
-  @if (modeSwitch.results && modeSwitch.results.bus) {
-  <div>
-    <tamu-gisc-gisc-bus-switch [switch]="modeSwitch"></tamu-gisc-gisc-bus-switch>
-  </div>
-  }
 </div>
 }
