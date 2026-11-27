@@ -1,0 +1,80 @@
+{
+  "$comment": [
+    "Security findings from scanners other than npm audit and Trivy that this repository has looked at and accepted for now: Socket's alerts resolved as tolerable, and GitHub code-scanning alerts dismissed.",
+    "The rules are accepted-advisories.json's: every entry names the issue that tracks it, the reason, who decided and when, and what would end it (revisitWhen). An acceptance with no issue, or with no revisitWhen, is how a finding becomes permanent.",
+    "The monthly review (.github/workflows/accepted-risks-review.yml) opens or updates one security-health issue that lists every entry. Each one ends as gone (remove it here), still tolerable (set reviewed to that day) or now fixable (file an issue and point the entry at it).",
+    "Seeded 26 November 2026 (#3789): Socket's 7 alerts resolved as Tolerable risk (#3727), and CodeQL's #20, #25 and #26 dismissed as used in tests (#3776)."
+  ],
+  "accepted": [
+    {
+      "source": "socket",
+      "finding": "Telemetry collection: @vaadin/vaadin-usage-statistics",
+      "via": "@arcgis/core > @vaadin/grid > @vaadin/component-base",
+      "reason": "Runs only on localhost in an unminified build; none of it is in the production bundles (checked on aggiemap.tamu.edu, 26 Nov 2026). Its install script is refused in allowScripts.",
+      "decided": "2026-11-26, the maintainer",
+      "issue": 3727,
+      "revisitWhen": "@arcgis/core stops depending on @vaadin, or the package starts running outside development",
+      "reviewed": "2026-11-26"
+    },
+    {
+      "source": "socket",
+      "finding": "Publisher changed: countries-and-timezones 3.11.0 (jcfranco)",
+      "via": "@esri/calcite-components > timezone-groups",
+      "reason": "The new publisher is an Esri Calcite maintainer, added as co-maintainer by the original author; 3.10.0 to 3.11.0 changed data only, with no scripts, network or encoded code.",
+      "decided": "2026-11-26, the maintainer",
+      "issue": 3727,
+      "revisitWhen": "its next release",
+      "reviewed": "2026-11-26"
+    },
+    {
+      "source": "socket",
+      "finding": "Deprecated: node-abort-controller 3.1.1",
+      "via": "@nx/webpack > fork-ts-checker-webpack-plugin",
+      "reason": "Build-time only, never shipped; even fork-ts-checker 9.2.0, the latest, requires it, so there is nothing to move to.",
+      "decided": "2026-11-26, the maintainer",
+      "issue": 3727,
+      "revisitWhen": "fork-ts-checker-webpack-plugin drops it, or Nx stops using fork-ts-checker",
+      "reviewed": "2026-11-26"
+    },
+    {
+      "source": "socket",
+      "finding": "Low adoption: @yuku-toolchain/* (4 platform binaries, 0.27.0)",
+      "via": "@angular/build 22.3.0 > rolldown-plugin-dts > yuku",
+      "reason": "A new dependency of Angular's own build tool; build-time only. Low adoption means new, not unsafe.",
+      "decided": "2026-11-26, the maintainer",
+      "issue": 3727,
+      "revisitWhen": "the next Angular minor, or Socket no longer flags it",
+      "reviewed": "2026-11-26"
+    },
+    {
+      "source": "codeql",
+      "finding": "#20 js/bad-tag-filter",
+      "via": "libs/gisday/platform/ngx/common/src/lib/modules/images/components/image-preview/image-preview.component.spec.ts",
+      "reason": "A test assertion that strips HTML comments from rendered markup before comparing it; not a sanitizer applied to input.",
+      "decided": "2026-11-26, the security director",
+      "issue": 3776,
+      "revisitWhen": "the spec changes, or the pattern moves into non-test code",
+      "reviewed": "2026-11-26"
+    },
+    {
+      "source": "codeql",
+      "finding": "#25 js/incomplete-multi-character-sanitization",
+      "via": "libs/gisday/platform/ngx/common/src/lib/modules/images/components/image-preview/image-preview.component.spec.ts",
+      "reason": "The same test assertion as #20.",
+      "decided": "2026-11-26, the security director",
+      "issue": 3776,
+      "revisitWhen": "the spec changes, or the pattern moves into non-test code",
+      "reviewed": "2026-11-26"
+    },
+    {
+      "source": "codeql",
+      "finding": "#26 js/incomplete-multi-character-sanitization",
+      "via": "libs/ts/events/ngx/src/lib/modules/map/mobile-only-controls.spec.ts",
+      "reason": "A test assertion that strips HTML comments from rendered markup before comparing it; not a sanitizer applied to input.",
+      "decided": "2026-11-26, the security director",
+      "issue": 3776,
+      "revisitWhen": "the spec changes, or the pattern moves into non-test code",
+      "reviewed": "2026-11-26"
+    }
+  ]
+}
