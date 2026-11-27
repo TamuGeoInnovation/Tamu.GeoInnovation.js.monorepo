@@ -16,9 +16,10 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 ## Running now
 - **Batch g131** (GIS Day public pages on every site at 390 and 1280 px, admin API without a token): started 5:09 PM Central, 27 November, ahead of g132, whose sign-in waits for the maintainer, with no AggieMap batch queued.
 - **Batch a73** (#3687, park the bus UI the retired API fed): started, reading which of the three components anything live reaches, %s Central, 27 November.
-- GIS Day sign-in: prerequisites present; signing in held for the maintainer's own word (4:05 PM Central, 27 November).
 
 ## Finished
+- GIS Day sign-in: yes (27 November 2026)
+- **Batch g132** (report `home/reports/2026-11-27-g132.md`, 5:27 PM Central): signed in at gisday.local.test as the test admin, no consent screen, reached /admin/dashboards/rsvps.
 - **Batch a73** (report `home/reports/2026-11-26-a73.md`, 5:08 PM Central): branch ready `chore/3687-park-bus-timetable-ui` at `ab7fad385`; bus-switch parked, bus-timetable and bus-timetable-bottom live and kept; bus.spec 25/25 before and after; check and pre-pr-check Exit 0.
 - **Batch a72** (report `home/reports/2026-11-27-a72.md`, 4:37 PM Central): branch ready `test/3369-drawing-timeout-reason` at `598a7a83d`; the quiet comparison passed the same 23 tests on branch and development; check and pre-pr-check Exit 0.
 - **Batch g132, steps 1 and 2** (report `home/reports/2026-11-27-g132.md`, 4:05 PM Central): all three prerequisites present; step 3 held.
