@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a67**: started batch a67 (#3615 coordinate search); reading the code path, 6:55 PM Central, 26 November.
+- **Batch a67**: code path found (string selection has no geometry for TripPoint.toEsriGraphic); building aggiemap production at development to reproduce, 6:56 PM Central, 26 November.
 
 ## Finished
 - **Batch g126** (report `home/reports/2026-11-26-g126.md`, 6:55 PM Central): branch ready fix/3680 (`304a9c7b3`) and fix/3747 (`247a91528`); red first; checks pass but for check-parked-code, which development fails too.
