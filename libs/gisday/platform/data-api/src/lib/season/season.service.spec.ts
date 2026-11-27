@@ -608,5 +608,56 @@ describe('SeasonService', () => {
         service.updateSeason('season-1', { days: [day('d-1', '2026-11-18')] } as Partial<Season>)
       ).resolves.toMatchObject({ active: true });
     });
+
+    /**
+     * #3861. The edit form's Year box was ignored: the update answered 200 and the season kept its year. And an update
+     * with no days saved nothing at all, after it had already switched off the season that was active.
+     */
+    describe('its year (#3861)', () => {
+      /** Answers each lookup by what it asks for: this season by guid, the active one, or one holding a year. */
+      const lookups = (current: Season, others: { active?: Season | null; byYear?: Season | null } = {}) =>
+        vi.spyOn(seasonRepo, 'findOne').mockImplementation(async (options) => {
+          const where = options.where as Record<string, unknown>;
+          if ('guid' in where) return current;
+          if ('active' in where) return others.active ?? null;
+          if ('year' in where) return others.byYear ?? null;
+          return null;
+        });
+
+      it('saves a changed year, as the form sends it', async () => {
+        const season = Object.assign(loaded([day('d-1', '2026-11-18')]), { year: 2031, active: false });
+        lookups(season);
+
+        const saved = await service.updateSeason('season-1', {
+          year: '2032',
+          active: false,
+          days: [day('d-1', '2026-11-18')]
+        } as unknown as Partial<Season>);
+
+        expect(saved).toMatchObject({ year: 2032 });
+        expect(season.save).toHaveBeenCalled();
+      });
+
+      it('refuses a year another season holds, and changes nothing', async () => {
+        const season = Object.assign(loaded([]), { year: 2031, active: false });
+        lookups(season, { byYear: { guid: 'season-2032', year: 2032 } as Season });
+
+        await expect(
+          service.updateSeason('season-1', { year: 2032, days: [] } as unknown as Partial<Season>)
+        ).rejects.toThrow(ConflictException);
+        expect(season.save).not.toHaveBeenCalled();
+        expect(season.year).toBe(2031);
+      });
+
+      it('saves its year and whether it is active when the update sends no days, keeping its days', async () => {
+        const season = Object.assign(loaded([day('d-1', '2026-11-18')]), { year: 2031, active: false });
+        lookups(season, { active: active() });
+
+        const saved = await service.updateSeason('season-1', { year: 2032, active: true } as unknown as Partial<Season>);
+
+        expect(saved).toMatchObject({ year: 2032, active: true });
+        expect(saved?.days.map((d) => d.guid)).toEqual(['d-1']);
+      });
+    });
   });
 });
