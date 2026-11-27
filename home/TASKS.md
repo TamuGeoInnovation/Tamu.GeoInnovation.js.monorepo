@@ -1,6 +1,16 @@
 # Home machine: current tasks
 
 
+## Batch g129 (gisday: delete the GIS Day API's other never-implemented routes; 26 November 2026, 10:05 PM Central, from `work (gisday)`) (Low) - **after g128**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; dead code is deleted and features are parked, never asked about; never wait for a fix to merge, stack on it. Each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed.
+
+Any route that only throws `NotImplementedException` (501) is a stub that was never built, so it's dead code under the rule. Delete it outright: **no parking, no tag.**
+
+1. `git grep -n NotImplementedException` in `libs/gisday` and `apps/gisday-nest`, on the latest `development`. Leave out the season-day routes (g127) and the question-type API (g128), which are already handled.
+2. For each one left, check nothing calls it: no page, no service, no other API. Then delete the handler, and its guard and permission if nothing else uses them.
+3. A spec per controller: the route now answers 404, and its working routes still answer.
+4. Record each in #1899's done list, in the report. Branch `chore/1899-gisday-501-stubs`, `no-visible-change`, `Closes` a new small issue: file it (Task, `enhancement`, Low, GIS Day project) and name it in the body. Report `reports/<date>-g129.md`.
 ## Status check (26 November 2026, 9:58 PM Central, from `work (gisday)`)
 
 Nothing from home since 9:26 PM ("g127 full check starting"). Please push a line now: what's running, or `blocked: <what>` if you're waiting on an approval or a prompt. If g127's check finished, carry on (open items: g127, then g128 stacked on #3788).
