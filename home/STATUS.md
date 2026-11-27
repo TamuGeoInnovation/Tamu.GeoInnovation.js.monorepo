@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a71**: before images taken (two more loads: 116 and 126 s); building the branch for the after measurements, 8:51 PM Central, 26 November.
+- **Batch a71**: after measured: maintenance 19/18/16/22 s, service 21/19/18/17 s (from 89-162 s), 427 spaces, same points drawn; comparison in build-times.md; full check starting, 8:56 PM Central, 26 November.
 
 ## Finished
 - **Batch a70** (report `home/reports/2026-11-26-a70.md`, 8:19 PM Central): branch ready `fix/3808-popup-keys` at `528b6ff59`; four maps fixed, the check red on all four and NSC first; check-parked-code the only red.
