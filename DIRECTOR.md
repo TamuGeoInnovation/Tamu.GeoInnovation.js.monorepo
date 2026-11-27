@@ -41,25 +41,30 @@ chat's and said so only in its own window; and a `Still there?` was up for one m
   watcher (the background task's id) and says Remote Control is on for the chat. Saying "I am a listener" without both
   is the 23 October failure. Remote Control is what lets the maintainer look in from another machine.
 
-## Dead code is parked, never asked about (26 November 2026, the maintainer)
+## Dead code is deleted, features are parked, and neither is asked about (26 November 2026, the maintainer)
 
-**Code that nothing uses is parked in the pull request that finds it, without asking anyone.** The maintainer has decided it
-once for all: "stop asking me to review things that are parked over and over after I already told you I wanted them
-parked and not deleted." So:
+The maintainer: "I do want to get rid of actual dead code, but I don't want to remove features that we probably want to
+come back." And: stop asking him about either. So, in the pull request that finds it:
 
-1. **Park it, don't list it.** In the same pull request:
-   - add a row to `docs/parked-code.md`;
-   - open an issue labelled `parked` saying what it was and when to bring it back;
-   - remove the code.
+- **A feature that might come back is parked.** It gave someone a capability: a page, a route that worked, an
+  integration with a service, or an unfinished feature someone meant to finish. It went away for a reason outside the
+  code: a retired service, an ended season, or work left unfinished. Park it:
+  - a row in `docs/parked-code.md`;
+  - an issue labelled `parked`, saying when to bring it back;
+  - the director pushes the annotated `parked/<name>` tag on the last `development` commit that still holds it;
+  - then remove the code.
 
-   The director pushes the annotated `parked/<name>` tag on the last `development` commit that still holds it. Since
-   PR 3805, a tag without its row no longer fails other branches, so the order no longer matters.
-2. **Never put it to the maintainer as a question**, and never as "potentially parked, for the maintainer to decide". The
-   report says what was parked, in one line each.
-3. **What counts:** code nothing imports or calls, and routes that can only fail (501). If you can't tell whether
-   something is used (a public API, something read by name, a dynamic import), it isn't dead code: leave it and say so in
-   the report.
-4. **Batches that said "never delete dead code; list it as potentially parked" now mean this.**
+  Examples: the bus timetable (#3704), the initial survey and its question types (#3713).
+- **Actual dead code is deleted, with no tag and no row:**
+  - stubs that were never implemented (a route that only throws 501);
+  - general helpers nothing uses (pipes, converters);
+  - unreachable branches, unused members, empty generated specs;
+  - duplicates of something shared.
+
+  Record each in #1899's done list, and say so in one line in the report.
+- **When it's unclear whether it's a feature, park it.** Parking is cheap, and losing a feature isn't.
+- **Code whose use can't be determined** (a public API, something read by name, a dynamic import) is neither: leave it, and note it in the report.
+- **Never put any of this to the maintainer as a question.** Batches that said "never delete dead code; list it as potentially parked" now mean this section.
 
 ## Never wait for a fix to merge: stack on it (26 November 2026, the maintainer)
 
