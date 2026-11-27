@@ -146,8 +146,8 @@ failures — which is why this is worth doing now rather than under pressure.
 
 ### Do not
 
-**Dead code you find is parked, not brought back for approval** (`DIRECTOR.md`, 26 November): row, deletion and a tag
-message in your report. Ask only when reachability is genuinely unclear.
+**Dead code and features:** `DIRECTOR.md`'s *"Dead code is deleted, features are parked, and neither is asked about"*.
+A find you are not acting on goes as a row on **#1899** and nothing else. Never a question for me.
 
 **Do not touch the application.** #3369's third part — why these event maps keep updating for 20 to 60 seconds after
 their data has arrived — is the valuable one and the one most likely to swallow a night. Not here.
@@ -230,8 +230,8 @@ now** in the same commit, answers in `TASKS.md`, branch from today's `developmen
 
 ### Do not
 
-**Dead code you find is parked, not brought back for approval** (`DIRECTOR.md`, 26 November): row, deletion and a tag
-message in your report. Ask only when reachability is genuinely unclear.
+**Dead code and features:** `DIRECTOR.md`'s *"Dead code is deleted, features are parked, and neither is asked about"*.
+A find you are not acting on goes as a row on **#1899** and nothing else. Never a question for me.
 
 **Branch** `fix/3824-parking-space-filters` from today's `development`. `check-in-volume.sh`, then **`pre-pr-check.sh`**,
 and give me its last line; `check-parked-code` may still be the only red, which is fine — say so. Body text in the
@@ -427,8 +427,8 @@ turns out to be empty is the failure mode CLAUDE.md warns about four times over.
 
 ### Do not
 
-**Dead code you find is parked, not brought back for approval** (`DIRECTOR.md`, 26 November): row, deletion and a tag
-message in your report. Ask only when reachability is genuinely unclear.
+**Dead code and features:** `DIRECTOR.md`'s *"Dead code is deleted, features are parked, and neither is asked about"*.
+A find you are not acting on goes as a row on **#1899** and nothing else. Never a question for me.
 
 **Branch** `fix/3671-nsc-permit-instructions` from today's `development`. `check-in-volume.sh`, then
 **`pre-pr-check.sh`**, and give me its last line. Body text in the report with a `Title:` line, `.pr-body.md` **not**
