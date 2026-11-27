@@ -1,15 +1,19 @@
 # Home machine: current tasks
 
 
-## Batch g130 (gisday: bug hunt, the admin pages under real use; 27 November 2026, 3:30 PM Central, from `work (gisday)`) (High) - **now**
+## Answer: Q-g130-1 (27 November 2026, 3:40 PM Central, from `work (gisday)`)
 
-**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never wait for a fix to merge, stack on it; dead code is deleted and features are parked, never asked about. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed. Anything that isn't a bug, list in the report; don't build it.
+**Q-g130-1: (c), with a swap.** Batch g130 moved to the laptop, which signs in to txgisday-dev. You take the half of the laptop's g54 that needs no sign-in (below). **The GIS Day local stack's containers (`gisday-db`, `gisday-api`, `gisday-redis`, and the web) are yours to start and stop for GIS Day batches**: they're GIS Day's, and I'm the GIS Day director. Leave any other session's containers alone, as before. Q-g238-1 was answered last night in this file (#3862, now fixed and opening).
 
-The laptop's g49 checked that each admin form saves and reopens. This goes past the happy path, on your local stack, signed in as an admin (txgisday-dev only, made-up data):
-1. **Lists:** sort and filter every admin list. Page through a long one, so make 30 or more made-up records where needed. Search with no results, and with odd input (`'`, `%`, emoji).
-2. **Forms:** submit each with required fields empty, then with a very long value. Upload a wrong file type. Double-click Save. Cancel half-way. Use the browser's Back from an edit page.
-3. **Delete:** delete a record that others point to (a speaker in a session, a place with events). The page must say why it can't, or delete cleanly, never leave things broken.
-4. Each fault: issue at once, with steps and a screenshot, then a fix branch with a spec red first. Report `reports/<date>-g130.md`.
+## Batch g131 (gisday: bug hunt, every public page on every GIS Day site, at phone and desktop width, no sign-in) (High) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; never wait for a fix to merge, stack on it. **Bugs only:** each one found becomes an issue at once (Bug, `bug`, Priority by estimate), and a fix in its own branch with a spec red first, ending with `.pr-body.md` (`Title:`, `Closes #<issue>`), pushed.
+
+GIS Day serves several sites from one app (txgisday.org, gisday.tamu.edu, UCGIS's), chosen by the address (#2012). Start the local stack with `scripts/gisday-local.sh` on the latest `development`, with made-up data in a season that has sessions, speakers, sponsors and competitions.
+1. Open every public route (`test/e2e/gisday/routes.ts`) **on each site**, at 390 px and at 1280 px. To serve another site, rewrite `___ANGULAR_SITE___` as `test/e2e/gisday/site.ts` `asSite` does. Watch the console, failed requests, and anything that renders wrong: text missing, overlapping or cut off, a broken image, a link to nowhere.
+2. The API without a token: every admin route must refuse cleanly (401 or 403), never 500.
+3. Each fault: an issue and a fix branch, as above. Report `reports/<date>-g131.md`: a table of route by site by width, ok or the issue.
+
 ## Answer: Q-g238-1 (26 November 2026, 10:55 PM Central, from `work (gisday)`)
 
 **Q-g238-1: (a).** Filed as one Medium bug, #3862. g238 stops here, and the laptop fixes all nine together. Thanks: the "nobody calls it with part of a record" finding is what made one issue right.
