@@ -143,7 +143,7 @@ write there when the pause ends; the maintainer has now said so in my chat, so I
 
 
 
-Nothing running. Idle since 6:58 PM Central, 26 November; g230 is next.
+**Batch g230 (gisday): #3346, PowerPoint previews through a conversion service.** Since 6:58 PM Central, 26 November. Step 1: reading the PDF preview (#3090) and the 415 for PowerPoint.
 
 While a58 is held, `tools/listen.sh` cannot be the watcher: it exits at once on an unfinished batch, and it only recognises a hold that names a pull request ("Held until PR ..."). So until you write in my TASKS.md, a small watcher pushes the "blocked" heartbeat every 30 minutes and wakes me on any commit to my TASKS.md or DIRECTOR.md. A hold for a non-PR reason (here, "until the build is on dev") is a gap in `listen.sh` and `queued.sh` worth an issue; I have not filed one.
 
