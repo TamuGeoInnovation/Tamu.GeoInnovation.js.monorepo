@@ -1,6 +1,17 @@
 # Laptop: current tasks
 
 
+## Batch g51 (gisday: #3826, park the unused pipes and CoordinateConverter; 26 November 2026, 9:50 PM Central, from `work (gisday)`) (Medium) - **after g50**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave the #3788 files alone; each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #3826`) and is pushed. **New (the maintainer, 26 November): never wait for a fix to merge.** When your work depends on another open branch, merge that branch into yours and carry on. The pull request names the dependency.
+
+**The maintainer decided (#3793 13A):** park the seven unused pipes in `libs/common/ngx/pipes` (`DateRangePipe`, `NearestDatePipe`, `ToDatePipe`, `GroupByPipe`, `ToArrayPipe`, `LookupPipe`, `PhoneNumberFormatPipe`) and `CoordinateConverter` in `libs/common/utils/geometry/esri`, then remove them.
+
+1. Branch `chore/3826-park-unused-utilities` from the latest `development`. **Merge your own `fork/fix/3804-common-ngx-pipes-strict` and `fork/fix/3804-geometry-esri-strict` into it**, so it removes the strict versions and doesn't conflict with them.
+2. Remove the eight, with their specs, exports and module declarations. Remove nothing else, and check that nothing in `libs/` or `apps/` imports them (a build of every app that imports either library proves it).
+3. Add a row to `docs/parked-code.md` for `parked/unused-ngx-utilities`, with issue #3826, saying what each was, that two read dates as UTC (#1298), and that `libs/common` has newer equivalents. **Don't create or push the tag.** I push it on the commit just before your removal, only once your pull request is green.
+4. **`check-parked-code.mjs` will fail on this branch alone** (a row with no tag yet). That's expected. Say so in the body, and that the tag is pushed just before merging.
+5. `scripts/check-in-volume.sh <branch> common-ngx-pipes,common-utils-geometry-esri,gisday-angular,aggiemap-angular`. Report `reports/<date>-g51.md`.
 ## Batch g50 (gisday: #3827, saving an event erases its recorded attendance; 26 November 2026, 9:40 PM Central, from `work (gisday)`) (High) - **now**
 
 **The rules:** announce every step before and after; reread `TASKS.md` before each step; merge the latest `development` before any check; leave `libs/gisday/competitions/data-api/src/lib/export/` and `apps/gisday-nest/src/app/app.module.ts` alone until #3788 merges; never delete dead code; each branch ends with `.pr-body.md` (first line `Title: ...`, `Closes #<issue>`) and is pushed, and I open the pull request.
