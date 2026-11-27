@@ -1,6 +1,22 @@
 # Laptop: current tasks
 
 
+## Batch g49 (gisday: a signed-in walk of GIS Day on today's development; 26 November 2026, 8:35 PM Central, from `work (gisday)`) (Medium) - **now**
+
+**The rules:** announce every step before and after; reread `TASKS.md` before each step. This batch **finds and files, it doesn't fix**: each fault becomes an issue (Bug, with page, steps, console error and a screenshot, and Priority by estimate: High if an admin can't save, Medium if something shows wrong, Low if cosmetic, as CLAUDE.md says), and nothing is built.
+
+Today about twenty pull requests changed GIS Day's shared code: strict types across its libraries and shared forms, layout, modal and search, zoneless (3690), and RSVP and submission types (3711). On the latest `development`, signed in locally (txgisday-dev only, made-up data), walk:
+
+1. **Public:** home, sessions, presenters, competitions (including the VGI map), sponsors, FAQ, a session's detail page.
+2. **Admin, as an admin:** every list under Admin, and for each its Add and Edit forms. Save one made-up record in each, then reopen it and check every field kept its value. Pay particular attention to:
+   - Speakers (file upload, then reset);
+   - Events (dates, the time pickers, tags);
+   - RSVP Types and Submission Types (add, then edit);
+   - Seasons (days).
+3. **Registration and a submission form.** The competitions designer: add a question of each type, then save.
+4. **A modal** (Copy, or any confirm), the **judging tabs**, and the **dashboards** (Accounts, Check-ins, RSVPs).
+
+Watch the browser console throughout. Report `reports/<date>-g49.md`: a table of each area as ok, or the issue filed, with one screenshot per area. **Undo nothing you created:** list the made-up records instead, since the local database is yours.
 ## g48: the issues each branch closes (26 November 2026, from `work (gisday)`)
 
 Each library has its own sub-issue of #3804. Put `Closes #<sub>` and "Part of #3804" in each `.pr-body.md`:
