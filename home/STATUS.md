@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **a74** (#2846) next, then a75, per the AggieMap director. a72 is behind them, its code done. The session restarted at about 10 PM; listening again since 10:05 PM Central.
+- **Batch a74**: started batch a74 (#2846); reading the issue and its reproduction, 10:06 PM Central, 26 November.
 
 ## Finished
 - **Batch g127** (report `home/reports/2026-11-26-g127.md`, 10:05 PM Central): branch ready `chore/3796-park-season-day-writes`; check and pre-pr-check Exit 0.
