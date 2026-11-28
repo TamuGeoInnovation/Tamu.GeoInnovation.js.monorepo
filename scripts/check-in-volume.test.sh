@@ -283,22 +283,11 @@ grep -q 'setup_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=
 expect "the check gives that advice after its run" "yes" "$r"
 rm -rf "$logs"
 
-# The volume is tamu-js-<issue> only when the issue number starts the branch name's last part, as in <type>/<issue>-<topic>.
-# Taking the first number anywhere named every dated branch tamu-js-2026, one volume for all of them, which tidy.sh
-# then removed as closed issue #2026 (#3802).
-expect "fix/3802-topic is issue 3802" "tamu-js-3802" "$(volume_name fix/3802-dated-branch-volume)"
-expect "a branch with no type is its issue too" "tamu-js-3802" "$(volume_name 3802-topic)"
-expect "pr/3477 is issue 3477" "tamu-js-3477" "$(volume_name pr/3477)"
-expect "a branch kept under another's name is its own issue" "tamu-js-3600" "$(volume_name backup/lab/fix/3600-topic)"
-expect "fix/2026-topic is issue 2026" "tamu-js-2026" "$(volume_name fix/2026-topic)"
-expect "a date in a branch's topic is not an issue" "tamu-js-docs-release-notes-2026-11-26"   "$(volume_name docs/release-notes-2026-11-26)"
-expect "nor a year at its end" "tamu-js-slone-family-weekend-2026" "$(volume_name slone/family-weekend-2026)"
-expect "nor a date at its start" "tamu-js-check-2026-10-27-batch-2" "$(volume_name check/2026-10-27-batch-2)"
-expect "two dated branches do not share a volume" "no"   "$([ "$(volume_name docs/release-notes-2026-11-26)" = "$(volume_name verify/green-batch-2026-11-23)" ] && echo yes || echo no)"
-expect "a branch with no number keeps its sanitised name" "tamu-js-development" "$(volume_name development)"
-case "$(volume_name docs/release-notes-2026-11-26)" in tamu-js-[0-9]*) r=yes ;; *) r=no ;; esac
-expect "a dated branch's volume is never one tidy.sh reads as an issue's" "no" "$r"
-grep -q 'volume="$(volume_name "$branch")"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
-expect "the check names its volume with that rule" "yes" "$r"
+# Which issue a branch names, and so which volume its check runs in, is scripts/volume-name.sh, tested by
+# scripts/volume-name.test.sh over a table of real branch names, and from tidy.sh's side as well (#3802).
+# The rule is not re-tested here: one writer for it. This asserts only that the check uses it rather than
+# deciding for itself, which is the half of #3802 that let a sweep remove a volume somebody was using.
+grep -q 'volume="$(volume_for_branch "$branch")"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check names its volume with volume-name.sh's rule" "yes" "$r"
 
 exit "$failed"

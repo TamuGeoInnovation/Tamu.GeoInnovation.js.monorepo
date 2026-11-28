@@ -245,6 +245,12 @@ branch_in_development() {
 # Prints the volume names in <volume list file> that are tamu-js-<number> for a CLOSED issue, one per line.
 # The name must be entirely digits after the prefix, so tamu-js-dev-nm, tamu-js-chk-development and the
 # other named volumes are never matched however the issue list reads. Tested by scripts/tidy.test.sh.
+#
+# This is the other half of scripts/volume-name.sh's rule, and the two have to mean the same thing: this
+# decides a volume is removable, that decides which volume a check runs in. When they disagree a sweep
+# removes a volume somebody is using, which is what #3802 was. volume_for_branch there produces a bare
+# number here only for a branch that names an issue, and scripts/volume-name.test.sh asserts that over a
+# table of real branch names, from both sides. Change either rule and that test fails.
 volume_candidates() {
   local closed="$1" volumes="$2"
   awk -v closed="$closed" '

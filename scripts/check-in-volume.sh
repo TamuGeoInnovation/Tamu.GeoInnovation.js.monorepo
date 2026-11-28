@@ -15,9 +15,9 @@
 # volume. See "Why checks run in a volume" in CLAUDE.md.
 #
 # How it works:
-#   - Each branch gets its own volume, tamu-js-<issue> when the issue number starts the last part of
-#     its name (fix/3802-topic), or tamu-js-<branch> otherwise, a dated branch included (volume_name,
-#     #3802). Docker creates it on first use.
+#   - Each issue gets its own volume, tamu-js-<issue>, shared by every branch for that issue; a branch
+#     that names no issue gets tamu-js-<branch>. scripts/volume-name.sh decides which, and says why
+#     a date in a branch name is not an issue number (#3802). Docker creates the volume on first use.
 #   - The main checkout is mounted read-only at /src. Not a worktree: a worktree's .git is a file
 #     pointing at a Windows path the container cannot follow. A worktree's branches live in the main
 #     repository's refs anyway, so fetching the branch by name from the main checkout finds them.
@@ -288,19 +288,8 @@ log_label() {
   printf '%s-of-%s-projects-%s\n' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
 }
 
-# volume_name <branch>: the branch's volume. tamu-js-<issue> when the issue number starts the branch name's last part,
-# as in <type>/<issue>-<topic>, and is not the year of a date there; otherwise tamu-js-<the branch, sanitised>.
-# Taking the first number anywhere named every dated branch tamu-js-2026, one volume for all of them, and tidy.sh,
-# which removes tamu-js-<number> for a closed issue, removed it as #2026 (#3802). tidy.sh reads only names that are
-# all digits, so a dated branch's volume is now never one it reads as an issue's. Tested by
-# scripts/check-in-volume.test.sh.
-volume_name() {
-  local last="${1##*/}" issue=""
-  if ! printf '%s' "$last" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}'; then
-    issue="$(printf '%s' "$last" | sed -nE 's/^([0-9]+)(-.*)?$/\1/p')"
-  fi
-  printf 'tamu-js-%s\n' "${issue:-$(printf '%s' "$1" | tr -c 'A-Za-z0-9_.-' '-')}"
-}
+# shellcheck source=volume-name.sh
+. "$(dirname "${BASH_SOURCE[0]}")/volume-name.sh"
 
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
@@ -328,7 +317,7 @@ git -C "$main" rev-parse --verify -q "refs/heads/$branch" >/dev/null || {
   exit 2
 }
 
-volume="$(volume_name "$branch")"
+volume="$(volume_for_branch "$branch")"
 log="${3:-$here/check-$volume-$(log_label "$mode").log}"
 
 if [ "$(git -C "$here" rev-parse --abbrev-ref HEAD)" = "$branch" ] && [ -n "$(git -C "$here" status --porcelain)" ]; then
