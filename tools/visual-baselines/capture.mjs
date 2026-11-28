@@ -67,6 +67,7 @@ import { commitFields, releaseCommit, releaseLine } from './release-commit.mjs';
 import { centralNow } from './central.mjs';
 import { matchesOnly, slugFor } from './slug.mjs';
 import { whyNotRendered } from './rendered.mjs';
+import { drawnFor } from './drawn.mjs';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
@@ -460,14 +461,38 @@ async function settle(page) {
     why = 'its layers were still loading after 60 s';
   }
 
+  // Then what the page shows, steady for two seconds (#1937): the probe ready and not drawing, and no spinner on the
+  // page. One reading of `drawing === false` let two production pages be taken blank with the layer list spinning.
   if (!why) {
-    try {
-      await page.waitForFunction(() => !window.__tamuGiscMapProbe || window.__tamuGiscMapProbe.drawing === false, {
-        timeout: 60000,
-        polling: 500
-      });
-    } catch {
-      why = 'it was still drawing after 60 s';
+    const readings = [];
+    const until = Date.now() + 60000;
+
+    while (!drawnFor(readings) && Date.now() < until) {
+      readings.push(
+        await page
+          .evaluate(() => {
+            const probe = window.__tamuGiscMapProbe;
+            const spinners = [...document.querySelectorAll('.spinning-loader')].filter(
+              (spinner) => spinner.getClientRects().length > 0
+            ).length;
+
+            return { ready: probe ? probe.ready === true : null, drawing: probe ? probe.drawing !== false : null, spinners };
+          })
+          .catch(() => ({ ready: false, drawing: true, spinners: 0 }))
+      );
+
+      if (!drawnFor(readings)) {
+        await page.waitForTimeout(500);
+      }
+    }
+
+    if (!drawnFor(readings)) {
+      const last = readings[readings.length - 1];
+
+      why =
+        last && last.spinners > 0
+          ? 'it was still showing ' + last.spinners + ' spinner(s) after 60 s'
+          : 'it was still drawing after 60 s';
     }
   }
 
