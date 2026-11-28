@@ -86,6 +86,10 @@ jobs:
     # (framing.spec.ts, 412 routes) joined the suite; that spec alone takes 40-47 minutes, and on
     # 5 October a production run was still going when 75 cancelled it. Expected now: 80-90 minutes.
     # This is headroom, not a fix: shortening the suite is #1426.
+    #
+    # The suite stops itself first (`--global-timeout` below), so running out of time fails the run
+    # and opens or updates the health issue like any other failure (#1748). From 3 to 27 November every
+    # night ran into this limit instead, ended `cancelled`, and said nothing.
     timeout-minutes: 120
 
     strategy:
@@ -217,13 +221,21 @@ jobs:
         if: steps.probe.outputs.present == 'true'
         run: npx playwright install --with-deps chromium
 
+      # Stopped by Playwright at 105 minutes, inside the job's 120, so a run that has not finished ends
+      # as a failure with its report written (the tests it had not reached are listed as not run), rather
+      # than being killed by the job limit with nothing written and no health issue (#1748). The output
+      # is kept so the report step can say the run did not finish.
       - name: Run smoke tests
         if: steps.probe.outputs.present == 'true'
-        run: npx playwright test --config=playwright.aggiemap-smoke.config.ts
+        shell: bash
+        run: |
+          set -o pipefail
+          npx playwright test --config=playwright.aggiemap-smoke.config.ts --global-timeout=6300000 2>&1 | tee smoke-output.txt
 
-      # Only on failure. A healthy run should leave nothing behind but a green check.
+      # Only on failure, or a run stopped before it finished. A healthy run should leave nothing behind
+      # but a green check. The report holds each test's duration, which is how a slow night is measured.
       - name: Upload report
-        if: failure()
+        if: failure() || cancelled()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: aggiemap-smoke-${{ matrix.name }}-${{ github.run_id }}
@@ -233,20 +245,34 @@ jobs:
       # Opens one issue per environment and keeps it updated, rather than filing a new one each day.
       # A layer that breaks on a Friday and is fixed the next Wednesday would otherwise produce five
       # identical issues, which is how a label stops being read.
+      #
+      # Also when the job was cancelled: by its time limit or by hand, the run checked nothing to the end,
+      # which must be at least as loud as a failure (#1748). A cancelled job still runs `cancelled()` steps.
       - name: Report failure
-        if: failure()
+        if: failure() || cancelled()
         env:
           GH_TOKEN: ${{ github.token }}
+          JOB_CANCELLED: ${{ cancelled() }}
         shell: bash
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          # What kind of red this is, said in the comment: a suite that ran out of time has checked only
+          # part of the maps, which is a different thing from maps that failed (#1748).
+          if [ "$JOB_CANCELLED" = 'true' ]; then
+            what="did not finish: the job was cancelled, by its time limit or by hand, so nothing was checked to the end"
+          elif grep -Eq 'Timed out waiting [0-9]+s for the' smoke-output.txt 2>/dev/null; then
+            what="did not finish: it ran out of its 105 minutes, so the tests it had not reached are listed as not run in the report"
+          else
+            what="is failing"
+          fi
           # `--repo` explicitly: this step runs on failure, and when the failure happened before
           # `Checkout repo` there is no repository for gh to infer from. Without it the reporter dies
           # with "fatal: not a git repository" and hides the real failure entirely (#1435).
           existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --label '${{ matrix.label }}' --state open --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Still failing on ${{ matrix.name }} (\`${{ matrix.base_url }}\`). [Run]($run_url)"
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "The run on ${{ matrix.name }} (\`${{ matrix.base_url }}\`) $what. [Run]($run_url)"
           else
             # `gh issue create` fails outright on a label that does not exist, which would break this
             # handler on the very first real failure. Created here so the workflow needs no manual
@@ -258,7 +284,7 @@ jobs:
             gh issue create --repo "$GITHUB_REPOSITORY" \
               --title "AggieMap smoke failing on ${{ matrix.name }}" \
               --label '${{ matrix.label }}' \
-              --body "The scheduled smoke run is failing against \`${{ matrix.base_url }}\`.
+              --body "The scheduled smoke run against \`${{ matrix.base_url }}\` $what.
 
           The report artifact on the run lists which maps failed and why. Layer failures generally mean a
           hosted service changed, rather than anything in this repository - see #1034 for what the suite
