@@ -38,7 +38,6 @@ INSERT @kept VALUES
   (N'organizations', N'guid,seasonGuid,acronym'),
   (N'place_links', N'guid,label,url,placeGuid'),
   (N'places', N'guid,name,address,city,state,zip,website,seasonGuid,visibilitySettings'),
-  (N'question_types', N'guid,type'),
   (N'rsvp_types', N'guid,type'),
   -- The rubrics judges score against (#3183): the competition organizer's text, about the work, not about anyone.
   (N'rubrics', N'guid,seasonGuid,competitionType,name,description'),
