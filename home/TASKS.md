@@ -10,6 +10,74 @@
 3. Once all three are present: start the stack (`scripts/gisday-local.sh`; the GIS Day containers are yours to start and stop), sign in at `http://gisday.local.test:4201` with Playwright and the secure-origin flag, and reach `/admin/dashboards/rsvps`. **A consent screen: stop and report it.** A wrong password: report it, because your copy of the file is out of date.
 4. Write `GIS Day sign-in: yes (<date>)` in `STATUS.md`, or what's missing. Report `reports/<date>-g132.md`. Then carry on with your bug hunt.
 
+
+## Batch a79 (aggiemap: the phone cluster — #1439, #1440, #2997; 27 November 2026, 5:35 PM Central, from `work (aggiemap)`) (High) — **now**
+
+**a73 is open as [PR 3886](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3886) and merged, and
+`parked/bus-timetable-ui` is tagged on the merge commit's first parent** with your message. I checked that commit still
+contained `bus-switch.component.ts` before tagging rather than trusting the arithmetic.
+
+**Three bugs, one surface, three pull requests.** Read the phone UI once and close all three. This is the cluster
+approach that worked on the trip planner today: six issues, one library, five fixes and two closures.
+
+**Standing:** announce every step before and after with the time read from PowerShell, `STATUS.md`'s **Running now** in
+the same commit, branch from today's `development`. If you touch `map.service.ts`, read the view through `currentView`
+(#3804).
+
+### Why this cluster, and why High
+
+A phone visitor **cannot finish a basic task**. From #1440, hit on a real iPhone on 5 October: *"finding a building and
+using GPS could not be done in one session."* Tap a building, the sheet opens, it cannot be dismissed, and it covers
+the GPS control. The only way out is reloading the page. That has been true on production since at least October.
+
+### #1439 first — the sheet cannot be dismissed
+
+[#1439](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1439). Tapping a building opens the
+bottom sheet with **no way to close it**: swiping down does nothing and there is no close control.
+
+**The issue makes a point worth keeping.** The sheet already draws a **drag handle** — the grey pill along its top
+edge — so it *advertises* a gesture it does not implement. That is worse than no affordance, and the fix should make
+the handle true rather than add a second control beside it. If you conclude otherwise, say why.
+
+1. **Reproduce at phone width** and capture the before. The laptop is out of service, so this is yours.
+2. **Fix it**, and say whether the handle now works, a close control appeared, or both.
+3. **A regression test, proven red.**
+
+### #1440 next, and #1439 may change it
+
+[#1440](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1440). The sheet covers the map
+controls in the bottom-right, GPS among them.
+
+4. **Re-read it after #1439 is fixed.** #1440's own body says the controls "cannot be reached again at all without
+   reloading" **because** of #1439. Once the sheet can be dismissed, what remains is only that the controls are covered
+   while it is open — which may be acceptable, or may still need the controls to move. **Say which, with a capture,
+   before you change anything.** If it is acceptable, close it with that reasoning rather than writing a fix.
+5. If it does need a fix, prefer moving the controls clear of the sheet over shrinking the sheet, and check no other
+   phone screen relies on their position.
+
+### #2997 — Bus Routes on an event map leaves the event map
+
+[#2997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2997). `MainMobileSidebarComponent`
+is shared, but its Bus Routes item is an **absolute** link to `/map/m/bus`, and event maps have no `m/bus` route — so on
+the tailgating map it throws the visitor onto the main campus map.
+
+6. **Decide between a relative link and giving event maps their own phone bus route**, and say why. #2758 made the
+   desktop panel shared with per-map tabs; whichever you choose should match how the desktop solved the same problem,
+   not invent a third way.
+7. **A regression test, proven red**, asserting the visitor stays on the event map.
+
+### All three
+
+**Before and after images at phone width** into `docs/screenshots/<issue>-<slug>/`, and a release-notes entry each with
+its *What to test on dev* row — these are all visible, so none of them is `no-visible-change`.
+
+**Dead code** goes as a row on **#1899** and nothing else.
+
+Three branches: `fix/1439-phone-sheet-dismiss`, `fix/1440-phone-controls-reachable` (only if it needs one), and
+`fix/2997-event-map-bus-link`. `check-in-volume.sh` then **`pre-pr-check.sh`** on each, and give me each last line.
+Bodies in the report with `Title:` lines, `.pr-body.md` **not** committed. **Open no pull request** — I open them.
+
+**Report** `home/reports/2026-11-27-a79.md`. Questions `Q-a79-<n>`.
 ## a73 is next, and it is still #3687 as written (27 November 2026, 4:45 PM Central, from `work (aggiemap)`)
 
 **a72 is accepted and open as [PR 3885](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3885).**
