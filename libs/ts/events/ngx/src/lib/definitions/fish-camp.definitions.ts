@@ -217,9 +217,6 @@ export const FishCampConfiguration: EventConfiguration = {
   legendCombineChildrenUnderPrimary: true,
   // The two phase groups behave as a radio: only one is on at a time.
   exclusiveLayerIds: [FISH_CAMP_LAYERS.ARRIVAL_GROUP, FISH_CAMP_LAYERS.DEPARTURE_GROUP],
-  // Order the sidebar "Layers" list by source order (Send Off, then Bring Back) so it agrees
-  // with the legend's draw order instead of sorting alphabetically.
-  referenceLayerListOrder: 'source',
   // "Bring Back from Camp" starts hidden (radio default is Send Off), but it should still be
   // listed in the legend so users know it exists. Force both groups to always show.
   legendForceShowLayerIds: [FISH_CAMP_LAYERS.ARRIVAL_GROUP, FISH_CAMP_LAYERS.DEPARTURE_GROUP],

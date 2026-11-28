@@ -24,9 +24,8 @@ export class LayerListService {
           view: instance.view
         });
 
-        // A new list when a layer is added or removed, or when one is titled: a layer with no title of its
-        // own takes its service's name once it loads, after its item is listed, and the list is sorted by
-        // title (#1939).
+        // A new list when a layer is added, removed or moved in the map's draw order, or when one is titled: a layer
+        // with no title of its own takes its service's name once it loads, after its item is listed (#1939, #1433).
         return watchAsObservable(reactiveUtils, () =>
           this._model.operationalItems.map((item) => item.title).join('\n')
         ).pipe(

@@ -40,7 +40,6 @@ export class SidebarReferenceComponent implements OnInit {
   public legendCombineChildrenUnderPrimary = false;
   public eventLayerIds: string[] = [];
   public legendForceShowLayerIds: string[] = [];
-  public layerListOrderBy: 'title' | 'allowed' = 'title';
   public showResolvedSettingNotes = false;
   public hideLayerToggle = false;
   public searchSources?: SearchSource[];
@@ -51,7 +50,6 @@ export class SidebarReferenceComponent implements OnInit {
     this.showResolvedSettingNotes = this.configuration?.enableResolvedSettingNotes ?? false;
     this.legendAllowVisibilityToggle = this.configuration?.legendAllowVisibilityToggle ?? true;
     this.legendCombineChildrenUnderPrimary = this.configuration?.legendCombineChildrenUnderPrimary ?? false;
-    this.layerListOrderBy = this.configuration?.referenceLayerListOrder === 'source' ? 'allowed' : 'title';
     this.legendForceShowLayerIds = this.configuration?.legendForceShowLayerIds ?? [];
     this.hideLayerToggle = this.configuration?.hideLayerToggle ?? false;
     // A map may declare sources only for its link parameters (`searchActive: false`); the sidebar
