@@ -33,7 +33,7 @@ async function placement(page: Page, layerId: string): Promise<Placement | strin
   return await page.evaluate(async (id) => {
     const element = document.querySelector('arcgis-map') as unknown as HTMLElement & {
       view: {
-        map: { findLayerById(id: string): { queryExtent(): Promise<{ extent: object | null }> } | undefined };
+        map: { findLayerById(id: string): { queryExtent(query: object): Promise<{ extent: object | null }> } | undefined };
         toScreen(point: object): { x: number; y: number } | null;
         spatialReference: object;
       };
@@ -45,9 +45,16 @@ async function placement(page: Page, layerId: string): Promise<Placement | strin
       return `the map has no layer ${id}`;
     }
 
-    const { extent } = (await layer.queryExtent()) as {
-      extent: { xmin: number; ymin: number; xmax: number; ymax: number; spatialReference: object } | null;
-    };
+    let extent: { xmin: number; ymin: number; xmax: number; ymax: number; spatialReference: object } | null;
+
+    try {
+      // In the view's reference, so its corners can be put on the screen; the layer's own query, so its filter applies.
+      ({ extent } = (await layer.queryExtent({ where: '1=1', outSpatialReference: view.spatialReference })) as {
+        extent: typeof extent;
+      });
+    } catch (error) {
+      return `${id} could not answer its extent: ${(error as Error)?.message ?? String(error)}`;
+    }
 
     if (!extent) {
       return `${id} answered no extent`;
