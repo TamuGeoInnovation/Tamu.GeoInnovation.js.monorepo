@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a84** (#1433, #1828): started on #1433 (layer list and legend in draw order), 3:22 AM Central, 28 November.
+_Idle, listening._
 
 ## Finished
+- **Batch a84** (report `home/reports/2026-11-28-a84.md`, 5:03 AM Central): `fix/1433-layers-in-draw-order` at `78236437d` and `fix/1828-acting-as-production-clears-notices` at `578eb5c7f` ready (pre-pr-check Exit 0 each); Q-a84-1 to 3 asked.
 - **Batch a83** (report `home/reports/2026-11-28-a83.md`, 3:20 AM Central): `fix/1704-discover-visible-everywhere` at `1ff2279a8` ready (pre-pr-check Exit 0); #3908 needs no change (fixed by #3824, not deployed); #1618 not reproduced (0 of 20 on dev, 0 of 20 local); #3927 filed; Q-a83-1 to 4 asked.
 - **Batch a82** (report `home/reports/2026-11-28-a82.md`, 2:18 AM Central): `fix/1936-baseline-error-pages` and `fix/1937-baseline-wait-drawn` (stacked on 1936) ready (pre-pr-check Exit 0 each); full production set 734 captured, 0 failed, 0 unfinished, 171 min.
 - **Batch a81** (report `home/reports/2026-11-27-a81.md`, 10:39 PM Central): `ci/1748-nightly-timeout-loud` ready (pre-pr-check Exit 0); #2784 closed as duplicate of #1748; #3908 filed; Q-a81-1, Q-a81-2 asked.
