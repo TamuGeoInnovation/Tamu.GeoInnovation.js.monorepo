@@ -252,14 +252,17 @@ jobs:
         if: failure() || cancelled()
         env:
           GH_TOKEN: ${{ github.token }}
-          JOB_CANCELLED: ${{ cancelled() }}
+          # job.status, not cancelled(): that function is only allowed in an `if`, and actionlint fails the
+          # workflow for using it anywhere else. job.status reads "cancelled" in a step running under
+          # `if: cancelled()`, which is the same answer.
+          JOB_STATUS: ${{ job.status }}
         shell: bash
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
           # What kind of red this is, said in the comment: a suite that ran out of time has checked only
           # part of the maps, which is a different thing from maps that failed (#1748).
-          if [ "$JOB_CANCELLED" = 'true' ]; then
+          if [ "$JOB_STATUS" = 'cancelled' ]; then
             what="did not finish: the job was cancelled, by its time limit or by hand, so nothing was checked to the end"
           elif grep -Eq 'Timed out waiting [0-9]+s for the' smoke-output.txt 2>/dev/null; then
             what="did not finish: it ran out of its 105 minutes, so the tests it had not reached are listed as not run in the report"
