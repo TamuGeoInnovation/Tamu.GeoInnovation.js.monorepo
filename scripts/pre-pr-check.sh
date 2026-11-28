@@ -16,6 +16,8 @@
 #      no-visible-change label (require-release-notes.mjs), and before/after images for a visible change
 #      (require-screenshots.mjs);
 #   2. the scripts' own test suites when the branch changes scripts/ or a workflow, and the tools' when it changes tools/;
+#   2b. actionlint when it changes a workflow or action, and testing-page.yml's two checks when it changes a smoke
+#      spec or the testing page - both cost nothing here and a branch could pass this script and open red (#3915);
 #   3. scripts/check-in-volume.sh for the branch: lint, test, build and lint.yml's other steps, docs-only changes included.
 #
 # No pull request opens until this exits 0 (CLAUDE.md, the maintainer's 1A of 24 November 2026), and its last line goes
@@ -90,6 +92,25 @@ suites_for() {
   ' "$list"
 }
 
+# Prints which of the pull request's other checks <changed list> calls for, one per line: `actionlint` when a workflow
+# or a composite action changed, `testing-page` when a smoke spec or the testing page did.
+#
+# These are CI checks that cost nothing to run here and were not run here, so a branch could pass this script and
+# open red. PR 3911 did, on a one-line expression in the wrong place (#3915). Tested by scripts/pre-pr-check.test.sh.
+ci_checks_for() {
+  local list="$1"
+  awk -F'	' '
+    $2 ~ /^[.]github\/(workflows|actions)\// { a = 1 }
+    $2 ~ /^test\/smoke\// || $2 == "docs/testing.md" { p = 1 }
+    END { if (a) print "actionlint"; if (p) print "testing-page" }
+  ' "$list"
+}
+
+# Prints the actionlint image reference actionlint.yml runs, so the digest is not written down twice and the two
+# cannot drift. Empty when it cannot be read.
+actionlint_image() {
+  grep -oE 'rhysd/actionlint@sha256:[0-9a-f]+' "$1/.github/workflows/actionlint.yml" 2>/dev/null | head -n 1
+}
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
@@ -197,6 +218,50 @@ no_tracked_body() {
     return 1
   fi
 }
+# The branch's own files, exported to <dir> from the commit rather than read off disk: only what is committed is
+# checked, as the rest of this script is. <paths> are the paths to export.
+export_branch() {
+  local dir="$1"
+  shift
+  mkdir -p "$dir"
+  git -C "$here" archive "$branch" -- "$@" | tar -x -C "$dir"
+}
+
+# actionlint, in the image and with the arguments actionlint.yml uses, on the branch's .github. Verified to run
+# unchanged on these machines while fixing PR 3911 (#3915).
+workflow_lint() {
+  local dir="$tmp/actionlint" image
+  export_branch "$dir" .github || return 1
+  # actionlint looks for a project root and refuses an exported directory without one ("no project was found in any
+  # parent directories"). An empty repository is enough, and it keeps the invocation identical to the one in CI.
+  git -C "$dir" init -q >/dev/null 2>&1 || true
+  image="$(actionlint_image "$dir")"
+  [ -n "$image" ] || { echo "   No actionlint image in .github/workflows/actionlint.yml, so it is not run here."; return 0; }
+  MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$dir"):/repo" -w /repo "$image" -color
+}
+
+# testing-page.yml's two checks, which are plain greps: docs/testing.md names every smoke spec (#2002), and only
+# map-probe.ts names the map probe's global (#2603, #3473). Run on the exported branch, not the working tree.
+testing_page() {
+  local dir="$tmp/testing-page" name found bad=0
+  export_branch "$dir" test/smoke docs/testing.md || return 1
+  for spec in "$dir"/test/smoke/aggiemap/*.spec.ts; do
+    [ -e "$spec" ] || continue
+    name="$(basename "$spec")"
+    grep -qF "\`$name\`" "$dir/docs/testing.md" || {
+      echo "   $name is not named in docs/testing.md. Add its row: the test count, what it catches and the issue behind it."
+      bad=1
+    }
+  done
+  found="$(grep -rlF '__tamuGiscMapProbe' "$dir/test/smoke" --include='*.ts' | grep -v '/test/smoke/aggiemap/map-probe\.ts$' || true)"
+  if [ -n "$found" ]; then
+    echo "   These name __tamuGiscMapProbe; import PROBE_GLOBAL from test/smoke/aggiemap/map-probe.ts instead:"
+    printf '     %s
+' $found
+    bad=1
+  fi
+  return "$bad"
+}
 suite() { # scripts | tools
   case "$1" in
     # In node:24.22.3, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
@@ -215,6 +280,12 @@ step "No drafted body committed" no_tracked_body
 step "Pull request title, release notes and images" pr_checks
 for s in $(suites_for "$tmp/changed.tsv"); do
   step "The $s test suites" suite "$s"
+done
+for c in $(ci_checks_for "$tmp/changed.tsv"); do
+  case "$c" in
+    actionlint) step "actionlint" workflow_lint ;;
+    testing-page) step "The testing page lists every smoke spec" testing_page ;;
+  esac
 done
 step "check-in-volume.sh (lint, test, build, lint.yml's steps)" bash "$here/scripts/check-in-volume.sh" "$branch" ${projects:+"$projects"}
 

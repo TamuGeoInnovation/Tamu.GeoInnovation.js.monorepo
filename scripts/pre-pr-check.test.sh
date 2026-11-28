@@ -105,6 +105,29 @@ expect "nor does a branch with no body at all - the usual case, drafted on disk 
 printf 'added\tdocs/.pr-body.md\n' >"$tmp/b5"
 tracked_body_in "$tmp/b5" && r=yes || r=no
 expect "and the name must be exactly .pr-body.md at the top, as CI greps for it" no "$r"
+# Which of the pull request's other checks a change calls for (#3915). PR 3911 opened red on actionlint, which this
+# script did not run, over a one-line expression in the wrong place.
+printf 'modified\t.github/workflows/aggiemap-smoke.yml\n' >"$tmp/k1"
+expect "a workflow change calls for actionlint" actionlint "$(ci_checks_for "$tmp/k1")"
+printf 'added\t.github/actions/setup/action.yml\n' >"$tmp/k2"
+expect "so does a composite action" actionlint "$(ci_checks_for "$tmp/k2")"
+printf 'added\ttest/smoke/aggiemap/new.spec.ts\n' >"$tmp/k3"
+expect "a new smoke spec calls for the testing page's checks" testing-page "$(ci_checks_for "$tmp/k3")"
+printf 'modified\tdocs/testing.md\n' >"$tmp/k4"
+expect "and so does the testing page itself" testing-page "$(ci_checks_for "$tmp/k4")"
+printf 'modified\t.github/workflows/lint.yml\nadded\ttest/smoke/aggiemap/a.spec.ts\n' >"$tmp/k5"
+expect "a branch touching both calls for both" "actionlint testing-page" "$(ci_checks_for "$tmp/k5" | tr '\n' ' ' | sed 's/ $//')"
+printf 'modified\tlibs/maps/esri/src/x.ts\nmodified\tCLAUDE.md\n' >"$tmp/k6"
+expect "an ordinary branch calls for neither, so it pulls no container it does not need" "" "$(ci_checks_for "$tmp/k6")"
+printf 'modified\t.github/pull_request_template.md\n' >"$tmp/k7"
+expect "a change elsewhere under .github does not, since actionlint lints workflows and actions" "" "$(ci_checks_for "$tmp/k7")"
+
+# The actionlint image is read from actionlint.yml, so the digest is not written down twice (it is pinned by digest
+# because a tag can be moved, and it runs on every pull request that touches a workflow).
+mkdir -p "$tmp/img/.github/workflows"
+printf '            rhysd/actionlint@sha256:abc123 -color\n' >"$tmp/img/.github/workflows/actionlint.yml"
+expect "the actionlint image comes from the workflow, not a second copy of the digest" "rhysd/actionlint@sha256:abc123" "$(actionlint_image "$tmp/img")"
+expect "and is empty when the workflow cannot be read, so the step says so rather than failing" "" "$(actionlint_image "$tmp/nothing-here")"
 # Which suites a change calls for.
 printf 'modified\tscripts/tidy.sh\n' >"$tmp/c1"
 expect "a script change runs the scripts' suites" scripts "$(suites_for "$tmp/c1")"
