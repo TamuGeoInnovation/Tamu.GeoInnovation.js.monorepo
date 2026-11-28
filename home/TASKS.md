@@ -1,6 +1,69 @@
 # Home machine: current tasks
 
 
+## Batch a82 (aggiemap: the baselines that record the wrong thing — #1936, #1937; 27 November 2026, from `work (aggiemap)`) (Medium) — **now**
+
+### Decided, from a81
+
+- **Q-a81-1 is A.** PR 3911 is open. We merge it, read the first night's report, and choose between splitting
+  `heavy` and raising the cap **with the numbers**. The nightly being red every night meanwhile saying *"did not
+  finish"* is the honest state, and better than seven weeks of silence.
+- **Q-a81-2: #3908 is Medium**, set. Your reading was right and I did not ask: I estimate Priority myself.
+- **#2784 closed as #1748's duplicate: accepted**, and your reasoning for which number carries it was the right
+  way round.
+- **`scope.ts`'s stale "757 tests and about an hour and a half"** — you were right to leave it. It gets corrected
+  with the measurement, in whichever pull request settles the cap, not from a count taken by hand (#2002's lesson
+  about the testing page's numbers applies to this comment too).
+- **Dev's 51-second failure on 27 November** is worth a line in a81's report and nothing more unless it repeats.
+
+### This batch
+
+Two faults in `tools/visual-baselines`, and they are the same kind of fault: **the capture records something that
+is not what it claims to be.**
+
+- **#1936: an error page is recorded as a successful shot.** On 18 October three consecutive routes returned IIS's
+  *"404 - File or directory not found"* during a blip and the run reported **0 failed**. In the comparison they
+  read as 83% visual changes rather than as missing pages.
+- **#1937: two production shots were taken before the map drew**, blank with the layer list still spinning, though
+  the capture waits for `probe.drawing === false`. They showed up as 29.87% and 15.70% differences that had nothing
+  to do with the release.
+
+**Why these matter more than a gating check would.** The baselines gate nothing. Their whole job is to let somebody
+*review* a change that moves the symbology of every map at once, instead of guessing. A set that silently contains
+404s and blank maps makes the review worse than no review, because the differences look like findings.
+
+### What I want from it
+
+1. **#1936: a shot counts only when the app rendered it.** The issue says it: a 2xx status **and** the AggieMap root
+   (`tamu-gisc-aggiemap-app-root`, with content) present. Anything else fails, is **retried once**, and is reported
+   as failed. A run that captured 404s must not be able to say 0 failed again.
+2. **#1937: wait for what the page actually shows.** `probe.drawing === false` was not enough on a page with a modal
+   — the same class as #1519. Layers loaded, nothing spinning, the probe's layers settled.
+3. **A test each**, as the tool's own suite has them.
+
+### The trap in #1937's "done when", read it before you plan
+
+Its Done-when asks for the two pages to be **re-taken in production's set while production still serves
+`264eebb42`**. That commit is weeks of releases old, so **that part cannot be done and must not be faked**: a shot
+taken in production today is today's production, not the 16 October set. Fix the capture, say plainly in the report
+that the two old shots cannot be re-taken at that commit, and whether the next capture of production will show them
+drawn. If you think there is a way to honour the intent, say what it is rather than doing it.
+
+### Scope
+
+- **The tool only.** Baselines are captured automatically on the cluster by a CronJob now
+  (`tools/visual-baselines/README.md`). **Do not change anything about the cluster, and do not deploy.** If the
+  CronJob runs a built image, so that this fix only reaches it when something is re-pinned, **say so in the report
+  with what would need pinning** — that is the maintainer's to run, not yours and not mine.
+- **Baselines live outside the repository and are per machine**, so do not commit image sets.
+- **A capture run is allowed if you need one to prove a fix**, against a deployed environment, and say which.
+- `no-visible-change` applies: this is tooling.
+
+**Branches** to the fork, one per issue (they touch the same file, so stack the second on the first and say so).
+`check-in-volume.sh`, then `pre-pr-check.sh`, and give me its last line. Body text in the report with a `Title:`
+line.
+
+**Report** `home/reports/2026-11-27-a82.md`. Questions `Q-a82-<n>`. **Open no pull request** — I open them.
 ## Batch a81 (aggiemap: the nightly smoke run — the only thing watching for breakage without a release; 27 November 2026, from `work (aggiemap)`) (High) — **now**
 
 a80 is accepted, both branches are open as PRs 3905 and 3906, and **Q-a80-1 is option A**: 3906 closes #1501, and
