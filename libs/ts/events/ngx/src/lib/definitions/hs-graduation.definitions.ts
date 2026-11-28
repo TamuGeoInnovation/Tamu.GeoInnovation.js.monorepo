@@ -235,7 +235,13 @@ export const HsGraduationConfiguration: EventConfiguration = {
   shortApplicationName: 'High School Graduation Map',
   introductionText: 'Get the best transportation and parking information for the high school graduation ceremonies.',
   eventDates: ['2026-05-22', '2026-05-23'],
-  mapCenter: [-96.34458, 30.60629],
+  // Centred on the traffic advisories and the parking together (#3907), as the layers answer them on production
+  // (28 November 2026: advisories -96.34849 to -96.34436, 30.597 to 30.60859; arrival and departure parking -96.34992 to
+  // -96.33981, 30.60007 to 30.60992). The centre was the parking's, so the advisories ran 140 pixels off the bottom of a
+  // desktop's map; centred on the advisories alone, the parking ran off its top. Together they are about 470 by 700
+  // pixels at 16, clear of a desktop's map. A phone's is too short for both at this zoom, as it was before.
+  // `layer-in-view.spec.ts` checks both on a desktop.
+  mapCenter: [-96.34487, 30.60346],
   zoom: 16,
   legendAllowVisibilityToggle: true
 };
