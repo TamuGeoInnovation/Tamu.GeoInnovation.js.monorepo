@@ -30,8 +30,9 @@ async function openSheet(page: Page): Promise<void> {
   await page.goto(BUILDING);
   await waitForMapReady(page, `the map at ${BUILDING} never finished loading`);
 
+  // By the notice's own close button, not Escape: Escape closes the building's sheet too, which the link has opened.
   for (let closed = 0; closed < 3 && (await page.locator('tamu-gisc-modal-host').count()) > 0; closed++) {
-    await page.keyboard.press('Escape');
+    await page.locator('tamu-gisc-modal-host').getByRole('button', { name: 'Close window' }).first().click();
     await page.waitForTimeout(500);
   }
 
