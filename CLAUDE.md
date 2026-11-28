@@ -24,24 +24,24 @@ the shared libraries behind them. A change to a shared library can affect severa
 
 Twelve places, each with one job.
 
-| Where                                                        | What belongs there                                                                                                                                                                                                                                                                      |
-| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| This file                                                    | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month.                                                                                                                                                                            |
-| [`docs/map-layers.md`](docs/map-layers.md)                   | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks.                                                                                                                      |
-| [`docs/testing-maps.md`](docs/testing-maps.md)               | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot.                                                                                                                                                                       |
-| [`docs/build-times.md`](docs/build-times.md)                 | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
-| [`docs/gisday-local.md`](docs/gisday-local.md)               | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not.                                                                                                    |
-| [`docs/gisday-migrations.md`](docs/gisday-migrations.md)     | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept.        |
-| [`docs/upgrades/README.md`](docs/upgrades/README.md)         | The modernization plan: how far behind each of Angular, NestJS, Nx, TypeScript and ArcGIS is today, the order the remaining steps have to be taken in, and which of them gate the others. Updated in the same pull request as the step it describes.                                    |
-| [`docs/parked-code.md`](docs/parked-code.md)                 | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once.                               |
-| [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first.                                       |
-| The `cloud-mailbox` branch                                   | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session).                                                                                          |
-| The `work-mailbox` branch                                    | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine).                                                                                      |
-| The maintainer's handoff page                                | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt.                                                                                                                |
+| Where | What belongs there |
+| --- | --- |
+| This file | The lasting rules: how to build, test, release and open a pull request here. Anything still true next month. |
+| [`docs/map-layers.md`](docs/map-layers.md) | Where a layer's symbology, title and order come from, how to override each, and when an override is right. Read before hard-coding anything about how a map looks. |
+| [`docs/testing-maps.md`](docs/testing-maps.md) | Which signal to wait for when a test needs a map to be finished, and why `ready` is not the one for a screenshot. |
+| [`docs/build-times.md`](docs/build-times.md) | How long runs and page loads take, so a change meant to speed something up can be shown to have done it: before-and-after comparisons and what they show, and the run files in [`docs/build-times/runs/`](docs/build-times/runs) the scripts write when asked. Measurements, not rules. |
+| [`docs/gisday-local.md`](docs/gisday-local.md) | How to run the whole GIS Day site on one machine with `scripts/gisday-local.sh`: the containers, the settings kept outside the repository, and what works locally and what does not. |
+| [`docs/gisday-migrations.md`](docs/gisday-migrations.md) | How the GIS Day database schema is changed: the migration commands, the process from entity to production, and what has been proven. Read before editing a GIS Day entity, **and before changing any production GIS Day data**: it says where the scripts that do that are kept. |
+| [`docs/upgrades/README.md`](docs/upgrades/README.md) | The modernization plan: how far behind each of Angular, NestJS, Nx, TypeScript and ArcGIS is today, the order the remaining steps have to be taken in, and which of them gate the others. Updated in the same pull request as the step it describes. |
+| [`docs/parked-code.md`](docs/parked-code.md) | Code deleted because the service it called went away, and that we expect to want again: which `parked/*` tag holds it, why it went, and what has to be true to bring it back. Read before re-writing something that feels like it must have existed once. |
+| [`docs/releases/unreleased.md`](docs/releases/unreleased.md) | Day-to-day state **anyone** picking this up needs: what has merged since the last production release, where it is deployed, what still needs a decision, and work in flight. [`CLAUDE_SETUP.md`](CLAUDE_SETUP.md) sends a new session here first. |
+| The `cloud-mailbox` branch | The cloud session's current batch (`cloud/TASKS.md`) and its reports (`cloud/reports/`). Written by the desktop and cloud sessions; never merged. See [The cloud session](#the-cloud-session). |
+| The `work-mailbox` branch | The work machine's current batch of test runs (`work/TASKS.md`) and its reports (`work/reports/`). Written by the home and work sessions; never merged. See [The work machine](#the-work-machine). |
+| The maintainer's handoff page | One person's own cross-machine notes, so he can stop on one machine and resume on another. Private, not linked from this repository, reached by pasting a pickup prompt. |
 
 **The handoff page is for one person, so it cannot be where anything else lives.** If a fact matters to
 anybody but him — a decision, a gotcha, something in flight, a number someone might check — it goes in
-this file, in `unreleased.md`, or in a GitHub issue _as well_. A page only one person can open looks
+this file, in `unreleased.md`, or in a GitHub issue *as well*. A page only one person can open looks
 like a record and is not one.
 
 That also means the work-in-flight section of `unreleased.md` stays complete on its own. It is not a
@@ -124,13 +124,13 @@ on a fetched commit, so editing while one runs is safe.
 **Why checks run in a volume.** With the source and `node_modules` bind-mounted from Windows, every
 file read crosses the Windows-to-Linux boundary. Measured on a quiet machine on 4 October (#1402):
 
-| Task                              | Bind-mounted        | `node_modules` in a volume | Whole clone in a volume |
-| --------------------------------- | ------------------- | -------------------------- | ----------------------- |
-| `test maps-esri`                  | 80-180 s            | 113 s                      | 15 s                    |
-| `lint ts-events-ngx`              | 54-59 s             | 18 s                       | 5 s                     |
-| `build mailroom-angular`          | 95-162 s            | 19 s                       | 29 s                    |
-| 4 projects' tests, `--parallel=8` | 199 s               | -                          | 24 s                    |
-| `npm ci`                          | 43 min (under load) | 105 s                      | 116 s                   |
+| Task | Bind-mounted | `node_modules` in a volume | Whole clone in a volume |
+| --- | --- | --- | --- |
+| `test maps-esri` | 80-180 s | 113 s | 15 s |
+| `lint ts-events-ngx` | 54-59 s | 18 s | 5 s |
+| `build mailroom-angular` | 95-162 s | 19 s | 29 s |
+| 4 projects' tests, `--parallel=8` | 199 s | - | 24 s |
+| `npm ci` | 43 min (under load) | 105 s | 116 s |
 
 On its first real use, a full affected check ran 131 tasks in its first four minutes, against about 42
 an hour before. The script keeps the Nx cache in the volume, so an unchanged task replays in about a second, and runs
@@ -429,7 +429,7 @@ green, before and after screenshots, and a row in the release notes.
 
 ## Checking a deployed environment
 
-Nothing in the pull request checks notices when a map breaks _without_ a release — the maps draw from
+Nothing in the pull request checks notices when a map breaks *without* a release — the maps draw from
 hosted GIS services, so a layer can stop working with no commit and no build. Two tools cover that,
 each with its own README:
 
@@ -463,19 +463,19 @@ one Total line and nothing else, while the file carried three different totals a
 Map the request to one of these. Only the environment named decides which; if none is named and it
 is unclear, ask.
 
-| The user says                                                                     | Run                                                                                                                                                                                       |
-| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| "smoke test dev", "test the dev release", "run the quick tests"                   | `test/smoke/aggiemap/run-local.sh development quick`, from this machine: the core plus what changed since the last `dev-*` tag                                                            |
-| "clear this for production", "run the release tests", "run the test suite on dev" | `test/smoke/aggiemap/run-local.sh development release`: every map once                                                                                                                    |
-| "run everything", "run the full suite"                                            | `test/smoke/aggiemap/run-local.sh development full`. Normally only the nightly GitHub run does this                                                                                       |
-| "... on prod", "... on production"                                                | The same tier with `production` in place of `development`. After a production deploy, `release`                                                                                           |
-| "... on both"                                                                     | Both of the above, one after the other                                                                                                                                                    |
-| "run that one test", "prove the check fails", "run legend.spec.ts on dev"         | `test/smoke/aggiemap/run-local.sh development one <spec file or part of a test's name>`: just that spec or test, on any environment. This is how a smoke check is proven red before a fix |
-| "... and stop at the first failure", "fail fast"                                  | The same command with `-x` at the end: it stops at the first test that fails after its retries. Without it, a run continues through every test, which is the default                      |
-| "... locally", "... against my dev server"                                        | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container                                                                                     |
-| "... locally as production", "check the production gating"                        | `test/smoke/aggiemap/run-local.sh local-production`: the same dev server at `127.0.0.1`, which is not a dev host, so development-only features are hidden as on production                |
-| "... on GitHub", "run the smoke workflow"                                         | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch`                                                                            |
-| "run the tests", "run the unit tests" (no environment)                            | `nx test` for the affected projects, in Docker as in CLAUDE_SETUP.md                                                                                                                      |
+| The user says | Run |
+| --- | --- |
+| "smoke test dev", "test the dev release", "run the quick tests" | `test/smoke/aggiemap/run-local.sh development quick`, from this machine: the core plus what changed since the last `dev-*` tag |
+| "clear this for production", "run the release tests", "run the test suite on dev" | `test/smoke/aggiemap/run-local.sh development release`: every map once |
+| "run everything", "run the full suite" | `test/smoke/aggiemap/run-local.sh development full`. Normally only the nightly GitHub run does this |
+| "... on prod", "... on production" | The same tier with `production` in place of `development`. After a production deploy, `release` |
+| "... on both" | Both of the above, one after the other |
+| "run that one test", "prove the check fails", "run legend.spec.ts on dev" | `test/smoke/aggiemap/run-local.sh development one <spec file or part of a test's name>`: just that spec or test, on any environment. This is how a smoke check is proven red before a fix |
+| "... and stop at the first failure", "fail fast" | The same command with `-x` at the end: it stops at the first test that fails after its retries. Without it, a run continues through every test, which is the default |
+| "... locally", "... against my dev server" | `test/smoke/aggiemap/run-local.sh local`, with the dev server running in the `aggiemap-dev` container |
+| "... locally as production", "check the production gating" | `test/smoke/aggiemap/run-local.sh local-production`: the same dev server at `127.0.0.1`, which is not a dev host, so development-only features are hidden as on production |
+| "... on GitHub", "run the smoke workflow" | `gh workflow run aggiemap-smoke.yml -f environment=development` (or `production`, `both`), then `gh run watch` |
+| "run the tests", "run the unit tests" (no environment) | `nx test` for the affected projects, in Docker as in CLAUDE_SETUP.md |
 
 **Three tiers, and the smallest one that answers the question** (#1717). The suite's
 [README](test/smoke/aggiemap/README.md#the-three-tiers) defines them, with when each is run and when it
@@ -594,8 +594,8 @@ None of this is urgent — code nothing calls is not a fault and nothing is brok
 issue, always** (#1056): the narrowing is for dead code only.
 
 On 26 November 2026 four dead-code finds in one evening each reached the maintainer as a decision, and a second
-collection issue was filed beside #1899 without anyone noticing it existed. His words: _"I am trying to get the issues
-down to zero and you keep making new things at every turn."_ See #3835.
+collection issue was filed beside #1899 without anyone noticing it existed. His words: *"I am trying to get the issues
+down to zero and you keep making new things at every turn."* See #3835.
 
 **Every bug gets a test.** Nothing else here requires one, so a bug could be fixed, and every rule
 followed, with nothing to stop it coming back.
@@ -621,13 +621,13 @@ layer is the right one, has the fields the app uses, and answers the app's own q
 [`docs/releases/unreleased/`](docs/releases/unreleased/README.md), in the same pull request**, named
 `<issue>-<slug>.md`. It holds that change's entry, with before/after screenshots linked from
 `docs/screenshots/<slug>/` (`../screenshots/<slug>/<file>.png`, relative to `docs/releases/`, because
-that is where the collated file lands), and its row for _What to test on dev_ in the front matter.
+that is where the collated file lands), and its row for *What to test on dev* in the front matter.
 Never write the notes afterwards in a separate pull request: on 28 September that left the notes
 without images when the pull request merged, and meant going back for them after the release reached
 production (#1132).
 
 **CI checks this** (`require-release-notes.yml`, #1264): a pull request that changes what the screenshots
-check counts as user-visible fails _Has a release-notes entry_ until it adds a file there, or carries the
+check counts as user-visible fails *Has a release-notes entry* until it adds a file there, or carries the
 `no-visible-change` label. The same job runs `collate-release-notes.mjs --check` on every entry.
 
 **One file each, rather than editing `unreleased.md`, because two pull requests adding at the same
@@ -636,7 +636,7 @@ the same two places, always "keep both" — and a release-notes conflict resolve
 entry silently disappears, in the one document nobody runs. A new file cannot conflict with another
 new file ([#2037](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2037)).
 
-**The _What to test on dev_ row is not optional**: a dev link and what to look for. The team works
+**The *What to test on dev* row is not optional**: a dev link and what to look for. The team works
 from that table before a release goes to production, so a visible change without a row is one nobody
 is asked to check. If it cannot be checked on dev, say so in the row and why. At release the rows
 move into the dated notes (#1360).
@@ -700,8 +700,8 @@ that is the case most likely to be skipped.
 
 **An issue closes when its work merges to `development`, not when a release carries it to production.**
 `Closes #<issue>` in the pull request body does that by itself, which is the rule above; this is why that
-is right rather than something to work around. The maintainer's words, 13 November 2026: _"We close things
-in development, not in prod."_
+is right rather than something to work around. The maintainer's words, 13 November 2026: *"We close things
+in development, not in prod."*
 
 It comes up whenever an issue is written as a request for production — #2864 was "Micromobility Map for
 Prod", and when it merged, its production address still redirected to the main map. Holding such an issue
@@ -718,22 +718,22 @@ empty drops the work out of the project board and the funding record just as sur
 issue does. Where a value is not known and not covered below (Priority is covered: estimate it), **ask the user before filing**; never
 leave a field empty silently. Say in your reply which values you chose. See #1112.
 
-| Issue field                         | Value                                                                                                                                                                                                                                                                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Assignee                            | `danielgoldbergtamu`, unless the user names someone else                                                                                                                                                                                                                                                           |
-| Type                                | Choose: **Bug** (worked, now broken or wrong), **Feature** (new capability), **Task** (docs, CI, tests, cleanup, investigation)                                                                                                                                                                                    |
-| Labels                              | Matching existing labels, e.g. `bug`, `documentation`                                                                                                                                                                                                                                                              |
+| Issue field | Value |
+| --- | --- |
+| Assignee | `danielgoldbergtamu`, unless the user names someone else |
+| Type | Choose: **Bug** (worked, now broken or wrong), **Feature** (new capability), **Task** (docs, CI, tests, cleanup, investigation) |
+| Labels | Matching existing labels, e.g. `bug`, `documentation` |
 | Priority (organization issue field) | **Set it from your best estimate, and do not ask** (the maintainer, 25 November 2026): Urgent (production broken now), High (blocks other work, or a visible fault), Medium (a real fault, or a step of planned work), Low (tidying, nice to have). Say which you chose and why; he corrects any he disagrees with |
-| Project                             | AggieMap work: **Texas A&M Aggiemap**. GIS Day work: **GIS Day Angular + NestJS**. Repo-wide process, docs or CI: **both**. If unclear, ask                                                                                                                                                                        |
-| Project Status                      | **Todo** when filed; **In Progress** when work starts                                                                                                                                                                                                                                                              |
+| Project | AggieMap work: **Texas A&M Aggiemap**. GIS Day work: **GIS Day Angular + NestJS**. Repo-wide process, docs or CI: **both**. If unclear, ask |
+| Project Status | **Todo** when filed; **In Progress** when work starts |
 
-| Pull request field | Value                                                                                                                                  |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Development        | `Closes #<issue>` in the body                                                                                                          |
-| Assignee           | `danielgoldbergtamu`                                                                                                                   |
-| Labels             | Copy the linked issue's labels                                                                                                         |
-| Project            | The same project(s) as the issue, Status **Pending Approval** (GIS Day Angular + NestJS has no such status; use **In Progress** there) |
-| Reviewers          | None: pull requests are opened under the maintainer's account, and he is the only one who can merge                                    |
+| Pull request field | Value |
+| --- | --- |
+| Development | `Closes #<issue>` in the body |
+| Assignee | `danielgoldbergtamu` |
+| Labels | Copy the linked issue's labels |
+| Project | The same project(s) as the issue, Status **Pending Approval** (GIS Day Angular + NestJS has no such status; use **In Progress** there) |
+| Reviewers | None: pull requests are opened under the maintainer's account, and he is the only one who can merge |
 
 Both projects' built-in workflows move an item to **Done** when it is closed or its pull request is
 merged, so nothing needs updating after the merge.
@@ -765,13 +765,13 @@ from that branch. Copying the branch to `<branch>-pr` and opening from the copy 
 97 of the 593 above (#3706).
 
 **Only the issue being fixed may follow a closing keyword.** GitHub treats `close`, `closes`, `fix`,
-`fixes`, `resolve` and `resolves` followed by `#N` _anywhere_ in the body as "close #N on merge", so a
+`fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
 sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
 then check with `gh pr view <n> --json closingIssuesReferences`.
 
 **That check is not reliable straight after `gh pr create`.** GitHub populates the closing reference
 asynchronously, so for the first several minutes it comes back empty on a pull request whose body is
-perfectly correct. An empty result means "not linked _yet_", not "not linked". Re-check a few minutes
+perfectly correct. An empty result means "not linked *yet*", not "not linked". Re-check a few minutes
 later before concluding anything, and never close the issue by hand on the strength of one early
 reading - three pull requests in one afternoon were each declared broken and each linked itself
 shortly after.
@@ -815,13 +815,13 @@ until they are pushed, and one stacked on another conflicts as soon as the one u
 The maintainer's decision (#3039). The mailbox's `DIRECTOR.md` says the same for the machines.
 
 **Build the pull request body from [`.github/pull_request_template.md`](.github/pull_request_template.md),
-with every section filled in.** `gh pr create --body-file` _replaces_ the template rather than
+with every section filled in.** `gh pr create --body-file` *replaces* the template rather than
 pre-filling it, so the checklist is never rendered and nothing notices it is gone - which is exactly
 how four pull requests went out in one session with no images, past a template that had asked for
 them all along. Writing the body to a file is fine; writing it to a file **that was started from the
 template** is the rule. See #1258.
 
-This is not only documentation. The duplicated 150th Anniversary tile (#1055) was found _because_
+This is not only documentation. The duplicated 150th Anniversary tile (#1055) was found *because*
 before/after images were being captured: a duplicated block reads as correct in a diff, since each
 copy is individually right, and is obvious the moment you look at the page.
 
@@ -849,12 +849,12 @@ committed to `development`, so a copy left in a worktree is uncommitted work as 
 and `tidy.sh` keeps a dirty worktree, merged branch or not. On 24 November 2026 that was **68 of the 69
 worktrees** the sweep left on the home machine, every one a merged branch, about 40 GiB no sweep could
 reclaim, all of it held by a file whose job finished the moment the pull request existed (#3432). `tidy.sh`
-now removes a worktree whose _only_ change is an untracked `.pr-body.md`, so this is belt and braces rather
+now removes a worktree whose *only* change is an untracked `.pr-body.md`, so this is belt and braces rather
 than the only guard - but the file is yours to delete, and the sweep should not have to know about it.
 
 **`tidy.sh` reports the `wt-*` folders git does not list as two kinds, with their total size** (#3678). It
 reads git's worktree list, so a folder whose registration and `.git` are both gone is invisible to `--yes`:
-on 25 November 2026 one machine held three of them, about 2.2 GB, and another seventeen. Such an _orphan_ is removed only by
+on 25 November 2026 one machine held three of them, about 2.2 GB, and another seventeen. Such an *orphan* is removed only by
 `bash scripts/tidy.sh --remove-orphans`, which removes nothing else and checks each folder again first. A
 folder with its own `.git` is another repository's worktree or a clone, and nothing here ever removes it.
 
@@ -864,6 +864,7 @@ the change, waiting for a rebuild, re-capturing, then restoring — ten minutes 
 that was already on screen. Save it while the state exists, even if it may never be used. The same
 goes for measurements taken alongside a capture; put the numbers in the commit message or the issue
 rather than only in a terminal that scrolls away.
+
 
 **Work from a fork. Never push branches to `TamuGeoInnovation`.** Everyone on the team, the
 maintainer included, pushes branches to their own fork and opens pull requests from
@@ -1028,7 +1029,6 @@ when its task says so, and no other branches or tags. It opens no pull requests 
   touching anything on GitHub. Setting `$env:HOME` does not help, because a Windows path does not reach
   into WSL's filesystem, and it fails the same way elevated or not. On 23 November 2026 this cost three
   attempts and two wrong diagnoses before anyone asked which `bash` was answering (#3273).
-
 - **A one-line edit showing as a huge diff, a stray CR in an LF file, or a line split where nobody edited
   it is usually a doubled backslash that arrived single.** A command sent through Claude Code's Bash tool
   loses one level of backslashes before the shell sees it, quotes and quoted heredocs included. So
