@@ -67,4 +67,34 @@ describe('AllMapsComponent search', () => {
   it('does not offer a map with visible: false, or a development-only map, on production', async () => {
     expect(await offeredOn(false)).toEqual(['spring-move-out']);
   });
+
+  // Dev's All Events list keeps every event, retired ones included, so the team can find them. A map with
+  // `visible: false` is in no listing, this one included: the smoke suite discovers maps by crawling the listings, and
+  // finding the undated Move Out here kept it tested as if it were offered (#1704).
+  it('leaves a map with visible: false out of the All Events list, and keeps a retired one', async () => {
+    const retired = map('softball-regionals-2025', { status: 'retired' });
+
+    await TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, RouterTestingModule, AllMapsComponent],
+      providers: [
+        { provide: Angulartics2, useValue: { eventTrack: { next: vi.fn() } } },
+        {
+          provide: DiscoveryService,
+          useValue: discoveryServiceStub({ getInternalDiscoverApplications: () => [published, unlisted, retired] })
+        },
+        { provide: TestingService, useValue: { get: () => of(true) } },
+        { provide: LastMapService, useValue: { url: '/map', path: '/map', queryParams: {}, fragment: undefined } }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(AllMapsComponent);
+
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.allEvents.map((app) => app.id).sort()).toEqual([
+      'softball-regionals-2025',
+      'spring-move-out'
+    ]);
+  });
 });
