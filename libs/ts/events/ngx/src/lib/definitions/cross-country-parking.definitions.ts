@@ -65,8 +65,12 @@ export const CrossCountryParkingConfiguration: EventConfiguration = {
   introductionText: 'Parking and transportation information for Texas A&M cross country events.',
   eventDates: [],
   scheduleUrl: 'https://12thman.com/sports/cross-country/schedule',
+  // Centred on the parking lots' own extent (#3907), as the Cross Country Parking Lots layer answers it on production
+  // (28 November 2026: -96.36881 to -96.36454, 30.61503 to 30.62398). The centre was 380 metres south-west of it, so the
+  // lots ran off the top of a desktop's map and the right of a phone's. At 16 they are about 200 by 485 pixels, clear of
+  // both. `layer-in-view.spec.ts` checks this on a desktop and a phone.
   zoom: 16,
-  mapCenter: [-96.36925, 30.61689]
+  mapCenter: [-96.36668, 30.61951]
 };
 
 export const CrossCountryParkingOptions: SpecialEventOptions = [];

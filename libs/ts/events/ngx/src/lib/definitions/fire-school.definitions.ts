@@ -87,7 +87,12 @@ export const FireSchoolConfiguration: EventConfiguration = {
   shortApplicationName: 'Fire School Vendor Show',
   introductionText: 'Preferred route, road closures, and parking lot information for the Municipal Fire School Vendor Show.',
   eventDates: ['2026-07-17', '2026-07-19'],
-  mapCenter: [-96.34426, 30.6067],
+  // Centred on the parking lots' own extent (#3907), as the Fire School Parking Lots layer answers it on production
+  // (28 November 2026: -96.34938 to -96.34396, 30.60311 to 30.6079), which holds the road closures too. The centre was
+  // 270 metres north-east of it, so the lots ran off the bottom of a desktop's map and the closures off the left of a
+  // phone's. The zoom is kept: at 17 the lots are about 505 by 515 pixels, clear of a desktop's map but wider than a
+  // phone's, where the closures are what a visitor opens it to see. `layer-in-view.spec.ts` checks both.
+  mapCenter: [-96.34667, 30.60551],
   zoom: 17,
   legendAllowVisibilityToggle: true
 };

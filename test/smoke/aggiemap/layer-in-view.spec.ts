@@ -17,7 +17,20 @@ import { waitForMapDrawn, waitForMapReady } from './map-probe';
  * part of the map nothing covers: beside the side panel on a desktop, and the whole map on a phone.
  */
 
-const CASES = [{ path: '/parking/soccer-parking', layer: 'soccer-parking-lots' }];
+/**
+ * `on` names the one width a case holds at, where its layer is wider than a phone's map at the declared zoom and the
+ * zoom is kept for the rest of the map (#3907). Without it a case holds at both.
+ */
+const CASES: Array<{ path: string; layer: string; on?: 'desktop' | 'phone' }> = [
+  { path: '/parking/soccer-parking', layer: 'soccer-parking-lots' },
+  // #3907, the first handful.
+  { path: '/events/fire-school', layer: 'fire-school-parking-lots', on: 'desktop' },
+  { path: '/events/fire-school', layer: 'fire-school-road-closures' },
+  { path: '/parking/cross-country-parking', layer: 'cross-country-parking-lots' },
+  { path: '/events/hs-graduation-2026', layer: 'hs-graduation-traffic-advisories', on: 'desktop' },
+  // Centring on the advisories alone pushed the parking off a desktop's map; both are held.
+  { path: '/events/hs-graduation-2026', layer: 'hs-graduation-arrival-parking', on: 'desktop' }
+];
 
 const VIEWPORTS = [
   { name: 'desktop', viewport: { width: 1280, height: 720 }, isMobile: false },
@@ -87,7 +100,7 @@ for (const { name, viewport, isMobile } of VIEWPORTS) {
   test.describe(`on a ${name}, a map opens with its own layer in view (#1501)`, () => {
     test.use({ viewport, isMobile, hasTouch: isMobile });
 
-    for (const { path, layer } of CASES) {
+    for (const { path, layer } of CASES.filter((c) => !c.on || c.on === name)) {
       test(`${path} shows all of ${layer}`, async ({ page }) => {
         test.setTimeout(150_000);
         await blockAnalytics(page);
