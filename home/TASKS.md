@@ -1,5 +1,66 @@
 # Home machine: current tasks
 
+## Batch a84 (aggiemap: two ordering and overlap faults — #1433, #1828; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
+
+### Decided, from a83
+
+- **#1704 is [PR 3928](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3928).** Both images resolved 200 at `1ff2279a8` before I opened it. Nothing to do on it.
+- **Separating `developmentOnly` from `visible` was the right call and the part of a83 I would keep if I could keep one thing.** Changing `_filterApplications` alone would have hidden every development-only map on development, and three specs would have said so after the fact rather than before. Finding it as "the batch did not foresee this" and handling it in the same branch is what a listener is for.
+- **Deleting `LISTINGS_HIDDEN_FROM_PRODUCTION` rather than adapting it was right**, and so was reading it first. With one meaning for `visible`, a hatch for "hidden from production's listings for a reason of its own" describes a state that can no longer exist.
+- **Restoring CLAUDE.md's layout after Prettier wanted to rewrap 128 lines was right.** `check-format` does not ask for it, and a one-sentence rule change must not arrive as a 128-line diff.
+- **Q-a83-1 is B, not A, and the rule is the reason.** #3908 is **closed**, with the service table, `d8f3b2035` named, and both of today's runs on the issue. An issue closes when its work merges to `development`, not when a release carries it to production — holding it open until the deploy leaves the board and the funding record lagging the work. The closing comment says what is true for a reader: fixed on `development`, in neither `prod-2026-11-24-2` nor `dev-2026-11-26`, and production stays wrong until the release that carries it. Your reasoning was sound; it is the repository's rule that settles it, and that rule is in CLAUDE.md under *Pull requests*.
+- **Q-a83-2 is A. Filed as #3929**, `external`, Bug, Low, with the full `Spc_Type` counts and why it is filed rather than coalesced in a definition.
+- **Q-a83-3 is A, and I am running it here, not you.** The work machine runs the tests: the `aggiemap-dev` container's install was two versions stale and its last exit was `1`, so it had a stale Vite cache too — both cleared, and the 20 runs under the dev server are mine. You will get the count in the next batch's *Decided*. Your code-reading candidate — no cancellation of a superseded search, plus tracking by object identity — is on the issue either way; do not act on it yet, because there is still no before-count to beat.
+- **Q-a83-4: #3927 is Low**, set, Type Bug, Todo on the Aggiemap board. Your proposal — a whole-route match unless it ends in a star, and printing the routes and their count before the first shot — is the right shape. It waits until 3924 and 3925 merge, as you said.
+- **Reporting "0 of 40, so I changed nothing" is the best thing in the a83 report.** A fix proven by "still passes" is worse than no fix, because it closes the issue.
+
+### This batch
+
+Two faults, in this order. Each is its own branch and its own pull request. Both are visible, so both need before/after images on the branch and today's `development` merged in before the pull request opens.
+
+#### 1. #1433 — the layer list and the legend order the same layers differently
+
+**The decision in the issue is made: both follow the map's draw order, and the ordering lives in one place.** Reasons for the pull request, so you do not have to re-derive them:
+
+- **The draw order is the only order the reader can see.** A legend entry matched to a layer by position is only meaningful if the position means what the map shows; alphabetical order means nothing to anybody.
+- **The alphabetical sort's own `TODO` says it is wrong** and names the single reason it exists — some layers must be pinned to the top whatever the draw order, for occlusion.
+- **That reason already has an explicit mechanism**: the layer list's `orderBy: 'allowed'`, ordering by position in `allowedLayerIds`. A map that needs a layer pinned says so, rather than every map paying for it with a sort that hides the draw order.
+
+So: the alphabetical title sort in `layer-list.component.ts` goes, both panels read one ordering, and any map that was relying on the sort to pin a layer says so explicitly instead.
+
+**The part that needs care, and the reason this is a whole batch item rather than a one-line change:** every map's Layers panel may change order. Before you change anything:
+
+- **Enumerate the maps whose layer list order actually changes**, and put that list in the pull request. A map whose draw order is already alphabetical does not change at all, and knowing how many do is what makes this reviewable.
+- **Say which maps, if any, were relying on the sort to keep a layer at the top** — a layer that is first alphabetically and last in draw order is the case to look for. Those get the explicit ordering, named in the body.
+- Screenshots: Men's Basketball, which the issue names, plus two of the maps that change most. Both panels in one shot each where you can, since the fault is that they disagree on the same screen.
+
+**Reuse before building**: one ordering in one place means a shared helper, not the same comparator written in two components. The layer-list library and whichever library the legend lives in both read it. If you find yourself writing a small comparator at the top of each, that is the one-off tell.
+
+#### 2. #1828 — the View as production control covers the notice panel's stepper
+
+**I read both components at `origin/development` and the analysis is on the issue** — the table of the two positions, why each is deliberate, and the three ways out with my recommendation. Read that comment first; do not re-derive it.
+
+What is left is the part I could not do without a running map: **choose between option 2, moving the control out of the bottom centre, and option 3, letting it move only while a grouped notice is showing**.
+
+- **Option 2 if a free corner exists on every map.** Look at a running map and say what is actually in the four corners — the map's own controls, the attribution, the sidebar's edge — on desktop and at phone width. If one corner is free everywhere, that is the fix, and it is CSS only.
+- **Option 3 if not.** The control reads the notification service it already sits beside in the shell and moves while a grouped notice is showing. It costs a dependency from a dev-tools control to the notification library; say so in the body.
+- **Option 1, lowering the z-index, is wrong whatever it costs** — it trades one unreachable control for another, and the issue's own *Done when* rules it out.
+
+**The test**, either way: with two or more notices on a dev host, the stepper's next arrow is the element at its own position and is clickable, and the control still is too. Assert what is at the point, not that a click did not throw. Prove it red first.
+
+**Capturing the before image**: the notices pause on hover and dismiss themselves after about ten seconds, so hover before the capture or you will photograph an empty panel and read it as a different fault.
+
+### Don't touch
+
+- `fix/1704-discover-visible-everywhere` (PR 3928), and the branches behind PRs 3901, 3905, 3906, 3909, 3911, 3912, 3914, 3916, 3917, 3918, 3920, 3922, 3923, 3924, 3925, 3926 — all open and awaiting merge.
+- `scripts/pre-pr-check.sh` (PR 3926 changes it) and `tools/visual-baselines/` (3924, 3925).
+- #3927 until 3924 and 3925 have merged, as your report says.
+- `test/smoke/aggiemap/search-sources.spec.ts` — #1618's 20 dev-server runs are mine and are running now.
+
+### Questions for me, not for the maintainer
+
+In the report under **Questions for the home session**, with options and a recommendation. I ask him.
+
 ## Batch a83 (aggiemap: three bugs — #1704, #3908, #1618; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
 
 ### Decided, from a82
