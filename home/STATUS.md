@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing: g133 done; listening.
+- **Batch a80** (framing cluster: #1250, #1727, #1501): started, #1250 first, 9:02 PM Central, 27 November.
 
 ## Finished
 - **Batch g133** (report `home/reports/2026-11-27-g133.md`, 9:01 PM Central): `chore/3807-park-question-types` at `ed0e2974b` and `chore/3826-park-unused-ngx-utilities` at `afb0e2a6f` (stacked on 3807), check and pre-pr-check Exit 0 each; tag parked/unused-ngx-utilities on 5110fe0cf.
