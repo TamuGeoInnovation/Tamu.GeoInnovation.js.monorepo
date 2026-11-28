@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { PHONE_VIEWPORT, expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { skipUntilDeployed } from './deployed';
 import { developmentSectionsVisible } from './development-only';
 import { ProbeLayer, waitForMapDrawn, waitForMapReady } from './map-probe';
 
@@ -207,6 +208,8 @@ test.describe('on a phone, an event map', () => {
   ]) {
     test(`keeps the visitor on the map when ${item.name} is chosen from its menu (#2997)`, async ({ page }) => {
       test.setTimeout(180_000);
+      // The phone menu's Directions came with #3507; a build from before it has none to choose.
+      if (item.name === 'Directions') skipUntilDeployed('#3507');
       await blockAnalytics(page);
       await page.goto('/events/tailgating/map/m/sidebar', { waitUntil: 'domcontentloaded' });
 
