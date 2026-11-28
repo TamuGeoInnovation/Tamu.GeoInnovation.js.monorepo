@@ -14,6 +14,6 @@ Every map's phone layout now has the same pages behind its menu, as the desktop 
 opens them on the map it is on.
 ([#2997](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2997))
 
-| Before | After |
-| --- | --- |
+| Before                                                                                                                           | After                                                                                                           |
+| -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | ![Bus Routes from the tailgating map's menu: the main campus map, /map/m/bus](../screenshots/2997-event-map-bus-link/before.png) | ![The same: the tailgating map, /events/tailgating/map/m/bus](../screenshots/2997-event-map-bus-link/after.png) |

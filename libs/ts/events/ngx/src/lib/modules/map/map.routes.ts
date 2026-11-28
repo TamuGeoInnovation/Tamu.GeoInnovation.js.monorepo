@@ -14,7 +14,6 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-
 import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
