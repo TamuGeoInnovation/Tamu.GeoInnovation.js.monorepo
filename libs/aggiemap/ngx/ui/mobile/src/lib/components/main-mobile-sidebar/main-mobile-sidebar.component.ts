@@ -37,17 +37,19 @@ export class MainMobileSidebarComponent {
       type: 'outlet',
       path: 'basemap'
     },
+    // Relative, as the panels above are, so each opens on the map the menu is on (#2997): `/map/m/bus` took a visitor on an
+    // event map to the main campus map. Every map's phone layout has these routes (`mobileRoutes`).
     {
       name: 'Bus Routes',
       type: 'router-path',
-      path: '/map/m/bus'
+      path: '../bus'
     },
     // The phone's own trip planner (#3149): the desktop sidebar has always had a Directions tab, and a phone had no way
     // in but Directions To Here in a feature's popup.
     {
       name: 'Directions',
       type: 'router-path',
-      path: '/map/m/trip'
+      path: '../trip'
     },
     { name: '', type: 'separator', path: '' },
     {

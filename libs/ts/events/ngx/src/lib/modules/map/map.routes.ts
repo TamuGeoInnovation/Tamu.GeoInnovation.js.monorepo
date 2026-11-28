@@ -8,22 +8,14 @@ import {
   SidebarOptions,
   sidebarRoutes
 } from '@tamu-gisc/aggiemap/ngx/ui/desktop';
-import {
-  OmnisearchComponent,
-  loadTripPlannerBottomComponent,
-  loadTripPlannerTopComponent,
-  MobileSidebarComponent,
-  MainMobileSidebarComponent,
-  AggiemapNgxUiMobileComponent
-} from '@tamu-gisc/aggiemap/ngx/ui/mobile';
+import { AggiemapNgxUiMobileComponent, mobileRoutes } from '@tamu-gisc/aggiemap/ngx/ui/mobile';
 
 import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards';
 
-import { LayerListComponent, LayerListService } from '@tamu-gisc/maps/feature/layer-list';
+import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { PopupMobileDeferredComponent } from '@tamu-gisc/maps/feature/popup';
 
-import { BasemapGalleryComponent, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
@@ -72,39 +64,7 @@ export const mapRoutes: Routes = [
         path: 'm',
         component: AggiemapNgxUiMobileComponent,
         canActivateChild: [MobileGuard],
-        children: [
-          {
-            path: '',
-            children: [
-              { path: '', component: OmnisearchComponent },
-              { path: '', component: PopupMobileDeferredComponent, outlet: 'outlet-2' }
-            ]
-          },
-          {
-            path: 'trip',
-            children: [
-              { path: '', loadComponent: loadTripPlannerTopComponent },
-              { path: '', loadComponent: loadTripPlannerBottomComponent, outlet: 'outlet-2' }
-            ]
-          },
-          {
-            path: 'search/:id',
-            children: [{ path: '', component: OmnisearchComponent }]
-          },
-          {
-            path: 'sidebar',
-            component: MobileSidebarComponent,
-            children: [
-              { path: '', component: MainMobileSidebarComponent },
-              {
-                path: 'legend',
-                component: EventLegendComponent
-              },
-              { path: 'layers', component: LayerListComponent },
-              { path: 'basemap', component: BasemapGalleryComponent }
-            ]
-          }
-        ]
+        children: mobileRoutes({ component: EventLegendComponent })
       },
       {
         path: 'modal',

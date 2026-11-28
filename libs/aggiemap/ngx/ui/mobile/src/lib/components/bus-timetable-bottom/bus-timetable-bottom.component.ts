@@ -7,6 +7,7 @@ import { DragService } from '@tamu-gisc/ui-kits/ngx/interactions/draggable';
 import { DragDirective } from '@tamu-gisc/ui-kits/ngx/interactions/draggable/directive';
 
 import { AsyncPipe } from '@angular/common';
+import { primaryOutletRoute } from '@tamu-gisc/common/utils/routing';
 import { BusRouteComponent } from '@tamu-gisc/aggiemap/ngx/ui/shared';
 
 @Component({
@@ -52,6 +53,7 @@ export class BusTimetableBottomComponent implements OnInit, OnDestroy {
   }
 
   public routeReturn() {
-    this.router.navigate(['map/m/bus']);
+    // Back to this map's own bus list (#2997), from the primary outlet's route, as bus-route goes forward (#3150).
+    this.router.navigate(['../bus'], { relativeTo: primaryOutletRoute(this.route) });
   }
 }
