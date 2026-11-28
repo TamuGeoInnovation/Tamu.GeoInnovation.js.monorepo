@@ -1,8 +1,14 @@
-import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, inject, input } from '@angular/core';
+import { Directive, AfterViewInit, ElementRef, AfterViewChecked, OnDestroy, inject, input, output } from '@angular/core';
 
 import { DragService, UIDragState } from '../../services/drag/drag.service';
 
 import interact from 'interactjs';
+
+/**
+ * How far below its resting place a sheet is dragged before letting go closes it, in pixels (#1439): far enough that a
+ * tap or a small slip of the finger leaves it open, near enough to be one short pull.
+ */
+export const DISMISS_PULL = 64;
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -16,6 +22,15 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
    * Unique component identifier generated when the component register with the UI drag service.
    */
   public readonly identifier = input<string>(undefined, { alias: 'draggableIdentifier' });
+
+  /**
+   * Emits when the sheet is dragged down past where it rests, by at least `DISMISS_PULL` pixels, and let go (#1439). A
+   * sheet that can be closed closes on it; one that cannot, such as the bus lists, ignores it and springs back.
+   */
+  public readonly dismissed = output<void>();
+
+  /** How far below its resting place the sheet has been pulled in this drag, in pixels. */
+  private pull = 0;
 
   /**
    * Represents y-offset that is initially present when the element is rendered.
@@ -48,11 +63,16 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
       // }
     });
 
-    this.draggable.on('dragmove', (event) => this._dragMoveListener(event));
+    // `interact('.draggable')` is one object shared by every sheet on the page, so every directive hears every sheet's
+    // drag. Each acts only on its own: with two sheets, both moved the one dragged, and a pull on the bus list would have
+    // closed a building's sheet (#1439).
+    const own = (event: { target: EventTarget }) => event.target === this.el.nativeElement;
 
-    this.draggable.on('dragstart', () => this._dragStartListener());
+    this.draggable.on('dragmove', (event) => own(event) && this._dragMoveListener(event));
 
-    this.draggable.on('dragend', () => this._dragEndListener());
+    this.draggable.on('dragstart', (event) => own(event) && this._dragStartListener());
+
+    this.draggable.on('dragend', (event) => own(event) && this._dragEndListener());
 
     this.draggable.on('tap', (event) => {
       event.interaction.stop();
@@ -119,14 +139,19 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
         // Set persistent values
         target.setAttribute('data-y', y);
       } else {
-        target.style.webkitTransform = target.style.transform = 'translate(0px, ' + '0px)';
+        // At its resting place: the sheet follows the finger down, so letting go there can close it (#1439). It was
+        // held in place and the drag stopped, so the handle invited a gesture that did nothing.
+        this.pull += event.dy;
+
+        target.style.webkitTransform = target.style.transform = 'translate(0px, ' + this.pull + 'px)';
 
         target.setAttribute('data-y', 0);
-
-        if (event && event.interaction && event.interaction.stop) {
-          event.interaction.stop();
-        }
       }
+    } else if (event.dy < 0 && this.pull > 0) {
+      // Back up while pulled below the resting place: the sheet follows, and stops where it rests.
+      this.pull = Math.max(0, this.pull + event.dy);
+
+      event.target.style.webkitTransform = event.target.style.transform = 'translate(0px, ' + this.pull + 'px)';
     } else if (event.dy < 0) {
       // Swipe up
       const isMax = Math.floor(this.draggable.getRect(this.el.nativeElement).bottom - 2) <= this.deviceHeight;
@@ -152,6 +177,8 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
   }
 
   private _dragStartListener() {
+    this.pull = 0;
+
     this.dragService.state = new UIDragState({
       guid: this.identifier(),
       dragState: 'drag-start',
@@ -165,6 +192,22 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
       dragState: 'drag-end',
       dragPercentage: this.getDragPercentage()
     });
+
+    if (this.pull > 0) {
+      const dismiss = this.pull >= DISMISS_PULL;
+
+      // Back to where it rests either way: a dismissed sheet is hidden by its owner, and opens there next time.
+      this.pull = 0;
+
+      const element = this.el.nativeElement as HTMLElement;
+
+      element.style.webkitTransform = element.style.transform = 'translate(0px, 0px)';
+      element.setAttribute('data-y', '0');
+
+      if (dismiss) {
+        this.dismissed.emit();
+      }
+    }
   }
 
   public getDragPercentage(): number {
