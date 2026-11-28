@@ -10,7 +10,9 @@
 #
 # It runs, in order, and reports every failure rather than stopping at the first:
 #   1. the pull-request checks on the drafted title and body, with the code CI runs: the title (check-pr-title.mjs),
-#      a closing reference to an issue (as require-linked-issue.yml reads it), a release-notes entry or the
+#      no committed .pr-body.md (as pr-title.yml reads it),
+#      a closing reference to an OPEN issue (as require-linked-issue.yml reads it, plus the issue's state), a
+#      release-notes entry or the
 #      no-visible-change label (require-release-notes.mjs), and before/after images for a visible change
 #      (require-screenshots.mjs);
 #   2. the scripts' own test suites when the branch changes scripts/ or a workflow, and the tools' when it changes tools/;
@@ -53,6 +55,41 @@ changed_files() {
 # issue URL. A body with none fails "Has a linked issue" on the pull request.
 has_closing_reference() {
   grep -qiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)' "$1"
+}
+
+# Prints every issue number a closing keyword names in <body file>, one per line, in order and without repeats.
+closing_issues_in() {
+  grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)' "$1" |
+    grep -oE '[0-9]+$' | awk '!seen[$0]++'
+}
+
+# Prints OPEN, CLOSED, MISSING (there is no such issue), or nothing when GitHub could not be asked at all.
+#
+# Nothing is not a failure: a machine with no network must still be able to open a pull request, so the caller carries
+# on and says so. MISSING is, because a body naming an issue that does not exist is a typo, and a typo that reads as
+# "could not check" is the hole this exists to close - found by walking into it, on a body naming #3923.
+# gh says "Could not resolve to an issue or pull request with the number of N" for a number that is not there, which
+# is how the two are told apart.
+issue_state() {
+  local out status
+  out="$(gh issue view "$1" --json state --jq .state 2>&1)"
+  status=$?
+
+  if [ "$status" -eq 0 ]; then
+    echo "$out"
+  elif printf '%s' "$out" | grep -qF 'Could not resolve to an issue or pull request'; then
+    echo MISSING
+  fi
+}
+# Succeeds when <changed list> shows the branch adding or changing .pr-body.md, which is pr-title.yml's
+# "No drafted body committed" exactly: the pull request's own file list, every status but removed.
+#
+# The file is MEANT to exist on disk uncommitted - that is how a body is drafted, and this script takes it as an
+# argument - so only a committed copy is the fault. A listener commits its draft to its branch on purpose, and
+# the commit is dropped when the pull request's branch is made; this is the step that notices when it was not.
+# PR 3697 opened with pre-pr-check: Exit 0 and failed that check at once, on two commits (#3702).
+tracked_body_in() {
+  awk -F'	' '$2 == ".pr-body.md" && $1 != "removed" { found = 1 } END { exit !found }' "$1"
 }
 
 # Prints which of the scripts' and tools' suites <changed list> calls for: `scripts` when a script or a workflow
@@ -135,15 +172,49 @@ pr_checks() {
       "'
 }
 
+# A closing reference the pull request will be accepted on, naming an issue that is still OPEN. CI's "Has a linked
+# issue" only wants a reference to exist, so a body naming a closed - sometimes retracted - issue passed both it and
+# this script. PR 3697 was drafted with `Closes #3679` while #3679 was open; #3679 was then closed as not-a-fault and
+# retracted, and nothing mechanical noticed. A pull request does not reopen an issue it closes, so the work lands
+# attached to nothing - the same effect as having no issue at all, which is the thing the rule exists to prevent
+# (#1056, #3703).
 linked_issue() {
-  if has_closing_reference "$tmp/body.md"; then
-    echo "   Closes: $(grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*#[0-9]+' "$tmp/body.md" | head -n 3 | tr '\n' ' ')"
-  else
+  local number state bad=0
+
+  if ! has_closing_reference "$tmp/body.md"; then
     echo "   The body has no closing reference (Closes #N): the pull request would fail Has a linked issue."
     return 1
   fi
+
+  for number in $(closing_issues_in "$tmp/body.md"); do
+    state="$(issue_state "$number")"
+    case "$state" in
+      OPEN) echo "   Closes #$number, which is open." ;;
+      CLOSED)
+        echo "   #$number is CLOSED. A pull request does not reopen an issue it closes, so this work would be"
+        echo "   recorded against nothing. Point the body at an issue that states what it actually fixes."
+        bad=1
+        ;;
+      MISSING)
+        echo "   There is no issue #$number in this repository. Check the number: a body naming an issue that does"
+        echo "   not exist records the work against nothing, exactly as a closed one does."
+        bad=1
+        ;;
+      *) echo "   Closes #$number; could not ask GitHub whether it is open, so carrying on." ;;
+    esac
+  done
+
+  return "$bad"
 }
 
+no_tracked_body() {
+  if tracked_body_in "$tmp/changed.tsv"; then
+    echo "   $branch commits .pr-body.md: the pull request would fail No drafted body committed."
+    echo "   Remove it in a commit on this branch, keeping one branch per pull request (CLAUDE.md):"
+    echo "     git rm .pr-body.md && git commit -m 'chore: Remove the drafted pull request body'"
+    return 1
+  fi
+}
 suite() { # scripts | tools
   case "$1" in
     # In node:24.22.3, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
@@ -158,6 +229,7 @@ suite() { # scripts | tools
 
 echo "Checking $branch as its pull request will be checked: $(grep -c . "$tmp/changed.tsv") file(s) changed since $base."
 step "Has a linked issue" linked_issue
+step "No drafted body committed" no_tracked_body
 step "Pull request title, release notes and images" pr_checks
 for s in $(suites_for "$tmp/changed.tsv"); do
   step "The $s test suites" suite "$s"
