@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a79** (phone cluster): #1439 branch ready (pre-pr-check Exit 0); #1440 needs no fix of its own once #1439 lands (evidence on the issue); now #2997, 6:52 PM Central, 27 November.
+- Nothing: a79 done; listening.
 
 ## Finished
+- **Batch a79** (report `home/reports/2026-11-27-a79.md`, 7:31 PM Central): branches ready `fix/1439-phone-sheet-dismiss` and `fix/2997-event-map-bus-link`, pre-pr-check Exit 0 each; #1440 needs no fix of its own once #1439 lands (on the issue).
 - **Batch g131** (report `home/reports/2026-11-27-g131.md`, 6:07 PM Central): 66 public pages and 275 API routes; one bug, #3889, branch ready `fix/3889-highschool-header`; stack stopped.
 - GIS Day sign-in: yes (27 November 2026)
 - **Batch g132** (report `home/reports/2026-11-27-g132.md`, 5:27 PM Central): signed in at gisday.local.test as the test admin, no consent screen, reached /admin/dashboards/rsvps.
