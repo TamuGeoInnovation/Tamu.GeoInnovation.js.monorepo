@@ -1037,7 +1037,11 @@ when its task says so, and no other branches or tags. It opens no pull requests 
   `chr(92)` for a backslash, `chr(13)` for a CR and `os.path.join` for a path, or use the Edit tool, which
   passes text as written. Then check the bytes before committing: `file <path>` names CRLF, and
   `git diff --stat` against `git diff --stat --ignore-all-space` disagreeing wildly means endings were
-  rewritten. That comparison misses a single CR inside one argument, so count them too:
-  `grep -c $'\r' <path>` must print 0. Why `.gitattributes` will not catch it is under
+  rewritten. That comparison misses a single CR inside one argument, so count them too, with no escape
+  anywhere: `python -c "import sys; print(open(sys.argv[1], 'rb').read().count(13))" <path>` must print
+  0, and `file <path>` must not mention `CR`. **Not `grep -c $'\r'`**: through the Bash tool it loses its
+  backslash, counts every line with the letter "r", and calls a clean LF file all CR (#3798). Nor
+  `git ls-files --eol`, which shows a lone CR as `-text`, not as a line ending. Why `.gitattributes` will
+  not catch it is under
   [Things that are easy to get wrong](#things-that-are-easy-to-get-wrong). Three corrections in one
   session on 25 November 2026 before it was named (#3651).
