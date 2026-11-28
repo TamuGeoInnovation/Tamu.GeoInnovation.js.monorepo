@@ -14,8 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch g131** (GIS Day public pages on every site at 390 and 1280 px, admin API without a token): started 5:09 PM Central, 27 November, ahead of g132, whose sign-in waits for the maintainer, with no AggieMap batch queued.
-- **Batch a73** (#3687, park the bus UI the retired API fed): started, reading which of the three components anything live reaches, %s Central, 27 November.
+- **Batch a79** (phone cluster: #1439, #1440, #2997): started, reading the phone's bottom sheet for #1439, 6:10 PM Central, 27 November.
 
 ## Finished
 - **Batch g131** (report `home/reports/2026-11-27-g131.md`, 6:07 PM Central): 66 public pages and 275 API routes; one bug, #3889, branch ready `fix/3889-highschool-header`; stack stopped.
