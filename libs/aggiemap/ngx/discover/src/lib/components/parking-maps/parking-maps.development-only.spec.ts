@@ -14,8 +14,8 @@ import { ParkingMapsComponent } from './parking-maps.component';
  * The Parking & Transportation page lists a development-only map on development, like every other listing page
  * (#2449, #3470).
  *
- * This page asked the service for the production-only list, so a map with `visible: false` - which is how a
- * `developmentOnly` map arrives (#2712) - was hidden on development as well as production, and appeared nowhere. It is
+ * This page asked the service for the production-only list, so a `developmentOnly` map (#2712) - which then arrived
+ * as `visible: false` - was hidden on development as well as production, and appeared nowhere. It is
  * the bug #2449 fixed on the category pages, latent here only because no development-only parking map exists yet. A
  * check that waits for one to be added is a check that is written after the fault is reported.
  */
@@ -33,14 +33,14 @@ describe('ParkingMapsComponent development-only maps', () => {
     type: 'parking',
     mapTypes: ['parking'],
     parkingCategory: 'general',
-    visible: false
+    developmentOnly: true
   };
   const developmentOnlyTransportation = {
     name: 'New Shuttle',
     id: 'new-shuttle',
     type: 'parking',
     mapTypes: ['transportation'],
-    visible: false
+    developmentOnly: true
   };
 
   const discoveryStub = discoveryServiceStub({

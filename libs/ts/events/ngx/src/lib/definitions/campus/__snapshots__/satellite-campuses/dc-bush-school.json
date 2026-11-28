@@ -95,7 +95,8 @@
     ],
     "shortApplicationName": "DC / Bush School",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 19
   },

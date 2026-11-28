@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, InjectionToken, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, firstValueFrom, from, map, switchMap } from 'rxjs';
 
@@ -77,6 +77,20 @@ export function drawNearmapLayer(layer: esri.WMSLayer, name: string): void {
   layer.sublayers = [{ name, visible: true }] as unknown as esri.Collection<esri.WMSSublayer>;
 }
 
+/**
+ * What a map's basemap gallery offers, for a map that is not in College Station (#1250). Read when the gallery is made,
+ * so a map can answer from its definition, which may load after the service is created.
+ */
+export interface BasemapGalleryOptions {
+  /**
+   * Whether College Station's own basemaps are offered: the Aggieland campus tiles and Nearmap's College Station imagery.
+   * They draw nothing anywhere else, so a satellite campus map offers only the world basemaps. Default true.
+   */
+  readonly collegeStation: boolean;
+}
+
+export const BASEMAP_GALLERY_OPTIONS = new InjectionToken<BasemapGalleryOptions>('BASEMAP_GALLERY_OPTIONS');
+
 @Injectable({
   providedIn: 'root'
 })
@@ -85,6 +99,7 @@ export class BasemapGalleryService {
   private readonly ms = inject(EsriMapService);
   private readonly ts = inject(TestingService);
   private readonly router = inject(Router);
+  private readonly options = inject(BASEMAP_GALLERY_OPTIONS, { optional: true });
 
   /**
    * The basemap to show when the map is next in 2D: one put aside because a scene could not draw it,
@@ -188,8 +203,11 @@ export class BasemapGalleryService {
 
               // Vector tiles on dev, raster on production, until the vector tiles are published there (#1229).
               // Dev also offers every published raster version, to compare them (#1582).
-              const campusBasemaps = aggiemapGalleryBasemaps(this.ts.isTesting).map((campusBasemap) =>
-                makeGalleryBasemap(campusBasemap, Basemap, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer })
+              // Only where they draw: a satellite campus offers the world basemaps alone (#1250).
+              const collegeStation = this.options?.collegeStation ?? true;
+              const campusBasemaps = (collegeStation ? aggiemapGalleryBasemaps(this.ts.isTesting) : []).map(
+                (campusBasemap) =>
+                  makeGalleryBasemap(campusBasemap, Basemap, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer })
               );
 
               // Which of them a 3D scene cannot draw is known only once each has read its service.
@@ -220,7 +238,7 @@ export class BasemapGalleryService {
                     Basemap.fromId('streets-navigation-vector'),
                     Basemap.fromId('streets-vector'),
                     Basemap.fromId('gray-vector'),
-                    nearmapCSBasemap
+                    ...(collegeStation ? [nearmapCSBasemap] : [])
                   ]
                 })
               });

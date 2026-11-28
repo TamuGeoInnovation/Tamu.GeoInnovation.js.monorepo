@@ -95,7 +95,8 @@
     ],
     "shortApplicationName": "Houston Space Institute",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 17
   },

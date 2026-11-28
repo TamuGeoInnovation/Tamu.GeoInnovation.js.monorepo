@@ -384,6 +384,62 @@ test.describe('acting as production', () => {
       });
       expect(new URL(page.url()).pathname, 'the offer left the page it was on').toMatch(/^\/map/);
     });
+    /**
+     * The offer sat on the notice panel's stepper (#1828): both are fixed at the bottom centre, and the offer is drawn
+     * above the panel, so with two or more notices the "1 of 2" arrows could not be clicked on a development host and
+     * the later notices could only be reached by waiting. Asked of what is at each one's own centre, not of whether a
+     * click threw: a click on a covered arrow lands on the offer, and the page goes to production.
+     *
+     * A football game day raises two notices, Football and Football Tailgating (#1817). The panel is hovered, which
+     * stops its ten-second countdown, so it is still there to be asked about.
+     */
+    for (const [width, height] of [
+      [1440, 900],
+      [PHONE_VIEWPORT.width, PHONE_VIEWPORT.height]
+    ]) {
+      test(`at ${width} wide, the notice panel's arrows and View as production can both be clicked (#1828)`, async ({
+        page
+      }) => {
+        test.setTimeout(180_000);
+        await blockAnalytics(page);
+        await page.setViewportSize({ width, height });
+        // Started at the game day and left running: a clock held still keeps the map from ever reporting ready.
+        await page.clock.install({ time: new Date('2026-11-14T12:00:00-06:00') });
+        await mainMap(page);
+
+        const stepper = page.locator('tamu-gisc-notification-grouped .grouped-stepper');
+        await expect(stepper, 'a football game day did not raise two notices').toBeVisible({ timeout: 60_000 });
+        await page.locator('tamu-gisc-notification-grouped .notification-grouped-wrapper').hover();
+
+        const reachable = (selector: string) =>
+          page
+            .locator(selector)
+            .first()
+            .evaluate((element) => {
+              const box = element.getBoundingClientRect();
+              const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+
+              return hit !== null && (hit === element || element.contains(hit));
+            });
+
+        await expect
+          .poll(() => reachable('tamu-gisc-notification-grouped .grouped-step:last-of-type'), {
+            message: "something is drawn over the notice panel's next arrow",
+            timeout: 5_000
+          })
+          .toBe(true);
+        await expect
+          .poll(() => reachable('tamu-gisc-notification-grouped .grouped-step:first-of-type'), {
+            message: "something is drawn over the notice panel's previous arrow",
+            timeout: 5_000
+          })
+          .toBe(true);
+        await expect
+          .poll(() => reachable(OFFER), { message: 'View as production is covered while the notices show', timeout: 5_000 })
+          .toBe(true);
+      });
+    }
+
     test('All Maps offers the switch, and following it turns it on', async ({ page }) => {
       test.setTimeout(300_000);
       await blockAnalytics(page);

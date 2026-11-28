@@ -37,12 +37,58 @@ const MAX_FAILED_RATE = Number(process.env.AGGIEMAP_SMOKE_BASEMAP_MAX_FAILED_RAT
 /** Fewer than this many queries a load means the map no longer queries the service as it did, so the rate means nothing. */
 const MIN_QUERIES_PER_LOAD = 10;
 
+/** How long the map is given to report itself ready before the load is abandoned. */
+const READY_TIMEOUT_MS = 120_000;
+
+/**
+ * How long a load's queries are given to settle, and how long they must stop arriving for before the count is taken.
+ *
+ * This replaced a flat `waitForTimeout(5_000)`, which counted whatever had arrived five seconds after `ready` and
+ * nothing after. On an idle machine that was 36, 32 or 16 queries for the same page; in the release run on 23 November
+ * 2026, with the tier's other specs running beside it, **2 of 10 loads were counted as sending none at all**, and the
+ * check failed on its own premise rather than on the failure rate it exists to measure (#3364). The service had
+ * answered every query.
+ *
+ * So a load is counted once its queries have stopped arriving, not at a fixed moment. A load that genuinely never
+ * queries the service still fails, after SETTLE_TIMEOUT_MS, which is what the premise is for.
+ */
+const SETTLE_QUIET_MS = 3_000;
+const SETTLE_TIMEOUT_MS = 45_000;
+const SETTLE_POLL_MS = 250;
+
 /** The window each load is made in, which decides how many queries it sends (see below). */
 const VIEWPORT = { width: 1280, height: 950 };
 
 interface Load {
   queries: number;
   failed: number;
+  settled: 'settled' | 'timed out';
+}
+
+/**
+ * Waits until `count()` has stopped growing for SETTLE_QUIET_MS and has reached at least MIN_QUERIES_PER_LOAD, or
+ * until SETTLE_TIMEOUT_MS has passed. Returns how it ended, so the caller can say which loads were slow rather than
+ * only how many queries they sent.
+ */
+async function waitForQueriesToSettle(page: Page, count: () => number): Promise<'settled' | 'timed out'> {
+  const started = Date.now();
+  let seen = -1;
+  let unchangedSince = started;
+
+  while (Date.now() - started < SETTLE_TIMEOUT_MS) {
+    const now = count();
+
+    if (now !== seen) {
+      seen = now;
+      unchangedSince = Date.now();
+    } else if (now >= MIN_QUERIES_PER_LOAD && Date.now() - unchangedSince >= SETTLE_QUIET_MS) {
+      return 'settled';
+    }
+
+    await page.waitForTimeout(SETTLE_POLL_MS);
+  }
+
+  return 'timed out';
 }
 
 /** Loads the main map once, and counts its feature queries to the campus features service and those answered with an error. */
@@ -69,14 +115,14 @@ async function loadAndCount(page: Page): Promise<Load> {
   await page.waitForFunction(
     (name) => (window as unknown as Record<string, { ready?: boolean }>)[name]?.ready === true,
     PROBE_GLOBAL,
-    { timeout: 120_000, polling: 500 }
+    { timeout: READY_TIMEOUT_MS, polling: 500 }
   );
-  // The queries for the tiles in view are sent while the layers load; give the last answers time to arrive.
-  await page.waitForTimeout(5_000);
+  // The queries for the tiles in view are sent while the layers load, and on a busy machine they start after `ready`.
+  const settled = await waitForQueriesToSettle(page, () => answers.length);
 
   const failed = (await Promise.all(answers)).filter(Boolean).length;
 
-  return { queries: answers.length, failed };
+  return { queries: answers.length, failed, settled };
 }
 
 test.describe('the campus features service answers the main map', () => {
@@ -86,7 +132,9 @@ test.describe('the campus features service answers the main map', () => {
     `no more than ${(MAX_FAILED_RATE * 100).toFixed(1)}% of its queries fail, across ${LOADS} loads`,
     HEAVY,
     async ({ browser }) => {
-      test.setTimeout(LOADS * 150_000);
+      // Per load: the map reporting itself ready, its queries settling, and room for the load itself. Expressed from
+      // the parts so a change to either wait cannot quietly push a run past its own timeout (#3364).
+      test.setTimeout(LOADS * (READY_TIMEOUT_MS + SETTLE_TIMEOUT_MS + 15_000));
 
       const loads: Load[] = [];
 
@@ -107,9 +155,14 @@ test.describe('the campus features service answers the main map', () => {
       const failed = loads.reduce((sum, load) => sum + load.failed, 0);
       const rate = queries === 0 ? 0 : failed / queries;
 
+      // A load whose queries never stopped arriving is worth naming: before #3364 it was indistinguishable from a load
+      // that sent none, because both were counted at a fixed five seconds.
+      const slow = loads.filter((load) => load.settled === 'timed out');
+
       const measured =
         `${failed} of ${queries} failed (${(rate * 100).toFixed(2)}%) across ${LOADS} loads; ` +
-        `per load: ${loads.map((load) => `${load.failed}/${load.queries}`).join(' ')}`;
+        `per load: ${loads.map((load) => `${load.failed}/${load.queries}`).join(' ')}` +
+        (slow.length > 0 ? `; ${slow.length} load(s) never settled within ${SETTLE_TIMEOUT_MS / 1_000}s` : '');
 
       // Annotated for the HTML report, and logged because a local run's list reporter shows no annotations: the rate is
       // what this check is for, passing or not.

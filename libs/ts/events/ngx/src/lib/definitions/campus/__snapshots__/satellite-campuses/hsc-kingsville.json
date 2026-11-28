@@ -95,7 +95,8 @@
     ],
     "shortApplicationName": "HSC Kingsville",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 17
   },

@@ -15,8 +15,9 @@
 # volume. See "Why checks run in a volume" in CLAUDE.md.
 #
 # How it works:
-#   - Each branch gets its own volume, tamu-js-<the first number in the branch name>, or
-#     tamu-js-<branch> when the name has none. Docker creates it on first use.
+#   - Each branch gets its own volume, tamu-js-<issue> when the issue number starts the last part of
+#     its name (fix/3802-topic), or tamu-js-<branch> otherwise, a dated branch included (volume_name,
+#     #3802). Docker creates it on first use.
 #   - The main checkout is mounted read-only at /src. Not a worktree: a worktree's .git is a file
 #     pointing at a Windows path the container cannot follow. A worktree's branches live in the main
 #     repository's refs anyway, so fetching the branch by name from the main checkout finds them.
@@ -202,15 +203,46 @@ memory_kills() {
   echo "$n"
 }
 
+# Prints, one per line, each task in a check log's "Failed tasks:" list that printed nothing of its own: no output
+# under its "> nx run" line but "Building...", or no such line at all. A task killed for memory can leave exactly that,
+# with no Killed, SIGKILL or 137 anywhere (#3622). Tested by scripts/check-in-volume.test.sh.
+silent_failures() {
+  awk '
+    FNR == 1 { pass++ }
+    pass == 1 && /^Failed tasks:/ { listing = 1; next }
+    pass == 1 && listing && /^- / { order[++n] = substr($0, 3); next }
+    pass == 1 && listing && !/^[[:space:]]*$/ { listing = 0 }
+    pass == 2 && /^> nx run / { task = $4; next }
+    pass == 2 && (/^(✔|✖|✘)  nx run / || /^ NX / || /^Failed tasks:/) { task = ""; next }
+    pass == 2 && task != "" && $0 !~ /^[[:space:]]*(❯[[:space:]]*)?Building\.\.\.[[:space:]]*$/ && $0 !~ /^[[:space:]]*$/ { said[task] = 1 }
+    END { for (i = 1; i <= n; i++) if (!(order[i] in said)) print order[i] }
+  ' "$1" "$1" 2>/dev/null
+}
+
 # Prints, for a check that failed and whose log shows a memory kill, that the failure was memory and what to set, so a
-# kill is not read as the code's fault; nothing otherwise (#3000). A GIS Day-wide affected set is killed at the
-# defaults; docs/build-times.md has the measurements.
+# kill is not read as the code's fault; nothing otherwise (#3000). A failed task that printed nothing at all is most
+# likely the same, and is named (#3622). A GIS Day-wide affected set is killed at the defaults; docs/build-times.md has
+# the measurements.
 memory_advice() {
-  local log="$1" code="$2" kills
+  local log="$1" code="$2" kills silent
   [ "$code" -ne 0 ] || return 0
-  kills="$(memory_kills "$log")" || return 0
-  echo "This failure includes $kills memory kill(s) (Killed, SIGKILL or exit 137): the container ran out of memory, which is not a fault in the code."
+  if kills="$(memory_kills "$log")"; then
+    echo "This failure includes $kills memory kill(s) (Killed, SIGKILL or exit 137): the container ran out of memory, which is not a fault in the code."
+  else
+    silent="$(silent_failures "$log" | paste -sd ' ' -)"
+    [ -n "$silent" ] || return 0
+    echo "$silent failed and printed nothing of their own. A task that fails with no error is most likely killed for memory, which is not a fault in the code; run them alone before changing anything."
+  fi
   echo "Run it again with fewer tasks at once, CHECK_PARALLEL=1 (a GIS Day-wide check needs it), or more memory, CHECK_MEMORY=24g if Docker has it; or run the failed projects alone."
+}
+
+# Copies a failed run's log beside it as <log>-failed-<UTC time>.log and prints the copy's path; nothing for a passing
+# run. The next run of the same check writes over its log, and a failure's evidence went with it (#3622).
+keep_failed_log() {
+  local log="$1" code="$2" kept
+  [ "$code" -ne 0 ] && [ -f "$log" ] || return 0
+  kept="${log%.log}-failed-$(date -u +%Y%m%dT%H%M%SZ).log"
+  cp "$log" "$kept" && echo "$kept"
 }
 
 # Runs <command> as the step <label>, and once more if it fails (#3695). For the steps that read the checkout at /src:
@@ -256,6 +288,20 @@ log_label() {
   printf '%s-of-%s-projects-%s\n' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
 }
 
+# volume_name <branch>: the branch's volume. tamu-js-<issue> when the issue number starts the branch name's last part,
+# as in <type>/<issue>-<topic>, and is not the year of a date there; otherwise tamu-js-<the branch, sanitised>.
+# Taking the first number anywhere named every dated branch tamu-js-2026, one volume for all of them, and tidy.sh,
+# which removes tamu-js-<number> for a closed issue, removed it as #2026 (#3802). tidy.sh reads only names that are
+# all digits, so a dated branch's volume is now never one it reads as an issue's. Tested by
+# scripts/check-in-volume.test.sh.
+volume_name() {
+  local last="${1##*/}" issue=""
+  if ! printf '%s' "$last" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}'; then
+    issue="$(printf '%s' "$last" | sed -nE 's/^([0-9]+)(-.*)?$/\1/p')"
+  fi
+  printf 'tamu-js-%s\n' "${issue:-$(printf '%s' "$1" | tr -c 'A-Za-z0-9_.-' '-')}"
+}
+
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 set -euo pipefail
@@ -282,8 +328,7 @@ git -C "$main" rev-parse --verify -q "refs/heads/$branch" >/dev/null || {
   exit 2
 }
 
-issue="$(printf '%s' "$branch" | grep -o '[0-9]\+' | head -n 1 || true)"
-volume="tamu-js-${issue:-$(printf '%s' "$branch" | tr -c 'A-Za-z0-9_.-' '-')}"
+volume="$(volume_name "$branch")"
 log="${3:-$here/check-$volume-$(log_label "$mode").log}"
 
 if [ "$(git -C "$here" rev-parse --abbrev-ref HEAD)" = "$branch" ] && [ -n "$(git -C "$here" status --porcelain)" ]; then
@@ -443,6 +488,7 @@ set -e
 grep "^unknown project: " "$log" | sed "s/^unknown project: /No such project: /" >&2 || true
 echo "Exit $code ($branch, $mode). Log: $log"
 memory_advice "$log" "$code" >&2
+kept="$(keep_failed_log "$log" "$code")" && [ -z "$kept" ] || echo "This failed run's log is kept as $kept; the next run writes over $log." >&2
 setup_advice "$log" "$code" >&2
 run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
   "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"

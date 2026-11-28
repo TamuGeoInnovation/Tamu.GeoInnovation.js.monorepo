@@ -72,7 +72,7 @@ export class EventMapsComponent implements OnInit {
 
     // Category pages are a navigation directory of every map of this type, not an upcoming-only list.
     //
-    // A map with `visible: false` is development-only, so this page takes the unfiltered list and
+    // A development-only map is listed on development alone, so this page takes the unfiltered list and
     // applies the environment test itself. Taking the visible-filtered list hid those maps on
     // development too, which is the whole point of listing them there: the two new campuses were added
     // with that flag and then appeared nowhere (#2449).
