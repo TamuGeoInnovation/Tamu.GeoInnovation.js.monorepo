@@ -629,8 +629,8 @@ export interface IMapConfigurationBase {
    * ever requests one. The maintainer decides when a map moves to production; then this is removed and the
    * services come out of that list together (#1229).
    *
-   * Unlike `discover.visible: false`, which only keeps a map off production's lists and leaves its link
-   * working, this keeps the map itself off.
+   * Unlike `discover.visible: false`, which keeps a map out of the listings on every environment and leaves its
+   * link working, this keeps the map itself off production, and lists it on development (#1704).
    */
   developmentOnly?: string;
 
@@ -679,8 +679,12 @@ export interface DiscoverMetadata {
   thumbnail?: string;
   keywords?: string[];
   /**
-   * Controls whether the map appears in public discover lists.
-   * Defaults to `true` when omitted.
+   * Whether the map is in the listings and search. Defaults to `true` when omitted.
+   *
+   * `false` means "not in the listings or search" on **every** environment, development included; the map's link still
+   * works, and dev's All Events list, which keeps every event, still shows it (#1704). It is for a map kept only so old
+   * links resolve, such as the undated Move Out. It once meant "not in production's listings", so development listed
+   * what production did not. A map that should be listed on development only is `developmentOnly` instead.
    */
   visible?: boolean;
   /**
@@ -689,8 +693,8 @@ export interface DiscoverMetadata {
    * `retired` is for an event that is over. The definition stays, so a link already shared still
    * resolves, but search and the listing pages leave the map out on every environment, and the smoke
    * suite and the GIS services check skip it. Only dev's All Events list, which keeps every event,
-   * still shows it. That is the difference from `visible: false`, which only keeps a map off
-   * production's lists and is for maps that are not announced yet or reached by link only (#1098).
+   * still shows it. That is the difference from `visible: false`, which is for a map that is not over
+   * but is reached by link only (#1098, #1704).
    *
    * Other stages, such as `upcoming` or `seasonal`, can be added when something needs to act on them.
    */

@@ -82,7 +82,7 @@ export class AllMapsComponent implements OnInit {
 
   /**
    * The campuses this environment lists: all of them on development, and on production only those
-   * without `visible: false` (#2437, #2438). The template reads this, not `campusApplications`.
+   * not development-only (#2437, #2438). The template reads this, not `campusApplications`.
    */
   public visibleCampusApplications: Observable<Array<InternalDiscoverApplication & { url: string }>>;
 
@@ -134,7 +134,7 @@ export class AllMapsComponent implements OnInit {
     // Sourced from the internal list rather than a dedicated service method: unlike kiosk maps,
     // satellite-campus maps are ordinary discover applications and are only excluded from search.
     //
-    // A campus with `visible: false` is development-only and is listed on development alone (#2437,
+    // A development-only campus is listed on development alone (#2437,
     // #2438). The unfiltered list is used because this page is the campuses' only listing, so the
     // gate is applied here against `isTesting` rather than by taking the visible-filtered list, which
     // would hide them on development too.
@@ -191,9 +191,9 @@ export class AllMapsComponent implements OnInit {
   }
 
   private _filterApplications(value: string, isDev: boolean): DiscoverApplication[] {
-    const filtered = isDev
-      ? this.allApplications
-      : this.allApplications.filter((app) => app.source === 'external' || isListed(app, false));
+    // The one listing rule on both environments (#1704): returning every map unfiltered on development offered maps
+    // with `visible: false`, such as the undated Move Out, that production does not.
+    const filtered = this.allApplications.filter((app) => app.source === 'external' || isListed(app, isDev));
 
     if (!value) {
       return filtered.slice(0, 10);
