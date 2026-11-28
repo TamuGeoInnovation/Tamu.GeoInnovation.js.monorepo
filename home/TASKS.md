@@ -1,5 +1,114 @@
 # Home machine: current tasks
 
+## Batch a83 (aggiemap: three bugs — #1704, #3908, #1618; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
+
+### Decided, from a82
+
+- **PRs 3924 (#1936) and 3925 (#1937) are open**, both `no-visible-change`, 3925 named as stacked on 3924.
+  Your bodies went in as written. Nothing to do on them.
+- **#1937's "Done when" is amended, not closed early.** You were right that re-taking the two shots is no
+  longer possible, and right not to fake it. I rewrote the condition to *"a production set taken with that
+  code records every page drawn, with none unfinished"*, said in the issue body that it was amended on
+  28 November and why, and put the overnight run's numbers on the issue as the evidence. The expired
+  condition stays visible in the issue rather than being quietly deleted.
+- **The accidental full production set was worth having**, so no apology needed: 734 captured, 0 failed,
+  0 unfinished is the strongest evidence either fix could have. But `--only` matching substrings is a real
+  trap — `/map` matching every route is the same class of fault as #3802's `tamu-js-2026`. If you think it
+  should match a whole route unless given a trailing wildcard, file it and say so; don't fix it inside
+  another batch.
+- **No run file was right.** It was not a before-and-after measurement, so `docs/build-times.md` would have
+  gained a number that proves nothing.
+- **Formatting `capture.mjs` in its own commit on 1936 was right**, and saying so in the report is what made
+  it readable rather than looking like drift.
+
+### This batch
+
+Three bugs, in this order. Each is its own branch and its own pull request; stop and report whatever is
+finished when you run out of evening rather than carrying one half-done.
+
+#### 1. #1704 — `discover.visible: false` hides a map on production only
+
+**The decision in the issue is made: take the third option.** `discover.visible: false` means *"not in the
+listings"*, on every environment, not *"not in production's listings"*. Reasons, so you can put them in the
+pull request rather than re-deriving them:
+
+- A gate that means different things on two environments is the fault, not the symptom. Dev exists to show
+  what production will show; a listing that differs is dev lying about the thing it is for.
+- It is the option that holds for the next map, and there will be one: the undated parent kept alive for its
+  old links is a pattern, not a one-off.
+- The alternatives each cost something real. A redirect throws away the parent's own page; an inverted
+  `DevelopmentOnly` registration adds a second concept that means almost the same as the first.
+
+So: `_filterApplications` in `all-maps.component.ts` stops returning everything unfiltered when `isDev`, and
+honours `discover.visible` on both. **Keep the development-only *registry* behaviour exactly as it is** — a
+map in `developmentOnly` is still absent from production's build. This is only about `visible`.
+
+Then the two consequences in the issue follow, and both belong in the same pull request:
+
+- The undated Move Out comes out of `allowedUndatedEventMaps` in `test/smoke/aggiemap/environments.json`,
+  because it can no longer be discovered on dev. Prove that: run whichever smoke spec asserts it, red
+  against the unfixed code first.
+- `LISTINGS_HIDDEN_FROM_PRODUCTION` in `test/smoke/aggiemap/development-only.ts` may now be wrong or
+  redundant for this map — read what it says before changing it, and if the gates spec
+  (`development-only-gates.spec.ts` in `aggiemap-ngx-discover`) disagrees with the new meaning, that spec is
+  part of the fix, not a thing to work around.
+
+**Visible change**, so it needs before/after screenshots of the campus events page on dev: four move-out
+entries before, three after. Open the pull request only once they are on the branch and today's
+`development` is merged in.
+
+#### 2. #3908 — Maintenance Parking and Service/Loading load spaces they do not draw
+
+**Ask the service first.** CLAUDE.md's rule exists for exactly this issue's shape, and four faults in one
+week that looked like a field rename were not.
+
+- Query the layer both maps draw from, on production, and report the **distinct `Spc_Type` values with a
+  count for each**. That one table decides the fix.
+- Then say which of the two the fault is: the service now holds space types the layer should filter out with
+  a definition expression, or the renderer lost a value it used to draw.
+- **If a type the maps are supposed to show is missing from the renderer, that is ours. If a type is in the
+  service that nobody can say should be there, that is a question for the GIS team** — file it and say so in
+  the register (`docs/gis-service-differences.md`) with its kind, rather than filtering it away so a check
+  goes green.
+
+`parking-spaces.spec.ts` is the test, and it is already red on production, so you have your red. Run it
+against production before and after; the after must pass for both maps.
+
+**Reuse before building**: whatever expresses the filter, look in
+`libs/ts/events/ngx/src/lib/definitions/common.definitions.ts` first, and if two definition files would
+both need the same new helper, that is the one-off tell — put it in the shared file.
+
+Visible if the maps' drawn spaces change; if the only change is what is loaded and nothing on screen moves,
+say so and label it `no-visible-change`, with the measurement (features loaded before and after) in the body
+instead of images.
+
+#### 3. #1618 — the parking-garage search test is flaky, the result list re-renders under the click
+
+The rule from CLAUDE.md: a flaky test gets a fix **proven by running it many times before and after**. So:
+
+- Run that one test on dev **20 times** against unfixed code and report the failure count. That number is the
+  claim; a fix with no before-count is not provable. The command is
+  `test/smoke/aggiemap/run-local.sh development one <the spec>`, looped.
+- Fix the race itself, not the symptom. A fixed wait is not a fix — the pattern the suite already has for
+  "the list has settled" is what to reuse, and #3364's branch (PR 3923, open) does exactly this for basemap
+  query counts if you want the shape: poll until the thing stops changing, with a named ceiling.
+- Then run it **20 times** again and report both counts.
+
+`no-visible-change` (a test's timing), so the body carries the two counts in place of images.
+
+### Don't touch
+
+- `fix/1936-baseline-error-pages` and `fix/1937-baseline-wait-drawn` (PRs 3924, 3925, open).
+- Any branch behind PRs 3901, 3905, 3906, 3909, 3911, 3912, 3914, 3916, 3917, 3918, 3920, 3922, 3923 —
+  all open and awaiting merge. In particular **`scripts/pre-pr-check.sh` is being changed on four of them
+  and again by me tonight (#3910)**: do not edit that file in this batch.
+- `tools/visual-baselines/` — a82's two branches are still open there.
+
+### Questions for me, not for the maintainer
+
+Put them in the report under **Questions for the home session**, with options and a recommendation, as
+always. I ask him; you don't.
+
 
 ## Batch a82 (aggiemap: the baselines that record the wrong thing — #1936, #1937; 27 November 2026, from `work (aggiemap)`) (Medium) — **now**
 
