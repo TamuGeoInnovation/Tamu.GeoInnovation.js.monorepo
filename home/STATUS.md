@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing: a81 done; listening. Q-a81-1 and Q-a81-2 are with the AggieMap director.
+- **Batch a82** (visual baselines: #1936, #1937): started, reading the capture tool, 10:43 PM Central, 27 November.
 
 ## Finished
 - **Batch a81** (report `home/reports/2026-11-27-a81.md`, 10:39 PM Central): `ci/1748-nightly-timeout-loud` ready (pre-pr-check Exit 0); #2784 closed as duplicate of #1748; #3908 filed; Q-a81-1, Q-a81-2 asked.
