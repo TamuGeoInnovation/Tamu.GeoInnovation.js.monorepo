@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { PHONE_VIEWPORT, expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { skipUntilDeployed } from './deployed';
 import { developmentSectionsVisible } from './development-only';
 import { ProbeLayer, waitForMapDrawn, waitForMapReady } from './map-probe';
 
@@ -192,6 +193,53 @@ test.describe('on a phone, an event map', () => {
       'the locate button should be in the column of Legend'
     ).toBeLessThanOrEqual(4);
   });
+
+  /**
+   * The phone menu's Bus Routes and Directions keep the visitor on the event map (#2997).
+   *
+   * The phone menu is one component on every map, but its two items were absolute addresses, `/map/m/bus` and
+   * `/map/m/trip`. So on the tailgating map, Bus Routes threw the visitor onto the main campus map's bus list, which the
+   * event maps had no phone route for, and Directions onto the main map's trip planner. The desktop panel solved the same
+   * drift with one shared route list (#2758); the phone has its own now, and the items are relative.
+   */
+  for (const item of [
+    { name: 'Bus Routes', lands: '/m/bus', shows: 'tamu-gisc-bus-route' },
+    { name: 'Directions', lands: '/m/trip', shows: 'tamu-gisc-trip-planner-bottom, tamu-gisc-trip-planner-top' }
+  ]) {
+    test(`keeps the visitor on the map when ${item.name} is chosen from its menu (#2997)`, async ({ page }) => {
+      test.setTimeout(180_000);
+      // The phone menu's Directions came with #3507; a build from before it has none to choose.
+      if (item.name === 'Directions') skipUntilDeployed('#3507');
+      await blockAnalytics(page);
+      await page.goto('/events/tailgating/map/m/sidebar', { waitUntil: 'domcontentloaded' });
+
+      const link = page.getByRole('link', { name: item.name, exact: true });
+
+      await expect(link, `the tailgating map's phone menu has no ${item.name}`).toBeVisible({ timeout: 90_000 });
+      await link.click();
+
+      await expect
+        .poll(() => new URL(page.url()).pathname, { message: `${item.name} left the tailgating map`, timeout: 30_000 })
+        .toBe(`/events/tailgating/map${item.lands}`);
+      await expect(page.locator(item.shows).first(), `${item.name} on the tailgating map showed nothing`).toBeVisible({
+        timeout: 60_000
+      });
+
+      if (item.name === 'Bus Routes') {
+        // A route's page, and back from it, stay on the map too: its back arrow was `map/m/bus`.
+        await page
+          .locator('tamu-gisc-bus-route', { has: page.locator('.route-number', { hasText: /^\s*01\s*$/ }) })
+          .locator('.route-overview')
+          .click();
+        await expect.poll(() => new URL(page.url()).pathname, { timeout: 30_000 }).toBe('/events/tailgating/map/m/bus/01');
+
+        await page.getByRole('button', { name: 'Back' }).click();
+        await expect
+          .poll(() => new URL(page.url()).pathname, { message: "a route's back arrow left the map", timeout: 30_000 })
+          .toBe('/events/tailgating/map/m/bus');
+      }
+    });
+  }
 });
 
 /** The layer the map draws a chosen feature into, and how many graphics it holds. */
@@ -208,11 +256,17 @@ function selected(layers: ProbeLayer[]): number {
  * the map and nothing in the box (#3655, for #71).
  *
  * #71 has been open since August 2020 and was confirmed on 25 November 2026: the phone's search box never shows its
- * right-hand (clear) action, because the omnisearch does not give it one, and the phone's popup has no close control,
- * so nothing on a phone clears a selection. Until #71 is fixed this is an expected failure. Everything up to the
- * selection is asserted first, so the test is marked as failing only once it has reached what #71 is about; a search
- * that never answered fails it for real. Playwright fails an expected failure that passes, so the day #71 is fixed the
- * suite says so, and that pull request removes the mark.
+ * right-hand (clear) action, because the omnisearch does not give it one, so nothing on a phone clears a selection.
+ * Until #71 is fixed this is an expected failure. Everything up to the selection is asserted first, so the test is
+ * marked as failing only once it has reached what #71 is about; a search that never answered fails it for real.
+ * Playwright fails an expected failure that passes, so the day #71 is fixed the suite says so, and that pull request
+ * removes the mark.
+ *
+ * The second half of that reasoning is gone as of #1439: the phone's sheet now has a close control and a working drag
+ * handle. The mark stays because it is the **search box's** clear action that #71 is about, and that is still missing —
+ * and because this suite runs against deployed environments, which will not carry #1439 until it is released. **Once
+ * it is deployed, check whether this test now passes**: if a visitor can clear a selection by closing the sheet, the
+ * expected failure is wrong and comes off, whatever is left of #71.
  */
 test.describe('on a phone, the main map', () => {
   test.use({ viewport: { width: MOBILE_WIDTH, height: MOBILE_HEIGHT }, isMobile: true, hasTouch: true });

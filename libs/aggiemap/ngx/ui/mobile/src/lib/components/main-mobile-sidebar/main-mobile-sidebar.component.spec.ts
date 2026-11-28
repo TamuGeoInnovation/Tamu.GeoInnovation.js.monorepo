@@ -21,7 +21,7 @@ describe('MainMobileSidebarComponent', () => {
   }
 
   it("offers Directions, opening the phone's own trip planner", () => {
-    expect(menu()).toContainEqual(expect.objectContaining({ name: 'Directions', type: 'router-path', path: '/map/m/trip' }));
+    expect(menu()).toContainEqual(expect.objectContaining({ name: 'Directions', type: 'router-path', path: '../trip' }));
   });
 
   it('lists it with Bus Routes, before the pages that are not the map', () => {

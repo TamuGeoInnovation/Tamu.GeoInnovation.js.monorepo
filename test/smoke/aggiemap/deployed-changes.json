@@ -8,5 +8,10 @@
     "change": "#3468",
     "what": "the phone's trip planner offers accessible routing only in development",
     "commit": "ea941e9dc4856a42ed47722dcfa19f1e1cf6302d"
+  },
+  {
+    "change": "#3507",
+    "what": "the phone menu offers Directions",
+    "commit": "7727b2595601f2b72b567dc483c41385151eeabb"
   }
 ]

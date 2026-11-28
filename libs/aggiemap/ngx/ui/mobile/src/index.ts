@@ -5,3 +5,4 @@ export * from './lib/components/omnisearch/omnisearch.component';
 export * from './lib/lazy-components';
 export * from './lib/components/mobile-sidebar/mobile-sidebar.component';
 export * from './lib/components/main-mobile-sidebar/main-mobile-sidebar.component';
+export * from './lib/mobile-routes';
