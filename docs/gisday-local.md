@@ -100,7 +100,9 @@ find `gisday-api`. **Nothing recompiles.** After an edit, run `web --static` aga
 replaces `gisday-dev` (and `gisday-site`).
 
 `migrate` shows, generates, runs and reverts schema migrations on the local database;
-[gisday-migrations.md](gisday-migrations.md) has the process for changing the schema.
+[gisday-migrations.md](gisday-migrations.md) has the process for changing the schema. `api` runs any
+migrations the local database lacks before it starts the API, keeping its data, because a volume restored
+before the newest migration otherwise started an API that answered 500 on what it adds (#3887).
 
 ## What the restore needs by hand
 

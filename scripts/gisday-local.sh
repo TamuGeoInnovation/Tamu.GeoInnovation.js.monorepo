@@ -8,7 +8,8 @@
 #   restore [file.bak]  restore the repository's scrubbed copy into gisday-db, or a backup named here
 #                       from GISDAY_LOCAL_DIR, and map the app login
 #   install             npm ci into the shared node_modules volume (tamu-js-dev-nm)
-#   api                 build gisday-nest and start it (gisday-api, port 3333), with Redis
+#   api                 build gisday-nest, run any migrations the database lacks, and start it (gisday-api,
+#                       port 3333), with Redis
 #   web [--static] [--site <key>]
 #                       start the gisday-angular dev server (gisday-dev, port 4201); with --site, serve it
 #                       as that site on 4201 (gisday-site) and as txgisday.org on 4202. With --static, build
@@ -133,6 +134,10 @@ SQL
     network
     docker run --rm -m 8g -v "$REPO:/w" -v tamu-js-dev-nm:/w/node_modules -w /w -e NX_DAEMON=false \
       "$NODE_IMAGE" node node_modules/nx/dist/bin/nx.js build gisday-nest
+    # The volume keeps whatever schema it was restored at, and only `restore` ran the migrations, so a volume older
+    # than the newest migration started an API that answered 500 on what they add (#3887). Those already applied
+    # are skipped, and the data is kept.
+    migration "$DB_NAME" run
     # Later --env-file values win, so the dev tenant's management credentials (#1623) override the
     # sample's blanks when that file exists.
     dev_tenant=()

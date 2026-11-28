@@ -155,6 +155,24 @@ check "restore then runs the migrations on that database, as migrate run does" \
 check "restore runs the migrations after the restore, not before" \
   '[ "$(grep -n -- "RESTORE DATABASE" <<<"$restored" | cut -d: -f1)" -lt "$(grep -n -- "gisday-nest:migration-run" <<<"$restored" | cut -d: -f1)" ] 2>/dev/null'
 
+# Every docker call for `api`, with a settings folder of its own: `api` only needs the two files to exist.
+api_calls() {
+  local dir
+  dir="$(mktemp -d "$bin/local.XXXX")"
+  : >"$dir/local-db.env"
+  : >"$dir/gisday-api.local.env"
+  : >"$log"
+  (cd "$repo" && PATH="$bin:$PATH" DOCKER_LOG="$log" GISDAY_LOCAL_DIR="$dir" bash scripts/gisday-local.sh api >/dev/null 2>&1)
+  cat "$log"
+}
+
+# A volume restored before the newest migrations merged kept its old schema, and `api` started on it: on 27 November
+# 2026 one machine's volume was 12 migrations behind and the API answered 500 until `migrate run` (#3887).
+started="$(api_calls)"
+check "api starts the API" 'grep -q -- "--name gisday-api" <<<"$started"'
+check "api runs the migrations on the local database, as migrate run does"   'grep -- "nx.js run" <<<"$started" | grep -q -- "-e TYPEORM_DATABASE=gisday-nest-eh .*gisday-nest:migration-run"'
+check "api runs the migrations before the API starts"   '[ "$(grep -n -- "gisday-nest:migration-run" <<<"$started" | cut -d: -f1)" -lt "$(grep -n -- "--name gisday-api" <<<"$started" | cut -d: -f1)" ] 2>/dev/null'
+
 if [ "$failures" -gt 0 ]; then
   echo "$failures failed"
   exit 1
