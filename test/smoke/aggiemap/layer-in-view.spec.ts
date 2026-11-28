@@ -9,7 +9,8 @@ import { waitForMapDrawn, waitForMapReady } from './map-probe';
  *
  * A map's opening framing is a declared zoom and centre. Nothing checked them against what the map draws, so a map
  * could open with part of its point cut off: Soccer Parking's declared centre is Outdoor Track Parking's, about 250
- * metres south-west of its lots, and on production on 27 November 2026 its Lot 104 opened cut off by the top of the map.
+ * metres south-west of its lots, so on production on 27 November 2026 the lots opened pressed into the top right of a
+ * desktop's map and ran 30 pixels off the right of a phone's.
  * `framing.spec.ts` compares a map's framing with production's, so it says where a map opens, not whether that is right.
  *
  * Each case names the layer a visitor opens the map to see. Its whole extent, as the layer answers it, must lie in the

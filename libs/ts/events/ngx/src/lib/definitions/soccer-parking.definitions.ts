@@ -102,8 +102,12 @@ export const SoccerParkingConfiguration: EventConfiguration = {
     '2026-11-01'
   ],
   scheduleUrl: 'https://12thman.com/sports/soccer/schedule',
+  // Centred on the event lots' own extent (#1501), as the Soccer Event Parking Lots layer answers it on production
+  // (27 November 2026: -96.34548 to -96.33988, 30.60385 to 30.60802). The centre was Outdoor Track Parking's, 250 metres
+  // south-west, which ran the lots off a phone's map. At 16 they are about 260 by 230 pixels, clear of a 375 pixel phone;
+  // at 17 they would not be. `layer-in-view.spec.ts` checks this on a desktop and a phone.
   zoom: 16,
-  mapCenter: [-96.34454, 30.60338]
+  mapCenter: [-96.34268, 30.60593]
 };
 
 export const SoccerParkingOptions: SpecialEventOptions = [];
