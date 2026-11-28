@@ -894,42 +894,6 @@ export const SearchSources: SearchSource[] = [
     }
   },
   {
-    source: Definitions.ELECTRICAL_MANHOLES.id,
-    name: Definitions.ELECTRICAL_MANHOLES.name,
-    url: Definitions.ELECTRICAL_MANHOLES.url,
-    featuresLocation: 'features',
-    displayTemplate: '{attributes.MH_NUMBER}',
-    popupComponent: Popups.BaseDirectionsComponent,
-    searchActive: true,
-    queryParams: {
-      ...commonQueryParams,
-      where: {
-        keys: ['MH_NUMBER'],
-        operators: ['LIKE'],
-        wildcards: ['includes'],
-        transformations: ['UPPER']
-      }
-    }
-  },
-  {
-    source: Definitions.DOMESTIC_COLD_WATER.id,
-    name: Definitions.DOMESTIC_COLD_WATER.name,
-    url: Definitions.DOMESTIC_COLD_WATER.url,
-    featuresLocation: 'features',
-    displayTemplate: '{attributes.OBJECTID}',
-    popupComponent: Popups.BaseDirectionsComponent,
-    searchActive: true,
-    queryParams: {
-      ...commonQueryParams,
-      where: {
-        keys: ['OBJECTID'],
-        operators: ['LIKE'],
-        wildcards: ['includes'],
-        transformations: ['UPPER']
-      }
-    }
-  },
-  {
     source: Definitions.DOMESTIC_COLD_WATER.id,
     name: Definitions.DOMESTIC_COLD_WATER.name,
     url: Definitions.DOMESTIC_COLD_WATER.url,

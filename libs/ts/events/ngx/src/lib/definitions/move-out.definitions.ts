@@ -128,9 +128,9 @@ export const MoveOut: AggiemapCustomMapConfiguration = {
     source: 'internal',
     type: 'event',
     columnKey: 'spring',
-    // Hidden while the three dated periods below are being looked at, so the campus events page
-    // offers one entry per move-out rather than those three and an undated fourth. The route still
-    // works, so nothing linked to it breaks. Delete this line to list it again (#1691).
+    // Kept only so links to it still work: the three dated periods below are what the listings offer,
+    // one entry per move-out rather than those three and an undated fourth. Listed on no environment,
+    // development included (#1691, #1704). Delete this line to list it again.
     visible: false,
     keywords: ['move out', 'parking', 'transportation']
   }

@@ -226,11 +226,10 @@ export class TripPoint {
             this.attributes = Object.assign({}, this.originAttributes, { name: this.findName() });
 
             if (!this.attributes.name || this.attributes.name.trim() === '') {
-              if (isNaN(this.geometry.latitude) || isNaN(this.geometry.longitude)) {
-                this.attributes.name = '';
-              } else {
-                this.attributes.name = `${this.geometry.latitude}, ${this.geometry.longitude}`;
-              }
+              // `hasCoordinates` rather than `isNaN`: a null latitude passed that and named the stop "null, null".
+              this.attributes.name = hasCoordinates(this.geometry)
+                ? `${this.geometry.latitude}, ${this.geometry.longitude}`
+                : '';
             }
 
             if (this.originParameters && !this.originParameters.value) {
@@ -283,8 +282,11 @@ export class TripPoint {
         }
 
         // Check that the normalized geometry values are valid numbers.
-        // If they are not, then there will be errors adding them to map and executing a route task
-        if (this.geometry && !isNaN(this.geometry.latitude) && !isNaN(this.geometry.longitude)) {
+        // If they are not, then there will be errors adding them to map and executing a route task.
+        //
+        // This is the guard that comment describes, and `isNaN` was not it: a point whose latitude is null was marked
+        // normalized and then produced exactly those errors (#1848).
+        if (hasCoordinates(this.geometry)) {
           this.normalized = true;
         }
 
@@ -313,11 +315,13 @@ export class TripPoint {
       // Name returned in order of preference:
       //
       // 1. The feature's own name, if it has one.
-      // 2. If #1 is not met, geometry exists, and geometry values are not NaN, use geometry values as display name
+      // 2. If #1 is not met and the geometry has usable coordinates, show those.
       // 3. If #1 and #2 are not met, return empty string.
+      //
+      // `hasCoordinates` rather than `isNaN`: a null latitude passed that guard and then threw on `.toFixed` (#1848).
       if (name) {
         return name;
-      } else if (this.geometry && !isNaN(this.geometry.latitude) && !isNaN(this.geometry.longitude)) {
+      } else if (hasCoordinates(this.geometry)) {
         return `${this.geometry.latitude.toFixed(4)}, ${this.geometry.longitude.toFixed(4)}`;
       } else {
         return '';
@@ -584,6 +588,36 @@ export interface TripPointProperties {
  * space's `area_name` (#2723), and `name` for the rest.
  */
 const NAME_FIELDS = ['name', 'bldgname', 'lotname', 'area_name'];
+
+/**
+ * Whether a geometry carries coordinates that can be shown to a visitor or sent to the route task: both present, and
+ * numbers.
+ *
+ * **`isNaN` is not that test, and three places here used it (#1848).** `TripPointGeometry` types its latitude as
+ * `number | undefined`, and `isNaN(undefined)` is `true`, so an absent one was caught. But Esri fills a point's
+ * `latitude` and `longitude` in only a geographic or Web Mercator reference and leaves them **`null`** in any other —
+ * dev's main 2D basemap is Texas Centric (wkid 32139), where both are null (#1875). And `isNaN(null)` is **`false`**,
+ * because `Number(null)` is `0`. So a null latitude passed every guard:
+ *
+ * - it named a stop `"null, null"`;
+ * - it marked a point `normalized`, which is the flag whose own comment says it exists to stop "errors adding them to
+ *   map and executing a route task";
+ * - and it threw `Cannot read properties of null (reading 'toFixed')` on a map click, which is what #1848 reported.
+ *
+ * The type guard narrows, so a caller can read `.toFixed` without an assertion.
+ */
+export function hasCoordinates(
+  geometry: TripPointGeometry | undefined
+): geometry is TripPointGeometry & { latitude: number; longitude: number } {
+  return (
+    geometry !== undefined &&
+    geometry !== null &&
+    typeof geometry.latitude === 'number' &&
+    !isNaN(geometry.latitude) &&
+    typeof geometry.longitude === 'number' &&
+    !isNaN(geometry.longitude)
+  );
+}
 
 /** A feature's name from its attributes, or `undefined` when it has none: one of `NAME_FIELDS`, not empty. */
 export function featureName(attributes: object | undefined): string | undefined {

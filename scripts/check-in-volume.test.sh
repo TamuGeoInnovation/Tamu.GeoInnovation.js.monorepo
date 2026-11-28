@@ -210,6 +210,33 @@ case "$advice" in *memory*"CHECK_PARALLEL"*"CHECK_MEMORY"*) r=yes ;; *) r=no ;; 
 expect "a failed check with a kill says it was memory, and what to set" "yes" "$r"
 expect "a passing check says nothing" "" "$(memory_advice "$logs/sigkill.log" 0)"
 expect "a failure with no kill says nothing" "" "$(memory_advice "$logs/clean.log" 1)"
+# #3622: a task can be killed with nothing in the log at all. ts-events-angular's production build printed only
+# "Building..." and failed, at CHECK_MEMORY=8g CHECK_PARALLEL=4 beside another check, on a branch green everywhere else.
+printf '%s
+' '> nx run ts-events-angular:build:production' '' '❯ Building...'   '✔  nx run aggiemap-angular:build:production' '✔  nx run gisday-nest:build:production' ''   ' NX   Running target build for 6 projects and 4 tasks they depend on failed' '' 'Failed tasks:' ''   '- ts-events-angular:build:production' >"$logs/silent.log"
+printf '%s
+' '> nx run ts-events-angular:build:production' '' '❯ Building...'   "✘ [ERROR] TS2339: Property 'zone' does not exist on type 'Lot'. [plugin angular-compiler]"   '✔  nx run gisday-nest:build:production' '' 'Failed tasks:' '' '- ts-events-angular:build:production' >"$logs/loud.log"
+printf '%s
+' '> nx run a:lint' '' '> nx run b:build:production' '❯ Building...' '' 'Failed tasks:' '' '- a:lint'   '- b:build:production' '- c:test' >"$logs/two-silent.log"
+expect "a failed task that printed nothing is silent" "ts-events-angular:build:production" "$(silent_failures "$logs/silent.log")"
+expect "a failed task with an error is not" "" "$(silent_failures "$logs/loud.log")"
+expect "every silent failed task is named, a task with no output at all among them"   "a:lint b:build:production c:test" "$(silent_failures "$logs/two-silent.log" | tr '
+' ' ' | sed 's/ $//')"
+expect "a log with no failed tasks has none" "" "$(silent_failures "$logs/clean.log")"
+advice="$(memory_advice "$logs/silent.log" 1)"
+case "$advice" in *"ts-events-angular:build:production"*"printed nothing"*memory*"CHECK_PARALLEL"*"CHECK_MEMORY"*) r=yes ;; *) r=no ;; esac
+expect "a failed check with a silent task says it was most likely memory, and what to set" "yes" "$r"
+expect "a failure with an error says nothing" "" "$(memory_advice "$logs/loud.log" 1)"
+
+# #3622: a run writes over the log of the run before, so a failed run's log is kept beside it under its own time.
+kept="$(keep_failed_log "$logs/silent.log" 1)"
+case "$kept" in "$logs"/silent-failed-*.log) r=yes ;; *) r=no ;; esac
+expect "a failed run's log is copied beside it, named for when it failed" "yes" "$r"
+cmp -s "$logs/silent.log" "$kept" && r=yes || r=no
+expect "the copy is the log" "yes" "$r"
+expect "a passing run's log is not copied" "" "$(keep_failed_log "$logs/clean.log" 0)"
+grep -q 'keep_failed_log "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check keeps a failed run's log" "yes" "$r"
 grep -q 'memory_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
 expect "the check gives that advice after its run" "yes" "$r"
 rm -rf "$logs"
@@ -255,5 +282,23 @@ expect "another exit says nothing" "" "$(setup_advice "$logs/clone.log" 1)"
 grep -q 'setup_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
 expect "the check gives that advice after its run" "yes" "$r"
 rm -rf "$logs"
+
+# The volume is tamu-js-<issue> only when the issue number starts the branch name's last part, as in <type>/<issue>-<topic>.
+# Taking the first number anywhere named every dated branch tamu-js-2026, one volume for all of them, which tidy.sh
+# then removed as closed issue #2026 (#3802).
+expect "fix/3802-topic is issue 3802" "tamu-js-3802" "$(volume_name fix/3802-dated-branch-volume)"
+expect "a branch with no type is its issue too" "tamu-js-3802" "$(volume_name 3802-topic)"
+expect "pr/3477 is issue 3477" "tamu-js-3477" "$(volume_name pr/3477)"
+expect "a branch kept under another's name is its own issue" "tamu-js-3600" "$(volume_name backup/lab/fix/3600-topic)"
+expect "fix/2026-topic is issue 2026" "tamu-js-2026" "$(volume_name fix/2026-topic)"
+expect "a date in a branch's topic is not an issue" "tamu-js-docs-release-notes-2026-11-26"   "$(volume_name docs/release-notes-2026-11-26)"
+expect "nor a year at its end" "tamu-js-slone-family-weekend-2026" "$(volume_name slone/family-weekend-2026)"
+expect "nor a date at its start" "tamu-js-check-2026-10-27-batch-2" "$(volume_name check/2026-10-27-batch-2)"
+expect "two dated branches do not share a volume" "no"   "$([ "$(volume_name docs/release-notes-2026-11-26)" = "$(volume_name verify/green-batch-2026-11-23)" ] && echo yes || echo no)"
+expect "a branch with no number keeps its sanitised name" "tamu-js-development" "$(volume_name development)"
+case "$(volume_name docs/release-notes-2026-11-26)" in tamu-js-[0-9]*) r=yes ;; *) r=no ;; esac
+expect "a dated branch's volume is never one tidy.sh reads as an issue's" "no" "$r"
+grep -q 'volume="$(volume_name "$branch")"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check names its volume with that rule" "yes" "$r"
 
 exit "$failed"

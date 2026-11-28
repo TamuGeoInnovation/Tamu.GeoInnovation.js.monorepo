@@ -66,6 +66,8 @@ import { execFileSync } from 'child_process';
 import { commitFields, releaseCommit, releaseLine } from './release-commit.mjs';
 import { centralNow } from './central.mjs';
 import { matchesOnly, slugFor } from './slug.mjs';
+import { whyNotRendered } from './rendered.mjs';
+import { drawnFor } from './drawn.mjs';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
@@ -85,6 +87,8 @@ if (app !== 'aggiemap' && app !== 'gisday') {
 }
 
 const gisday = app === 'gisday';
+/** The element the app draws itself into: a page without it, or with it empty, is not the app (#1936). */
+const appRoot = gisday ? 'tamu-gisc-root' : 'tamu-gisc-aggiemap-app-root';
 /** GIS Day, local only: the auth0-dev.local.env to sign in with, for the pages behind the sign-in (#1998). */
 const signedInFile = arg('signed-in', '');
 
@@ -104,7 +108,10 @@ const routesOnly = flag('routes-only');
  */
 const recheck = flag('recheck');
 /** Comma-separated substrings; only routes containing one are captured. For asking a narrow question. */
-const only = (arg('only', '') || '').split(',').map((part) => part.trim()).filter(Boolean);
+const only = (arg('only', '') || '')
+  .split(',')
+  .map((part) => part.trim())
+  .filter(Boolean);
 const concurrency = Number(arg('concurrency', '3'));
 /** `production` to capture a development host as production renders it (#1885); empty otherwise. */
 const actingAs = arg('as', '');
@@ -115,8 +122,7 @@ if (actingAs !== '' && actingAs !== 'production') {
 }
 
 /** The address of a route, carrying `?as=production` when the set is captured as production. */
-const addressOf = (route) =>
-  baseUrl + route + (actingAs ? (route.includes('?') ? '&' : '?') + 'as=' + actingAs : '');
+const addressOf = (route) => baseUrl + route + (actingAs ? (route.includes('?') ? '&' : '?') + 'as=' + actingAs : '');
 
 /** Hides the "acting as production" control, which production itself does not have. */
 const HIDE_ACTING_AS = () => {
@@ -189,7 +195,10 @@ function resolveRelease(fallbackBundle) {
       cwd: REPO,
       encoding: 'utf8'
     });
-    const newest = tags.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)[0];
+    const newest = tags
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)[0];
 
     if (newest) {
       return newest;
@@ -342,7 +351,9 @@ async function signedInRoutesToCapture(page) {
   await throughSignIn(page);
   await page.waitForTimeout(3000);
 
-  const session = (await page.$$eval('a[href]', (anchors) => anchors.map((a) => a.getAttribute('href')))).find((href) => href && href.startsWith('/sessions/details/'));
+  const session = (await page.$$eval('a[href]', (anchors) => anchors.map((a) => a.getAttribute('href')))).find(
+    (href) => href && href.startsWith('/sessions/details/')
+  );
 
   if (session) routes.push(session);
 
@@ -422,7 +433,9 @@ async function settle(page) {
   if (gisday) {
     // No map and no notices: the page is ready once the app has drawn and its data has arrived.
     try {
-      await page.waitForFunction(() => (document.querySelector('tamu-gisc-root')?.children.length ?? 0) > 0, { timeout: 30000 });
+      await page.waitForFunction(() => (document.querySelector('tamu-gisc-root')?.children.length ?? 0) > 0, {
+        timeout: 30000
+      });
     } catch {
       // Captured anyway, as for AggieMap.
     }
@@ -442,7 +455,7 @@ async function settle(page) {
       { timeout: 30000 }
     );
   } catch {
-    // Captured anyway: a page that never rendered is itself worth seeing in the comparison.
+    // Not photographed: the caller judges whether the app rendered at all (`whyNotRendered`, #1936).
   }
 
   let why = null;
@@ -457,14 +470,38 @@ async function settle(page) {
     why = 'its layers were still loading after 60 s';
   }
 
+  // Then what the page shows, steady for two seconds (#1937): the probe ready and not drawing, and no spinner on the
+  // page. One reading of `drawing === false` let two production pages be taken blank with the layer list spinning.
   if (!why) {
-    try {
-      await page.waitForFunction(() => !window.__tamuGiscMapProbe || window.__tamuGiscMapProbe.drawing === false, {
-        timeout: 60000,
-        polling: 500
-      });
-    } catch {
-      why = 'it was still drawing after 60 s';
+    const readings = [];
+    const until = Date.now() + 60000;
+
+    while (!drawnFor(readings) && Date.now() < until) {
+      readings.push(
+        await page
+          .evaluate(() => {
+            const probe = window.__tamuGiscMapProbe;
+            const spinners = [...document.querySelectorAll('.spinning-loader')].filter(
+              (spinner) => spinner.getClientRects().length > 0
+            ).length;
+
+            return { ready: probe ? probe.ready === true : null, drawing: probe ? probe.drawing !== false : null, spinners };
+          })
+          .catch(() => ({ ready: false, drawing: true, spinners: 0 }))
+      );
+
+      if (!drawnFor(readings)) {
+        await page.waitForTimeout(500);
+      }
+    }
+
+    if (!drawnFor(readings)) {
+      const last = readings[readings.length - 1];
+
+      why =
+        last && last.spinners > 0
+          ? 'it was still showing ' + last.spinners + ' spinner(s) after 60 s'
+          : 'it was still drawing after 60 s';
     }
   }
 
@@ -526,7 +563,11 @@ async function settle(page) {
   await probePage.close();
 
   const release = resolveRelease(build);
-  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName) + (signedInFile ? '-signed-in' : '') + (recheck ? '-recheck' : '');
+  const setName =
+    (gisday ? 'gisday-' : '') +
+    (actingAs ? envName + '-as-' + actingAs : envName) +
+    (signedInFile ? '-signed-in' : '') +
+    (recheck ? '-recheck' : '');
   const outDir = path.join(outRoot, setName, release);
   const manifestPath = path.join(outDir, 'manifest.json');
 
@@ -625,20 +666,39 @@ async function settle(page) {
 
         try {
           let result = { settled: false };
+          let notRendered = null;
 
-          // Two tries for a map that does not finish: a slow service is often slow only once.
+          // Two tries for a map that does not finish: a slow service is often slow only once. Likewise a page the
+          // app did not render, such as IIS's 404 during a blip (#1936).
           for (let attempt = 1; attempt <= 2 && !result.settled; attempt += 1) {
             const session = await open();
 
             try {
               await session.page.setViewportSize(job.viewport);
-              await session.page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
+              const response = await session.page.goto(addressOf(job.route), {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000
+              });
 
               if (signedInContext) {
                 await throughSignIn(session.page);
               }
 
               result = await settle(session.page);
+
+              // Only a page the app rendered is a picture of the app. Anything else is not photographed: a file on
+              // disk counts as done when a run resumes, so a 404 written here would never be taken again.
+              notRendered = whyNotRendered({
+                status: response ? response.status() : null,
+                rootContent: await session.page
+                  .evaluate((selector) => document.querySelector(selector)?.children.length ?? null, appRoot)
+                  .catch(() => null)
+              });
+
+              if (notRendered) {
+                result = { settled: false };
+                continue;
+              }
 
               if (result.settled || attempt === 2) {
                 // A GIS Day page scrolls, so the whole page is the picture; a map is one screen.
@@ -647,6 +707,10 @@ async function settle(page) {
             } finally {
               await close(session);
             }
+          }
+
+          if (notRendered) {
+            throw new Error('not a picture of the app, twice: ' + notRendered);
           }
 
           if (result.settled) {
@@ -669,7 +733,6 @@ async function settle(page) {
           console.log('  ' + done + '/' + todo.length + ' captured, ' + failed + ' failed, about ' + left + ' min left');
         }
       }
-
     })
   );
 
@@ -683,7 +746,14 @@ async function settle(page) {
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
   console.log(
-    '\ndone: ' + (done - failed) + ' captured, ' + failed + ' failed, ' + Object.keys(unsettled).length + ' unfinished, ' +
-      Math.round((Date.now() - started) / 60000) + ' min'
+    '\ndone: ' +
+      (done - failed) +
+      ' captured, ' +
+      failed +
+      ' failed, ' +
+      Object.keys(unsettled).length +
+      ' unfinished, ' +
+      Math.round((Date.now() - started) / 60000) +
+      ' min'
   );
 })();

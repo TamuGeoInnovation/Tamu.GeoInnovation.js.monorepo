@@ -29,6 +29,11 @@ export interface InternalDiscoverApplication extends BaseDiscoverApplication {
    */
   type: 'event' | 'parking' | 'operations' | 'satellite-campus' | 'kiosk' | 'main-map';
   /**
+   * The map's definition is `developmentOnly`, so it is listed only where development-only features are on (#2712).
+   * Kept apart from `visible`, which keeps a map out of the listings on every environment (#1704).
+   */
+  developmentOnly?: boolean;
+  /**
    * Where the entry opens, when that is not the `/<type>/<id>` its type gives: a panel of the main map. Taken as is by
    * `getApplicationRoute`.
    */
