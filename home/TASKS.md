@@ -1,6 +1,44 @@
 # Home machine: current tasks
 
-## Batch a85 (aggiemap: framing and a popup throw — #3907, #1411; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
+## Batch a86 (aggiemap: two timing faults — #1615, #1267; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
+
+### Decided, from a85
+
+- **[PR 3935](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3935) is open**, from your commits, your body with one change: it closes **#3934** instead of #3907.
+- **Q-a85-2: your B, not your A.** I filed #3934 for the first handful, so the merge closes something true and #3907 stays open on its own. Reopening by hand works exactly until the first time somebody forgets, and in the meantime 21 maps nobody has looked at read as done. You flagged the problem in your own body, which is why it got fixed rather than shipped.
+- **Q-a85-1: A, #1411 is closed** with your table, the empty routing folder, and a pointer to #1003. I added one thing: **no test, and the reason in writing.** A check that clicking an event feature raises no page error would pass against the code that threw in October, because the throw needs the planner to be constructed and nothing constructs it. A check that passes for an unrelated reason reads as cover. Saying so is better than either writing it or quietly skipping it.
+- **Q-a85-3: A, Phys/Eng Fest is left alone**, and the measurement is on #3907 as the reason. It is a question about which layers a visitor opens that map for, which no extent answers. It is with the maintainer.
+- **Muster and Beef Cattle are struck off #3907 entirely**, on your measurement — they are the category the issue excluded by name, a layer bigger than the clear map at its zoom. Twenty-two rows left. That is two maps nobody will measure again, from one paragraph of yours.
+- **Not deepening the stack.** The next #3907 handful would be the third branch in a chain (3906 → 3935 → it), and CLAUDE.md asks for stacking only when both are needed soon. So this batch is two independent faults and #3907 resumes when 3906 and 3935 merge.
+
+### Task 1: #1615, the selection highlight
+
+[#1615](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1615): the selection highlight is drawn or hidden depending on load timing. Read the issue for what was seen; it is a race, so the first job is to make it happen on demand rather than by luck.
+
+- **Reproduce it as a count, not an anecdote.** Loading the same map twenty times and reporting "4 of 20 had no highlight" is worth more than one screen recording, and it is the only thing that can show a fix worked. Take that count *before* you change anything.
+- **Do not take your sample from the thing under test** — CLAUDE.md's rule, and the two hours it cost on 9 November. Name the feature you select, or select every one and report each population separately.
+- The clock is the suspect, so say which signal you waited for. [`docs/testing-maps.md`](docs/testing-maps.md) says which signals exist and why `ready` is not the one for a screenshot; if this fault is about that distinction, that page should end up saying so.
+
+### Task 2: #1267, the map probe's `ready`
+
+[#1267](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1267): the map probe's `ready` is often never true, on both environments. This one matters beyond itself — the smoke suite, the visual baselines and the framing work all wait on that probe, so a signal that is sometimes never true is a timeout somewhere else wearing a disguise.
+
+- **Find out what `ready` actually means today** and whether the maps that never report it have something in common (a layer kind, a basemap, a view type, a map that never finishes drawing at all).
+- **This may already be half answered.** `docs/testing-maps.md` exists because `ready` was found to be the wrong signal for a screenshot, and tonight's baseline work (#1936, #1937, PRs 3924 and 3925) turned on the same question. Read those before measuring, and say what was already known.
+- **If the answer is that `ready` cannot be made reliable**, that is a result: say what the callers should wait for instead, and what it would take to change them. An investigation that ends in a clear report is a finished task here.
+- Mind the overlap: PR 3901 (`fix/1848-null-coordinate-tofixed`) and PR 3923 (`test/3364-basemap-requests-settle`) are in neighbouring code. Check before you edit, and if you collide, say so in the report rather than working around it.
+
+### Don't touch
+
+Every open pull request's branch. As of now that is PRs 381, 3895, 3897, 3898, 3900, 3901, 3902, 3903, 3904, 3905, 3906, 3909, 3911, 3912, 3914, 3916, 3917, 3918, 3920, 3922, 3923, 3924, 3925, 3926, 3928, 3931, 3932 and 3935 — `gh pr list` gives the branch names, and it is shorter to read that than a list that goes stale while you work.
+
+Also leave `scripts/pre-pr-check.sh` and `scripts/check-in-volume.sh` alone: four open pull requests edit the first, and the second is mine.
+
+### When you are done
+
+`home/reports/2026-11-28-a86.md`, **branch ready: <names>**, anything filed, and questions with options and a recommendation. Don't wait on an answer to finish the rest.
+
+## Batch a85 (aggiemap: framing and a popup throw — #3907, #1411; 28 November 2026, from `work (aggiemap)`) (Medium) — done, PR 3935; #1411 closed
 
 ### Decided, from a84
 
