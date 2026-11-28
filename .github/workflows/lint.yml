@@ -63,6 +63,10 @@ jobs:
       - name: Typecheck the GIS Day smoke suite
         run: npx tsc -p test/smoke/gisday
 
+      # And for the end-to-end tests and their helpers, which Playwright also loads without checking (#3878).
+      - name: Typecheck the end-to-end tests
+        run: npx tsc -p test/e2e
+
       # A new dependency with an install script must be reviewed into allowScripts first (#2293). .npmrc makes
       # `npm ci` refuse one too, but the step above is skipped when the node_modules cache hits; this reads the lock.
       - name: Check install scripts against allowScripts
