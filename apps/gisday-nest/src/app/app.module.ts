@@ -21,7 +21,6 @@ import {
   UserInfoModule,
   UserRsvpModule,
   UserSubmissionModule,
-  QuestionTypeModule,
   UniversityModule,
   SpeakerRoleModule,
   SeasonDayModule,
@@ -85,7 +84,6 @@ const onlyWith = <T>(feature: GisdayFeature, modules: Array<T>): Array<T> => (si
     // Judging the research competitions (#3183) is part of them, and so are their winners (#3239).
     ...onlyWith('competitions', [UserSubmissionModule, GisdayCompetitionsDataApiModule, JudgingModule, SeasonWinnerModule]),
     EventModule,
-    QuestionTypeModule,
     RsvpTypeModule,
     SpeakerModule,
     SpeakerEditModule,

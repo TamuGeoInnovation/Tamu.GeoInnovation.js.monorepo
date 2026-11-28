@@ -59,6 +59,56 @@ printf 'Refs #1977\n\nThe first step of the epic.\n' >"$tmp/body3"
 has_closing_reference "$tmp/body3" && r=yes || r=no
 expect "Refs #N is not (PR 3499 opened with only this, and failed Has a linked issue)" no "$r"
 
+# Which issues a body's closing keywords name, and whether each is still open (#3703). PR 3697 was drafted with
+# `Closes #3679` while #3679 was open, #3679 was then closed as not-a-fault, and pre-pr-check still exited 0.
+printf 'Closes #3679\n\n## What this changes\n' >"$tmp/i1"
+expect "the issue a closing reference names" 3679 "$(closing_issues_in "$tmp/i1")"
+printf 'Closes #3696\n\nThe prose also resolves #1056 in passing.\n' >"$tmp/i2"
+expect "every closing keyword counts, which is why only the fixed issue may follow one (#3910)" "3696 1056" "$(closing_issues_in "$tmp/i2" | tr '\n' ' ' | sed 's/ $//')"
+printf 'Fixes https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/12\nCloses #12\n' >"$tmp/i3"
+expect "a URL and a number for one issue count once" 12 "$(closing_issues_in "$tmp/i3")"
+printf 'Refs #1977\n' >"$tmp/i4"
+expect "Refs #N names nothing, as it closes nothing" "" "$(closing_issues_in "$tmp/i4")"
+
+# The issue's state, with gh stubbed - the script must never need the network to be right, and must not stop a
+# pull request opening when it cannot reach GitHub.
+ghbin="$tmp/bin"
+mkdir -p "$ghbin"
+cat >"$ghbin/gh" <<'STUB'
+#!/usr/bin/env bash
+# issue view <n> --json state --jq .state
+case "$3" in
+  3696) echo OPEN ;;
+  3679) echo CLOSED ;;
+  9999999) echo "GraphQL: Could not resolve to an issue or pull request with the number of 9999999. (repository.issue)" >&2; exit 1 ;;
+  *) echo "dial tcp: lookup api.github.com: no such host" >&2; exit 1 ;;
+esac
+STUB
+chmod +x "$ghbin/gh"
+state() { PATH="$ghbin:$PATH" bash -c '. "$1"; issue_state "$2"' _ "$(dirname $0)/pre-pr-check.sh" "$1"; }
+expect "an open issue reads OPEN" OPEN "$(state 3696)"
+expect "a closed one reads CLOSED, which is the case that must fail" CLOSED "$(state 3679)"
+expect "a gh that cannot answer gives nothing, and nothing is not CLOSED" "" "$(state 99999)"
+# An issue that does not exist is a typo in the body, not a network failure, and gh says so differently. Without
+# this the two were the same answer and a typo'd number passed the check - met on a body naming #3923.
+expect "an issue that does not exist reads MISSING, which is a failure rather than 'could not check'" MISSING "$(state 9999999)"
+# A committed .pr-body.md, which pr-title.yml fails and this script did not look for (#3702). PR 3697 opened
+# with pre-pr-check: Exit 0 and failed that check at once.
+printf 'added\t.pr-body.md\n' >"$tmp/b1"
+tracked_body_in "$tmp/b1" && r=yes || r=no
+expect "a branch that adds .pr-body.md has a committed body" yes "$r"
+printf 'modified\t.pr-body.md\n' >"$tmp/b2"
+tracked_body_in "$tmp/b2" && r=yes || r=no
+expect "so does one that changes a copy already committed" yes "$r"
+printf 'removed\t.pr-body.md\n' >"$tmp/b3"
+tracked_body_in "$tmp/b3" && r=yes || r=no
+expect "a branch that removes it again does not, which is how a draft is cleaned up" no "$r"
+printf 'modified\tscripts/tidy.sh\n' >"$tmp/b4"
+tracked_body_in "$tmp/b4" && r=yes || r=no
+expect "nor does a branch with no body at all - the usual case, drafted on disk only" no "$r"
+printf 'added\tdocs/.pr-body.md\n' >"$tmp/b5"
+tracked_body_in "$tmp/b5" && r=yes || r=no
+expect "and the name must be exactly .pr-body.md at the top, as CI greps for it" no "$r"
 # Which suites a change calls for.
 printf 'modified\tscripts/tidy.sh\n' >"$tmp/c1"
 expect "a script change runs the scripts' suites" scripts "$(suites_for "$tmp/c1")"

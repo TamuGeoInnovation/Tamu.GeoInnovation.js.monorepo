@@ -37,8 +37,8 @@ describe('AllMapsComponent campus maps', () => {
   };
 
   // A campus still being checked, listed on development alone (#2437, #2438). The component's filter
-  // is what this exercises; that the real Fort Worth Law School and Houston Space Institute carry
-  // `visible: false` is asserted where their definitions are imported.
+  // is what this exercises. A development-only map is marked `developmentOnly`; `visible: false` would
+  // hide it on development too (#1704).
   const developmentOnlyCampus = {
     ...{
       name: 'Fort Worth Law School',
@@ -50,7 +50,7 @@ describe('AllMapsComponent campus maps', () => {
       description: 'Map of the Texas A&M University School of Law campus in Fort Worth.',
       configuration: { id: 'fort-worth-law', eventDates: [] }
     },
-    visible: false
+    developmentOnly: true
   };
 
   const kiosk = {
@@ -110,7 +110,7 @@ describe('AllMapsComponent campus maps', () => {
     expect(tile).toBeDefined();
   });
 
-  // Fort Worth Law School and the Houston Space Institute carry `visible: false` while the GIS team's
+  // Fort Worth Law School and the Houston Space Institute were development-only while the GIS team's
   // data is still being checked (#2437, #2438). The gate is one filter in the component, which is
   // exactly the kind of thing a later edit removes without anyone noticing, so it is pinned here -
   // from both sides, because a check that only ran on production would pass just as well if the

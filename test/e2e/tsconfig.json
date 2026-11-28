@@ -1,0 +1,21 @@
+{
+  // Typechecks the end-to-end tests (#3878), as test/smoke/gisday/tsconfig.json does the GIS Day smoke suite. Playwright
+  // strips types when it loads a spec, so without this a type error in a test or a helper fails nothing. CI runs
+  // `tsc -p test/e2e` in lint.yml.
+  //
+  // The same settings as the smoke suites': standalone rather than extending tsconfig.base.json, because the tests run
+  // under Playwright's own loader, not an Nx build, and are checked strictly, which the workspace is not.
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
+    "types": ["node"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*.ts", "../../playwright.config.ts", "../../playwright.capture.config.ts"]
+}

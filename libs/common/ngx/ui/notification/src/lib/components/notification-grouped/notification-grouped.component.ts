@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, input, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, effect, inject, input, signal, viewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -22,6 +22,9 @@ import { NgClass } from '@angular/common';
  *
  * Grouping originates in #693. Priority ordering and the high-priority marker are #1195.
  */
+/** The custom property the panel publishes its height in, while it shows (#1828). */
+export const GROUPED_HEIGHT = '--notification-grouped-height';
+
 @Component({
   selector: 'tamu-gisc-notification-grouped',
   templateUrl: './notification-grouped.component.html',
@@ -61,6 +64,39 @@ export class NotificationGroupedComponent implements OnInit, OnDestroy {
    * it. See #1246.
    */
   public readonly blockedByModal = signal(false);
+
+  /** The panel itself, while it is drawn. */
+  private readonly wrapper = viewChild<ElementRef<HTMLElement>>('wrapper');
+
+  /**
+   * The panel's height, as `--notification-grouped-height` on the page, while it is showing; unset otherwise (#1828).
+   *
+   * Anything else fixed to the bottom of the page can stand clear of the panel by reading it, without knowing about
+   * notifications. The View as production control on a development host does: it sat on the panel's "1 of 2" arrows.
+   */
+  constructor() {
+    effect((onCleanup) => this.publishHeight(onCleanup));
+  }
+
+  private publishHeight(onCleanup: (cleanup: () => void) => void): void {
+    const element = this.wrapper()?.nativeElement;
+    const root = document.documentElement.style;
+
+    if (!element || !this.groupShowing()) {
+      root.removeProperty(GROUPED_HEIGHT);
+      return;
+    }
+
+    const publish = () => root.setProperty(GROUPED_HEIGHT, `${element.offsetHeight}px`);
+    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(publish);
+
+    publish();
+    observer?.observe(element);
+    onCleanup(() => {
+      observer?.disconnect();
+      root.removeProperty(GROUPED_HEIGHT);
+    });
+  }
 
   private _groupTimerStep = 50;
   private _groupTimerCurrent = 0;

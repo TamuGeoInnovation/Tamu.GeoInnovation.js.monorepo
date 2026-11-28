@@ -203,15 +203,46 @@ memory_kills() {
   echo "$n"
 }
 
+# Prints, one per line, each task in a check log's "Failed tasks:" list that printed nothing of its own: no output
+# under its "> nx run" line but "Building...", or no such line at all. A task killed for memory can leave exactly that,
+# with no Killed, SIGKILL or 137 anywhere (#3622). Tested by scripts/check-in-volume.test.sh.
+silent_failures() {
+  awk '
+    FNR == 1 { pass++ }
+    pass == 1 && /^Failed tasks:/ { listing = 1; next }
+    pass == 1 && listing && /^- / { order[++n] = substr($0, 3); next }
+    pass == 1 && listing && !/^[[:space:]]*$/ { listing = 0 }
+    pass == 2 && /^> nx run / { task = $4; next }
+    pass == 2 && (/^(✔|✖|✘)  nx run / || /^ NX / || /^Failed tasks:/) { task = ""; next }
+    pass == 2 && task != "" && $0 !~ /^[[:space:]]*(❯[[:space:]]*)?Building\.\.\.[[:space:]]*$/ && $0 !~ /^[[:space:]]*$/ { said[task] = 1 }
+    END { for (i = 1; i <= n; i++) if (!(order[i] in said)) print order[i] }
+  ' "$1" "$1" 2>/dev/null
+}
+
 # Prints, for a check that failed and whose log shows a memory kill, that the failure was memory and what to set, so a
-# kill is not read as the code's fault; nothing otherwise (#3000). A GIS Day-wide affected set is killed at the
-# defaults; docs/build-times.md has the measurements.
+# kill is not read as the code's fault; nothing otherwise (#3000). A failed task that printed nothing at all is most
+# likely the same, and is named (#3622). A GIS Day-wide affected set is killed at the defaults; docs/build-times.md has
+# the measurements.
 memory_advice() {
-  local log="$1" code="$2" kills
+  local log="$1" code="$2" kills silent
   [ "$code" -ne 0 ] || return 0
-  kills="$(memory_kills "$log")" || return 0
-  echo "This failure includes $kills memory kill(s) (Killed, SIGKILL or exit 137): the container ran out of memory, which is not a fault in the code."
+  if kills="$(memory_kills "$log")"; then
+    echo "This failure includes $kills memory kill(s) (Killed, SIGKILL or exit 137): the container ran out of memory, which is not a fault in the code."
+  else
+    silent="$(silent_failures "$log" | paste -sd ' ' -)"
+    [ -n "$silent" ] || return 0
+    echo "$silent failed and printed nothing of their own. A task that fails with no error is most likely killed for memory, which is not a fault in the code; run them alone before changing anything."
+  fi
   echo "Run it again with fewer tasks at once, CHECK_PARALLEL=1 (a GIS Day-wide check needs it), or more memory, CHECK_MEMORY=24g if Docker has it; or run the failed projects alone."
+}
+
+# Copies a failed run's log beside it as <log>-failed-<UTC time>.log and prints the copy's path; nothing for a passing
+# run. The next run of the same check writes over its log, and a failure's evidence went with it (#3622).
+keep_failed_log() {
+  local log="$1" code="$2" kept
+  [ "$code" -ne 0 ] && [ -f "$log" ] || return 0
+  kept="${log%.log}-failed-$(date -u +%Y%m%dT%H%M%SZ).log"
+  cp "$log" "$kept" && echo "$kept"
 }
 
 # Runs <command> as the step <label>, and once more if it fails (#3695). For the steps that read the checkout at /src:
@@ -446,6 +477,7 @@ set -e
 grep "^unknown project: " "$log" | sed "s/^unknown project: /No such project: /" >&2 || true
 echo "Exit $code ($branch, $mode). Log: $log"
 memory_advice "$log" "$code" >&2
+kept="$(keep_failed_log "$log" "$code")" && [ -z "$kept" ] || echo "This failed run's log is kept as $kept; the next run writes over $log." >&2
 setup_advice "$log" "$code" >&2
 run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
   "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"

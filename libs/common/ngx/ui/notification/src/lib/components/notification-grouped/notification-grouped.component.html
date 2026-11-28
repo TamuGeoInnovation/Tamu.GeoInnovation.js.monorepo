@@ -1,5 +1,5 @@
 @if (groupVisible() && !blockedByModal()) {
-<div class="notification-grouped-wrapper" [ngClass]="[position(), groupShowing() ? 'show' : '']" (mouseenter)="pauseGroup()" (mouseleave)="resumeGroup()" (focusin)="pauseGroup()" (focusout)="resumeGroup()">
+<div #wrapper class="notification-grouped-wrapper" [ngClass]="[position(), groupShowing() ? 'show' : '']" (mouseenter)="pauseGroup()" (mouseleave)="resumeGroup()" (focusin)="pauseGroup()" (focusout)="resumeGroup()">
   <div class="status" [style.width.%]="groupTimerPercent()"></div>
   <div class="close material-icons" title="Close" aria-label="Close" tabindex="0" role="button" (click)="closeGroup()" (keydown.enter)="closeGroup()" (keydown.space)="closeGroup(); $event.preventDefault()">close</div>
   <!--

@@ -95,7 +95,8 @@
     ],
     "shortApplicationName": "Mays City Center",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 17
   },

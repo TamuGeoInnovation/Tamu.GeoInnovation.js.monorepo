@@ -172,20 +172,6 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   // womensBasketballParkingUrl now.
 };
 
-/**
- * Maps hidden from production's listings for a reason of their own, not because they are unfinished (#2753).
- *
- * `visible: false` on a map's Discover entry lists it where development-only features are on and nowhere else, which is
- * also how a development-only map is listed. A unit test (`development-only-gates.spec.ts`) requires every map hidden that
- * way to be checked by this suite - its route in a `DEVELOPMENT_ONLY_SERVICES` entry's `pages`, or a
- * `DEVELOPMENT_ONLY_CONTROLS` link to it - or to be here, with why. So a hidden map is never hidden by accident, and one
- * listed here and no longer hidden fails too.
- */
-export const LISTINGS_HIDDEN_FROM_PRODUCTION: Record<string, string> = {
-  '/events/move-out':
-    '#1691, #1704: hidden while its three dated periods are reviewed, so the page offers one entry per move-out'
-};
-
 /** Whether the environment under test renders the development variant. */
 export function developmentSectionsVisible(): boolean {
   const baseUrl = smokeBaseUrl();

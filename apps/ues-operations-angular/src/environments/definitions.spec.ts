@@ -37,6 +37,22 @@ describe('UES Operations search sources (#2420)', () => {
     }
   });
 
+  // #3921: ELECTRICAL_MANHOLES and DOMESTIC_COLD_WATER were each declared twice, the second copy identical to the
+  // first, so each search ran the same query twice and every match would have appeared twice. It was invisible only
+  // because cold water cannot match at all (#3879) - so this is checked here rather than left to be noticed when that
+  // is fixed, where it would have looked like the fix introducing duplicate results.
+  //
+  // The id, not the whole object: two sources may legitimately share a layer with different queries, as `building`
+  // and `building-exact` do, and that is a different list from this one.
+  it('declares each source once (#3921)', () => {
+    const counted = SearchSources.reduce<Record<string, number>>((all, s) => {
+      all[s.source] = (all[s.source] ?? 0) + 1;
+
+      return all;
+    }, {});
+
+    expect(Object.entries(counted).filter(([, times]) => times > 1)).toEqual([]);
+  });
   it('does not search transformers until UES says which field holds what UESID held', () => {
     const transformers = SearchSources.filter((s) => s.source === Definitions.TRANSFORMER.id);
 
