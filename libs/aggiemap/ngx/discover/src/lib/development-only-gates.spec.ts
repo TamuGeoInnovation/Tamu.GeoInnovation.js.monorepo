@@ -144,12 +144,9 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
 
   for (const route of linkedRoutes) {
     if (!build.hiddenListings.includes(route)) {
-      problems.push(
-        `a DEVELOPMENT_ONLY_CONTROLS link to ${route} expects it hidden on production, but it is listed there`
-      );
+      problems.push(`a DEVELOPMENT_ONLY_CONTROLS link to ${route} expects it hidden on production, but it is listed there`);
     }
   }
-
 
   // All Maps tiles and pages, both ways (#2788).
   for (const [gated, checked, gate, list] of [
@@ -157,7 +154,9 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
     [build.developmentOnlyPages, suite.pages, 'developmentOnly in its route data', 'DEVELOPMENT_ONLY_PAGES']
   ] as const) {
     for (const name of gated.filter((name) => !checked.includes(name))) {
-      problems.push(`${name} is development-only (${gate}), but ${list} does not name it, so nothing proves it off production`);
+      problems.push(
+        `${name} is development-only (${gate}), but ${list} does not name it, so nothing proves it off production`
+      );
     }
 
     for (const name of checked.filter((name) => !gated.includes(name))) {
@@ -198,7 +197,9 @@ function buildSide(): BuildSide {
       .filter((app) => isListed(app, true) && !isListed(app, false))
       .map((app) => getApplicationRoute(app).join('/')),
     developmentOnlyTiles: VISIT_MAPS_TILES.filter((tile) => tile.isDev).map((tile) => tile.label),
-    developmentOnlyPages: discoverRoutes.filter((route) => route.data?.['developmentOnly']).map((route) => `/all-maps/${route.path}`)
+    developmentOnlyPages: discoverRoutes
+      .filter((route) => route.data?.['developmentOnly'])
+      .map((route) => `/all-maps/${route.path}`)
   };
 }
 
@@ -264,7 +265,9 @@ describe('the cross-check', () => {
   it("accepts a development-only map the smoke suite's map check opens, whose service is on no list (#2767)", () => {
     const build: BuildSide = {
       ...none,
-      developmentOnlyMaps: [{ route: '/transportation/sustainable-transportation', urls: ['https://example.com/TS/BikeMap/MapServer/1'] }],
+      developmentOnlyMaps: [
+        { route: '/transportation/sustainable-transportation', urls: ['https://example.com/TS/BikeMap/MapServer/1'] }
+      ],
       hiddenListings: ['/transportation/sustainable-transportation']
     };
 
@@ -327,5 +330,4 @@ describe('the cross-check', () => {
       )
     ).toEqual([expect.stringContaining('one of them is stale')]);
   });
-
 });

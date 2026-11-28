@@ -172,7 +172,6 @@ export const DEVELOPMENT_ONLY_SERVICES: Record<
   // womensBasketballParkingUrl now.
 };
 
-
 /** Whether the environment under test renders the development variant. */
 export function developmentSectionsVisible(): boolean {
   const baseUrl = smokeBaseUrl();
