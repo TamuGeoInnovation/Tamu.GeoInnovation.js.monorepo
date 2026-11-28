@@ -72,7 +72,9 @@ test.describe("on a phone, a building's sheet can be closed (#1439)", () => {
 
     await expect(close, 'the sheet has no close control').toBeVisible();
     await close.click();
-    await expect(page.locator(SHEET), 'the close control did not close the sheet').toHaveClass(/hidden/, { timeout: 10_000 });
+    await expect(page.locator(SHEET), 'the close control did not close the sheet').toHaveClass(/hidden/, {
+      timeout: 10_000
+    });
   });
 
   test('by dragging its handle down', async ({ page }) => {
