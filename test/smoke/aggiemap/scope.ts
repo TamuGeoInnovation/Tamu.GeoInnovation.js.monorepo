@@ -144,6 +144,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths:
       /^libs\/(maps\/esri\/src\/lib\/services\/map\/fit\.ts|aggiemap\/ngx\/ui\/desktop\/src\/lib\/modules\/sidebar\/|maps\/feature\/trip-planner\/src\/lib\/services\/transportation\/bus\/)/,
     specs: ['bus-route-fit.spec.ts', 'directions.spec.ts']
+  },
+  {
+    // The phone layout's routes and menu, shared by every map that has one (#2997).
+    paths: /^libs\/aggiemap\/ngx\/ui\/mobile\//,
+    specs: ['mobile.spec.ts', 'bus.spec.ts']
   }
 ];
 
