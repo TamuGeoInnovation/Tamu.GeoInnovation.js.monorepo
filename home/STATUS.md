@@ -14,9 +14,10 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a81** (nightly smoke: #2784, #1748, #2397): started, measuring the runs first, 10:20 PM Central, 27 November.
+- Nothing: a81 done; listening. Q-a81-1 and Q-a81-2 are with the AggieMap director.
 
 ## Finished
+- **Batch a81** (report `home/reports/2026-11-27-a81.md`, 10:39 PM Central): `ci/1748-nightly-timeout-loud` ready (pre-pr-check Exit 0); #2784 closed as duplicate of #1748; #3908 filed; Q-a81-1, Q-a81-2 asked.
 - **Batch a80** (report `home/reports/2026-11-27-a80.md`, 10:14 PM Central): `fix/1250-campus-map-gear` and `fix/1501-soccer-parking-framing` ready (pre-pr-check Exit 0 each); #1727 closed, not reproduced; 25 maps counted for #1501; Q-a80-1 asked.
 - **Batch g133** (report `home/reports/2026-11-27-g133.md`, 9:01 PM Central): `chore/3807-park-question-types` at `ed0e2974b` and `chore/3826-park-unused-ngx-utilities` at `afb0e2a6f` (stacked on 3807), check and pre-pr-check Exit 0 each; tag parked/unused-ngx-utilities on 5110fe0cf.
 - **Batch a79** (report `home/reports/2026-11-27-a79.md`, 7:31 PM Central): branches ready `fix/1439-phone-sheet-dismiss` and `fix/2997-event-map-bus-link`, pre-pr-check Exit 0 each; #1440 needs no fix of its own once #1439 lands (on the issue).
