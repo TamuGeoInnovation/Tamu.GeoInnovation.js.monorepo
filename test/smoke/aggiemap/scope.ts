@@ -150,7 +150,6 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
       /^libs\/(maps\/esri\/src\/lib\/services\/map\/fit\.ts|aggiemap\/ngx\/ui\/desktop\/src\/lib\/modules\/sidebar\/|maps\/feature\/trip-planner\/src\/lib\/services\/transportation\/bus\/)/,
     specs: ['bus-route-fit.spec.ts', 'directions.spec.ts']
   }
-
 ];
 
 /** Paths that cannot change what a deployed AggieMap map does. GIS Day is another site with its own checks. */
