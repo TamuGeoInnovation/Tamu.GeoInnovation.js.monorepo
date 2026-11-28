@@ -23,7 +23,6 @@ export class LayerListComponent implements OnInit {
 
   public readonly allowedLayerIds = input<string[]>([]);
 
-
   /** The map's layers as the list's view model has them; it emits a new list when a layer is added or removed. */
   private readonly items = toSignal(this.layerListService.layers(), { initialValue: [] as Array<esri.ListItem> });
 

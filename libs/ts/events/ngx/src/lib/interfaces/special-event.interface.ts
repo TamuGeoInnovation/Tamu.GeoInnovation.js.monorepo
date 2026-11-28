@@ -195,7 +195,6 @@ export interface EventConfiguration {
    */
   exclusiveLayerIds?: string[];
 
-
   /**
    * `campus` opens the map on the campus basemap every time - the vector tiles, as `aggiemapBasemap()`
    * gives them (#2515) - rather than on the basemap the
