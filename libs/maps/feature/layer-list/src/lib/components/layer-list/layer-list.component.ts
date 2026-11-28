@@ -23,35 +23,21 @@ export class LayerListComponent implements OnInit {
 
   public readonly allowedLayerIds = input<string[]>([]);
 
-  /**
-   * How to order the rendered list.
-   *
-   * - `title` (default): alphabetical by layer title.
-   * - `allowed`: follows the order of `allowedLayerIds` so the list can match an external draw
-   *   order (e.g. the legend). Falls back to `title` ordering for any layer not in the list.
-   */
-  public readonly orderBy = input<'title' | 'allowed'>('title');
-
   /** The map's layers as the list's view model has them; it emits a new list when a layer is added or removed. */
   private readonly items = toSignal(this.layerListService.layers(), { initialValue: [] as Array<esri.ListItem> });
 
+  /**
+   * The map's layers in its draw order, top first, as the list's view model gives them and as the legend lists the same
+   * layers (#1433). It was alphabetical, so the two panels ordered the same layers differently on one screen; a map
+   * that wanted its own order had to ask for it (`referenceLayerListOrder`), and the three that did asked only to agree
+   * with the legend.
+   */
   public readonly layers = computed(() => {
     const layers = this.items();
-    const filtered =
-      this.allowedLayerIds().length > 0 ? layers.filter((l) => this.allowedLayerIds().includes(l.layer.id as string)) : [...layers];
 
-    if (this.orderBy() === 'allowed' && this.allowedLayerIds().length > 0) {
-      // `filtered` only contains allowed ids here, so order by their position in the list to
-      // match an external draw order (e.g. the legend).
-      return filtered.sort(
-        (a, b) => this.allowedLayerIds().indexOf(a.layer.id as string) - this.allowedLayerIds().indexOf(b.layer.id as string)
-      );
-    }
-
-    // Order layers by title
-    // TODO: This is potentially problematic because layer lists are inherently supposed to be ordered by the order of the layers in the map.
-    // However, we can't apply the order of the layers in the map because certain layers need to be at the top of the list due to rendering conflicts (occlusion, etc.)
-    return filtered.sort((a, b) => a.title.localeCompare(b.title));
+    return this.allowedLayerIds().length > 0
+      ? layers.filter((l) => this.allowedLayerIds().includes(l.layer.id as string))
+      : [...layers];
   });
 
   public responsive: ResponsiveSnapshot;

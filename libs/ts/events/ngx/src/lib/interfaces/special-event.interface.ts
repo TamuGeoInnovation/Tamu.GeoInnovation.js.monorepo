@@ -196,20 +196,6 @@ export interface EventConfiguration {
   exclusiveLayerIds?: string[];
 
   /**
-   * Controls how the sidebar "Layers" (TOC) list orders its entries.
-   *
-   * - `title` (default): alphabetical by layer title.
-   * - `source`: follows the event's reference/source order, matching the legend's draw order so
-   *   the two surfaces agree.
-   *
-   * Defaults to `title` when omitted to preserve existing behavior for other events.
-   *
-   * Declaring the sources in the order you want is only half of it - without `source` here the list
-   * sorts alphabetically and the declaration order does nothing. See `docs/map-layers.md`.
-   */
-  referenceLayerListOrder?: 'title' | 'source';
-
-  /**
    * `campus` opens the map on the campus basemap every time - the vector tiles, as `aggiemapBasemap()`
    * gives them (#2515) - rather than on the basemap the
    * visitor last chose on any map. An explicit `?basemap=` in the link still wins.

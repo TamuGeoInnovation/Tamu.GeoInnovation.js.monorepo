@@ -68,28 +68,27 @@ const MAIN_MAP = '/map/d';
 const MAIN_MAP_LAYERS = ['Visitor Parking', 'Construction Zones'];
 
 /**
- * The Layers list is alphabetical once its layers have their titles (#1939).
+ * The Layers list and the legend put the same layers in the same order: the map's draw order, top first (#1433).
  *
- * A layer whose definition gives it no title takes its service's name when it loads. The list was sorted
- * only when a layer was added or removed, and on ArcGIS 5 a layer is listed before it loads, so the list
- * was sorted while most titles were still empty and kept that order. On 18 October dev listed
- * "Construction, Route Stop/Start Points, Campus Stops, ..." on two loads in three, while production read
- * them alphabetically.
+ * The list was alphabetical and the legend followed the map, so on Men's Basketball the Layers list read Closures,
+ * Icons, Parking above a legend reading Icons, Closures, Parking, and a reader matching an entry to a layer had to do it
+ * by name. Each expected list is the draw order, and the legend must agree with the list on every layer both show.
  *
- * Whether a visit showed it depended on how soon the services answered, so the order is forced here, as
- * above: every layer's description, which is where its name comes from, is held back until the list has
- * been drawn without it, and the list must then sort itself.
+ * A layer whose definition gives it no title takes its service's name when it loads, and on ArcGIS 5 a layer is
+ * listed before it loads (#1939). The descriptions those names come from are held back until the list has been drawn
+ * without them, so a list that settled its order before its titles arrived is caught as well.
  */
-const ALPHABETICAL_LISTS: Record<string, string[]> = {
+const DRAW_ORDER_LISTS: Record<string, string[]> = {
+  '/events/mens-basketball': ['Basketball Icons', 'Basketball Closures', 'Basketball Parking'],
   '/parking/ts-main-parking': [
+    'Route Stop/Start Points',
     'Campus Stops',
     'Construction',
+    'Visitor Kiosks',
     'Parking Lots',
-    'RNS Spaces',
-    'Route Stop/Start Points',
-    'Visitor Kiosks'
+    'RNS Spaces'
   ],
-  '/parking/service-loading': ['Service Parking Lots', 'Service Parking Spaces']
+  '/parking/service-loading': ['Service Parking Spaces', 'Service Parking Lots']
 };
 
 /** A layer's description in its service, `.../FeatureServer/0?f=json`, which is not one of its queries. */
@@ -272,8 +271,8 @@ test.describe('legend', () => {
     }
   });
 
-  for (const [path, expected] of Object.entries(ALPHABETICAL_LISTS)) {
-    test(`the Layers list on ${path} is alphabetical once its layers are titled`, async ({ page }) => {
+  for (const [path, expected] of Object.entries(DRAW_ORDER_LISTS)) {
+    test(`the Layers list on ${path} is in draw order, as the legend is`, async ({ page }) => {
       test.setTimeout(150_000);
       await blockAnalytics(page);
       await page.route(LAYER_DESCRIPTION, async (route) => {
@@ -283,11 +282,21 @@ test.describe('legend', () => {
       await page.goto(path);
 
       const rows = page.locator('tamu-gisc-layer-list-item .layer-item > p');
+      const legend = page.locator('tamu-gisc-legend .collection-group-title-text');
+      const texts = async (locator: typeof rows) => (await locator.allTextContents()).map((text) => text.trim());
 
       await expect
-        .poll(async () => (await rows.allTextContents()).map((text) => text.trim()), {
-          message: `the Layers list on ${path} is not in alphabetical order`,
+        .poll(async () => await texts(rows), {
+          message: `the Layers list on ${path} is not in the map's draw order`,
           timeout: 120_000
+        })
+        .toEqual(expected);
+
+      // The legend lists a layer once it has been drawn, so it is read once it holds them all.
+      await expect
+        .poll(async () => (await texts(legend)).filter((title) => expected.includes(title)), {
+          message: `the legend on ${path} orders its layers differently from the Layers list`,
+          timeout: 60_000
         })
         .toEqual(expected);
     });

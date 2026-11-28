@@ -181,37 +181,20 @@ Replace that with the reason when one is reviewed, or delete the entry and the t
 
 ### How
 
-Two things together, and **both are needed**:
+**The Layers list and the legend both follow the map's draw order, top first**, so they always agree ([#1433][1433]).
+Order a map's layers by its drawing order (below), and both panels follow. There is nothing else to set.
 
-1. **Declare the layer sources in the order you want.** The legend draws in this order.
-2. **Set `referenceLayerListOrder: 'source'`** on the map's configuration.
+The list was alphabetical until 28 November 2026, and the legend followed the map, so on 27 of 62 maps the two panels put
+the same layers in different orders one above the other: Men's Basketball listed Closures, Icons, Parking above a legend
+reading Icons, Closures, Parking. A map could ask for its declaration order instead (`referenceLayerListOrder:
+'source'`), and the three that did (Fish Camp, Tailgating, Football) asked only so their list would agree with their
+legend ([#996][996]). That setting is gone.
 
-```ts
-export const FootballParkingConfiguration: EventConfiguration = {
-  id: 'gameday-parking',
-  // ...
-  referenceLayerListOrder: 'source',
-};
-```
+### When a layer should be listed somewhere else
 
-Without the second, the layer list sorts **alphabetically** and the declaration order does nothing.
-That is the half that is easy to miss: the Football micromobility layers were declared in service
-order and the list still read "Bike Dismount Zones, Bike Veo Geofence, Micromobility Parking Area"
-while the legend immediately below read the same three the other way round ([#996][996], [#1433][1433]).
-
-### When it is right
-
-**When the order means something** - a route and then where it ends, a parking area and then how to
-reach it. Alphabetical is a reasonable default for a list of unrelated layers and actively unhelpful
-for a sequence.
-
-Three maps use `source` today: Fish Camp, Tailgating and Football.
-
-### What it costs
-
-`framing.spec.ts` compares where every map opens against `framing-baseline.json`, and the legend and
-layer list are two surfaces that have to agree. Changing order means refreshing the baseline in the
-same pull request, or the check starts failing for a correct change - see [#1501][1501].
+Not by moving it in the list: the list says what the map draws, and a layer listed out of its drawing order is listed
+out of its legend's order too. If a layer belongs higher in the list, it belongs higher on the map; change the drawing
+order and say why beside the enum.
 
 ---
 
@@ -221,7 +204,7 @@ same pull request, or the check starts failing for a correct change - see [#1501
 
 On an event or parking map, **the order of the `references` enum is the drawing order, top first.**
 `EventService` adds a map's layers in the reverse of that order, each above the ones before it. The
-order of the sources array does not decide it, and the layer list's order is separate (above).
+order of the sources array does not decide it, and the Layers list and the legend follow it (above).
 
 Do not use `layerIndex` to order a map's own layers against each other. It is a position in the map's
 whole layer list, counted when the layer is added, and that list holds whatever else has loaded by then:
@@ -264,7 +247,6 @@ rediscover the reason - or, more likely, leave it alone because they cannot tell
 [1433]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1433
 [1496]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1496
 [1497]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1497
-[1501]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1501
 [1508]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1508
 [1802]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1802
 [2059]: https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/2059

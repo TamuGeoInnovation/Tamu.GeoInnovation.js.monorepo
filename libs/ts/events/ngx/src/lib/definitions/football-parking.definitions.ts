@@ -774,11 +774,6 @@ export const FootballParkingConfiguration: EventConfiguration = {
   scheduleUrl: 'https://12thman.com/sports/football/schedule',
   mapCenter: [-96.34344, 30.61011],
   zoom: 16,
-  // The layer list follows the order the layers are declared in, which is the order the services
-  // publish them. Alphabetical is the default and was the other half of "they appear to be
-  // scrambled" in #996: the entry map listed Bike Dismount Zones, Bike Veo Geofence, Micromobility
-  // Parking Area, while the legend right below it listed the same three the other way round (#1433).
-  referenceLayerListOrder: 'source',
   // Staff change a lot's class during game day, to Lot Closed for example, by editing the service, so the lots of every
   // vehicle mode and RV poll it (#1587). Nothing else on the map does.
   gameDayRefresh: {
