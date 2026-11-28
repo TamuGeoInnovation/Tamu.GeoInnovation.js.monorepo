@@ -69,6 +69,33 @@ printf 'Fixes https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorep
 expect "a URL and a number for one issue count once" 12 "$(closing_issues_in "$tmp/i3")"
 printf 'Refs #1977\n' >"$tmp/i4"
 expect "Refs #N names nothing, as it closes nothing" "" "$(closing_issues_in "$tmp/i4")"
+# Whether the set of issues a body closes is the set the author meant (#3910). GitHub closes every one of them on
+# merge, so a sentence written in passing closes somebody else's open issue, which #3703's check cannot reach: that
+# one fails a reference to a CLOSED issue, and an extra reference to an OPEN one passed. A pull request that really
+# fixes two issues says so with --closes, and the set must match exactly, so a mistyped number still fails.
+#
+# The expectations below are written out rather than computed from the function under test: a sweep whose expected
+# value came from calling closing_issues_in passed against a broken rule earlier this month, which is the trap.
+problem() { if closing_set_problem "$1" "${2:-}" >/dev/null; then echo no; else echo yes; fi }
+expect "one closing reference and no --closes is the normal case" no "$(problem '3910')"
+expect "two, with no --closes, fail: the second would close somebody else's work" yes "$(problem '3910
+1056')"
+expect "two, declared, pass - PR 3892 really did close #1439 and #1440" no "$(problem '1439
+1440' '1439,1440')"
+expect "the declared order does not matter" no "$(problem '1439
+1440' '1440, 1439')"
+expect "and a leading # is how a person types it, so that is accepted too" no "$(problem '1439
+1440' '#1439, #1440')"
+expect "two, with only one declared, still fail" yes "$(problem '1439
+1440' '1439')"
+expect "a declaration naming an issue the body does not close fails, which is the typo guard" yes "$(problem '1439
+1440' '1439,1440,1441')"
+expect "and so does one number declared against a different one in the body" yes "$(problem '3910' '1056')"
+expect "one number declared against itself is consistent, so it passes" no "$(problem '3910' '3910')"
+expect "no closing reference at all is not this step's failure - has_closing_reference reports that" no "$(problem '')"
+expect "the same issue named twice by two keywords is one issue, not two" no "$(problem '12
+12')"
+
 
 # The issue's state, with gh stubbed - the script must never need the network to be right, and must not stop a
 # pull request opening when it cannot reach GitHub.

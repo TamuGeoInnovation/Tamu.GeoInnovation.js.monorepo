@@ -85,7 +85,7 @@ of `affected` checks every project. Run `git fetch origin` first if `origin/deve
 **Before opening a pull request, run this, and open it only when it exits 0, docs-only changes included:**
 
 ```bash
-scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md [projects] [--label no-visible-change]
+scripts/pre-pr-check.sh <branch> '<title>' .pr-body.md [projects] [--label no-visible-change] [--closes <n>,<n>]
 ```
 
 It checks the branch the way its pull request will be checked: the drafted title and body against the same code CI
@@ -767,6 +767,12 @@ from that branch. Copying the branch to `<branch>-pr` and opening from the copy 
 `fixes`, `resolve` and `resolves` followed by `#N` *anywhere* in the body as "close #N on merge", so a
 sentence like "the next smoke run should close #1096" would close #1096 too. Reword such sentences,
 then check with `gh pr view <n> --json closingIssuesReferences`.
+
+**`pre-pr-check.sh` now fails a body that closes more than one issue**, printing each, so this is checked
+rather than remembered (#3910). A pull request that genuinely fixes two says so: `--closes 1439,1440`, and
+the set has to match the body exactly, so a stray or mistyped number still fails instead of riding along
+with the ones you meant. It was the harmful direction nothing reached: #3703's check fails a reference to a
+*closed* issue, and an extra reference to an *open* one - somebody else's live work - passed.
 
 **That check is not reliable straight after `gh pr create`.** GitHub populates the closing reference
 asynchronously, so for the first several minutes it comes back empty on a pull request whose body is

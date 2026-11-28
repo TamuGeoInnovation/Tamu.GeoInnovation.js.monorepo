@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Checks a branch the way its pull request will be checked, before the pull request opens (#3508):
 #
-#   scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]...
+#   scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]... [--closes <n>,<n>]
 #
 # From Git Bash, in the main checkout or any worktree, with the branch committed (only what is committed is checked).
 # <body file> is the drafted body, usually `.pr-body.md`. [projects] is passed to scripts/check-in-volume.sh as its
 # project list (comma-separated); without it the check is `affected`. --label names a label the pull request will
 # carry, such as no-visible-change, and may be given more than once.
+# --closes names every issue the body closes, when it closes more than one; one is the normal case and needs no
+# declaration.
 #
 # It runs, in order, and reports every failure rather than stopping at the first:
 #   1. the pull-request checks on the drafted title and body, with the code CI runs: the title (check-pr-title.mjs),
@@ -63,6 +65,53 @@ has_closing_reference() {
 closing_issues_in() {
   grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)' "$1" |
     grep -oE '[0-9]+$' | awk '!seen[$0]++'
+}
+
+# Prints <numbers> as a sorted, comma-separated list without repeats, from a newline- or comma-separated list
+# (--closes arrives comma-separated). Spaces round a number and a leading # are dropped, because --closes is typed
+# by hand and 'see #1439, #1440' is how a person writes a pair.
+number_list() {
+  printf '%s\n' "$1" | tr ',' '\n' | awk 'NF { sub(/^#/, "", $1); print $1 }' | sort -nu |
+    awk '{ printf "%s%s", (NR > 1 ? "," : ""), $0 } END { print "" }'
+}
+
+# Prints why <found> - every issue number a body's closing keywords name - is not the set the author meant, given
+# <declared>, the --closes list (usually empty); prints nothing and succeeds when it is.
+#
+# GitHub closes EVERY issue a closing keyword names, anywhere in the body, so one sentence written in passing closes
+# somebody else's open issue on merge: it drops off the board and the only trace is a timeline entry on an unrelated
+# pull request. CLAUDE.md has said for weeks that only the issue being fixed may follow a closing keyword, and nothing
+# mechanical checked it - the rule was followed by remembering it, and three bodies in one evening did not. It is also
+# the harmful direction #3703's check cannot reach: that one fails a reference to a CLOSED issue, and an extra
+# reference to an OPEN one passed.
+#
+# A pull request that genuinely fixes two issues is real (PR 3892 closed #1439 and #1440), so this is a step that can
+# be meant rather than a refusal: --closes names the set, and the set must match exactly, so a typo'd number in prose
+# still fails instead of being waved through with the rest (#3910).
+closing_set_problem() {
+  local found declared
+  found="$(number_list "$1")"
+  declared="$(number_list "${2:-}")"
+
+  [ "$found" = "$declared" ] && return 0
+
+  if [ -z "$declared" ]; then
+    case "$found" in
+      *,*) ;;
+      *) return 0 ;;
+    esac
+    echo "   The body closes more than one issue: $found."
+    echo "   Only the issue being fixed may follow a closing keyword (close, closes, fix, fixes, resolve, resolves)."
+    echo "   GitHub closes every one of them on merge, including somebody else's open work. Reword the others as"
+    echo "   'see #N' or 'refs #N', which do not close anything, or if this really does fix all of them, say so:"
+    echo "     --closes $found"
+    return 1
+  fi
+
+  echo "   --closes names $declared, and the body closes $found."
+  echo "   They have to match: that is what makes a mistyped or stray number fail rather than ride along with the"
+  echo "   ones you meant. Fix whichever is wrong."
+  return 1
 }
 
 # Prints OPEN, CLOSED, MISSING (there is no such issue), or nothing when GitHub could not be asked at all.
@@ -128,16 +177,18 @@ actionlint_image() {
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 if [ "$#" -lt 3 ]; then
-  echo "Usage: scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]..." >&2
+  echo "Usage: scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]... [--closes <n>,<n>]" >&2
   exit 2
 fi
 branch="$1" title="$2" body="$3"
 shift 3
 projects=""
 labels=()
+closes=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --label) labels+=("$2"); shift 2 ;;
+    --closes) closes="$2"; shift 2 ;;
     *) projects="$1"; shift ;;
   esac
 done
@@ -205,6 +256,10 @@ linked_issue() {
   if ! has_closing_reference "$tmp/body.md"; then
     echo "   The body has no closing reference (Closes #N): the pull request would fail Has a linked issue."
     return 1
+  fi
+
+  if ! closing_set_problem "$(closing_issues_in "$tmp/body.md")" "$closes"; then
+    bad=1
   fi
 
   for number in $(closing_issues_in "$tmp/body.md"); do
