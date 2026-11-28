@@ -424,13 +424,13 @@ test.describe('acting as production', () => {
 
         await expect
           .poll(() => reachable('tamu-gisc-notification-grouped .grouped-step:last-of-type'), {
-            message: 'something is drawn over the notice panel\'s next arrow',
+            message: "something is drawn over the notice panel's next arrow",
             timeout: 5_000
           })
           .toBe(true);
         await expect
           .poll(() => reachable('tamu-gisc-notification-grouped .grouped-step:first-of-type'), {
-            message: 'something is drawn over the notice panel\'s previous arrow',
+            message: "something is drawn over the notice panel's previous arrow",
             timeout: 5_000
           })
           .toBe(true);
