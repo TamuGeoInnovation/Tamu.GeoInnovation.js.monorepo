@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Checks a branch the way its pull request will be checked, before the pull request opens (#3508):
 #
-#   scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]...
+#   scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]... [--closes <n>,<n>]
 #
 # From Git Bash, in the main checkout or any worktree, with the branch committed (only what is committed is checked).
 # <body file> is the drafted body, usually `.pr-body.md`. [projects] is passed to scripts/check-in-volume.sh as its
 # project list (comma-separated); without it the check is `affected`. --label names a label the pull request will
 # carry, such as no-visible-change, and may be given more than once.
+# --closes names every issue the body closes, when it closes more than one; one is the normal case and needs no
+# declaration.
 #
 # It runs, in order, and reports every failure rather than stopping at the first:
 #   1. the pull-request checks on the drafted title and body, with the code CI runs: the title (check-pr-title.mjs),
@@ -16,6 +18,8 @@
 #      no-visible-change label (require-release-notes.mjs), and before/after images for a visible change
 #      (require-screenshots.mjs);
 #   2. the scripts' own test suites when the branch changes scripts/ or a workflow, and the tools' when it changes tools/;
+#   2b. actionlint when it changes a workflow or action, and testing-page.yml's two checks when it changes a smoke
+#      spec or the testing page - both cost nothing here and a branch could pass this script and open red (#3915);
 #   3. scripts/check-in-volume.sh for the branch: lint, test, build and lint.yml's other steps, docs-only changes included.
 #
 # No pull request opens until this exits 0 (CLAUDE.md, the maintainer's 1A of 24 November 2026), and its last line goes
@@ -63,6 +67,53 @@ closing_issues_in() {
     grep -oE '[0-9]+$' | awk '!seen[$0]++'
 }
 
+# Prints <numbers> as a sorted, comma-separated list without repeats, from a newline- or comma-separated list
+# (--closes arrives comma-separated). Spaces round a number and a leading # are dropped, because --closes is typed
+# by hand and 'see #1439, #1440' is how a person writes a pair.
+number_list() {
+  printf '%s\n' "$1" | tr ',' '\n' | awk 'NF { sub(/^#/, "", $1); print $1 }' | sort -nu |
+    awk '{ printf "%s%s", (NR > 1 ? "," : ""), $0 } END { print "" }'
+}
+
+# Prints why <found> - every issue number a body's closing keywords name - is not the set the author meant, given
+# <declared>, the --closes list (usually empty); prints nothing and succeeds when it is.
+#
+# GitHub closes EVERY issue a closing keyword names, anywhere in the body, so one sentence written in passing closes
+# somebody else's open issue on merge: it drops off the board and the only trace is a timeline entry on an unrelated
+# pull request. CLAUDE.md has said for weeks that only the issue being fixed may follow a closing keyword, and nothing
+# mechanical checked it - the rule was followed by remembering it, and three bodies in one evening did not. It is also
+# the harmful direction #3703's check cannot reach: that one fails a reference to a CLOSED issue, and an extra
+# reference to an OPEN one passed.
+#
+# A pull request that genuinely fixes two issues is real (PR 3892 closed #1439 and #1440), so this is a step that can
+# be meant rather than a refusal: --closes names the set, and the set must match exactly, so a typo'd number in prose
+# still fails instead of being waved through with the rest (#3910).
+closing_set_problem() {
+  local found declared
+  found="$(number_list "$1")"
+  declared="$(number_list "${2:-}")"
+
+  [ "$found" = "$declared" ] && return 0
+
+  if [ -z "$declared" ]; then
+    case "$found" in
+      *,*) ;;
+      *) return 0 ;;
+    esac
+    echo "   The body closes more than one issue: $found."
+    echo "   Only the issue being fixed may follow a closing keyword (close, closes, fix, fixes, resolve, resolves)."
+    echo "   GitHub closes every one of them on merge, including somebody else's open work. Reword the others as"
+    echo "   'see #N' or 'refs #N', which do not close anything, or if this really does fix all of them, say so:"
+    echo "     --closes $found"
+    return 1
+  fi
+
+  echo "   --closes names $declared, and the body closes $found."
+  echo "   They have to match: that is what makes a mistyped or stray number fail rather than ride along with the"
+  echo "   ones you meant. Fix whichever is wrong."
+  return 1
+}
+
 # Prints OPEN, CLOSED, MISSING (there is no such issue), or nothing when GitHub could not be asked at all.
 #
 # Nothing is not a failure: a machine with no network must still be able to open a pull request, so the caller carries
@@ -103,20 +154,41 @@ suites_for() {
   ' "$list"
 }
 
+# Prints which of the pull request's other checks <changed list> calls for, one per line: `actionlint` when a workflow
+# or a composite action changed, `testing-page` when a smoke spec or the testing page did.
+#
+# These are CI checks that cost nothing to run here and were not run here, so a branch could pass this script and
+# open red. PR 3911 did, on a one-line expression in the wrong place (#3915). Tested by scripts/pre-pr-check.test.sh.
+ci_checks_for() {
+  local list="$1"
+  awk -F'	' '
+    $2 ~ /^[.]github\/(workflows|actions)\// { a = 1 }
+    $2 ~ /^test\/smoke\// || $2 == "docs/testing.md" { p = 1 }
+    END { if (a) print "actionlint"; if (p) print "testing-page" }
+  ' "$list"
+}
+
+# Prints the actionlint image reference actionlint.yml runs, so the digest is not written down twice and the two
+# cannot drift. Empty when it cannot be read.
+actionlint_image() {
+  grep -oE 'rhysd/actionlint@sha256:[0-9a-f]+' "$1/.github/workflows/actionlint.yml" 2>/dev/null | head -n 1
+}
 # Sourced (by the test): stop here, with only the functions defined.
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 if [ "$#" -lt 3 ]; then
-  echo "Usage: scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]..." >&2
+  echo "Usage: scripts/pre-pr-check.sh <branch> <title> <body file> [projects] [--label <name>]... [--closes <n>,<n>]" >&2
   exit 2
 fi
 branch="$1" title="$2" body="$3"
 shift 3
 projects=""
 labels=()
+closes=""
 while [ "$#" -gt 0 ]; do
   case "$1" in
     --label) labels+=("$2"); shift 2 ;;
+    --closes) closes="$2"; shift 2 ;;
     *) projects="$1"; shift ;;
   esac
 done
@@ -186,6 +258,10 @@ linked_issue() {
     return 1
   fi
 
+  if ! closing_set_problem "$(closing_issues_in "$tmp/body.md")" "$closes"; then
+    bad=1
+  fi
+
   for number in $(closing_issues_in "$tmp/body.md"); do
     state="$(issue_state "$number")"
     case "$state" in
@@ -215,6 +291,50 @@ no_tracked_body() {
     return 1
   fi
 }
+# The branch's own files, exported to <dir> from the commit rather than read off disk: only what is committed is
+# checked, as the rest of this script is. <paths> are the paths to export.
+export_branch() {
+  local dir="$1"
+  shift
+  mkdir -p "$dir"
+  git -C "$here" archive "$branch" -- "$@" | tar -x -C "$dir"
+}
+
+# actionlint, in the image and with the arguments actionlint.yml uses, on the branch's .github. Verified to run
+# unchanged on these machines while fixing PR 3911 (#3915).
+workflow_lint() {
+  local dir="$tmp/actionlint" image
+  export_branch "$dir" .github || return 1
+  # actionlint looks for a project root and refuses an exported directory without one ("no project was found in any
+  # parent directories"). An empty repository is enough, and it keeps the invocation identical to the one in CI.
+  git -C "$dir" init -q >/dev/null 2>&1 || true
+  image="$(actionlint_image "$dir")"
+  [ -n "$image" ] || { echo "   No actionlint image in .github/workflows/actionlint.yml, so it is not run here."; return 0; }
+  MSYS_NO_PATHCONV=1 docker run --rm -v "$(docker_path "$dir"):/repo" -w /repo "$image" -color
+}
+
+# testing-page.yml's two checks, which are plain greps: docs/testing.md names every smoke spec (#2002), and only
+# map-probe.ts names the map probe's global (#2603, #3473). Run on the exported branch, not the working tree.
+testing_page() {
+  local dir="$tmp/testing-page" name found bad=0
+  export_branch "$dir" test/smoke docs/testing.md || return 1
+  for spec in "$dir"/test/smoke/aggiemap/*.spec.ts; do
+    [ -e "$spec" ] || continue
+    name="$(basename "$spec")"
+    grep -qF "\`$name\`" "$dir/docs/testing.md" || {
+      echo "   $name is not named in docs/testing.md. Add its row: the test count, what it catches and the issue behind it."
+      bad=1
+    }
+  done
+  found="$(grep -rlF '__tamuGiscMapProbe' "$dir/test/smoke" --include='*.ts' | grep -v '/test/smoke/aggiemap/map-probe\.ts$' || true)"
+  if [ -n "$found" ]; then
+    echo "   These name __tamuGiscMapProbe; import PROBE_GLOBAL from test/smoke/aggiemap/map-probe.ts instead:"
+    printf '     %s
+' $found
+    bad=1
+  fi
+  return "$bad"
+}
 suite() { # scripts | tools
   case "$1" in
     # In node:24.22.3, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
@@ -233,6 +353,12 @@ step "No drafted body committed" no_tracked_body
 step "Pull request title, release notes and images" pr_checks
 for s in $(suites_for "$tmp/changed.tsv"); do
   step "The $s test suites" suite "$s"
+done
+for c in $(ci_checks_for "$tmp/changed.tsv"); do
+  case "$c" in
+    actionlint) step "actionlint" workflow_lint ;;
+    testing-page) step "The testing page lists every smoke spec" testing_page ;;
+  esac
 done
 step "check-in-volume.sh (lint, test, build, lint.yml's steps)" bash "$here/scripts/check-in-volume.sh" "$branch" ${projects:+"$projects"}
 

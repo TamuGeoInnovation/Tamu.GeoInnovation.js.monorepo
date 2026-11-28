@@ -69,6 +69,33 @@ printf 'Fixes https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorep
 expect "a URL and a number for one issue count once" 12 "$(closing_issues_in "$tmp/i3")"
 printf 'Refs #1977\n' >"$tmp/i4"
 expect "Refs #N names nothing, as it closes nothing" "" "$(closing_issues_in "$tmp/i4")"
+# Whether the set of issues a body closes is the set the author meant (#3910). GitHub closes every one of them on
+# merge, so a sentence written in passing closes somebody else's open issue, which #3703's check cannot reach: that
+# one fails a reference to a CLOSED issue, and an extra reference to an OPEN one passed. A pull request that really
+# fixes two issues says so with --closes, and the set must match exactly, so a mistyped number still fails.
+#
+# The expectations below are written out rather than computed from the function under test: a sweep whose expected
+# value came from calling closing_issues_in passed against a broken rule earlier this month, which is the trap.
+problem() { if closing_set_problem "$1" "${2:-}" >/dev/null; then echo no; else echo yes; fi }
+expect "one closing reference and no --closes is the normal case" no "$(problem '3910')"
+expect "two, with no --closes, fail: the second would close somebody else's work" yes "$(problem '3910
+1056')"
+expect "two, declared, pass - PR 3892 really did close #1439 and #1440" no "$(problem '1439
+1440' '1439,1440')"
+expect "the declared order does not matter" no "$(problem '1439
+1440' '1440, 1439')"
+expect "and a leading # is how a person types it, so that is accepted too" no "$(problem '1439
+1440' '#1439, #1440')"
+expect "two, with only one declared, still fail" yes "$(problem '1439
+1440' '1439')"
+expect "a declaration naming an issue the body does not close fails, which is the typo guard" yes "$(problem '1439
+1440' '1439,1440,1441')"
+expect "and so does one number declared against a different one in the body" yes "$(problem '3910' '1056')"
+expect "one number declared against itself is consistent, so it passes" no "$(problem '3910' '3910')"
+expect "no closing reference at all is not this step's failure - has_closing_reference reports that" no "$(problem '')"
+expect "the same issue named twice by two keywords is one issue, not two" no "$(problem '12
+12')"
+
 
 # The issue's state, with gh stubbed - the script must never need the network to be right, and must not stop a
 # pull request opening when it cannot reach GitHub.
@@ -109,6 +136,29 @@ expect "nor does a branch with no body at all - the usual case, drafted on disk 
 printf 'added\tdocs/.pr-body.md\n' >"$tmp/b5"
 tracked_body_in "$tmp/b5" && r=yes || r=no
 expect "and the name must be exactly .pr-body.md at the top, as CI greps for it" no "$r"
+# Which of the pull request's other checks a change calls for (#3915). PR 3911 opened red on actionlint, which this
+# script did not run, over a one-line expression in the wrong place.
+printf 'modified\t.github/workflows/aggiemap-smoke.yml\n' >"$tmp/k1"
+expect "a workflow change calls for actionlint" actionlint "$(ci_checks_for "$tmp/k1")"
+printf 'added\t.github/actions/setup/action.yml\n' >"$tmp/k2"
+expect "so does a composite action" actionlint "$(ci_checks_for "$tmp/k2")"
+printf 'added\ttest/smoke/aggiemap/new.spec.ts\n' >"$tmp/k3"
+expect "a new smoke spec calls for the testing page's checks" testing-page "$(ci_checks_for "$tmp/k3")"
+printf 'modified\tdocs/testing.md\n' >"$tmp/k4"
+expect "and so does the testing page itself" testing-page "$(ci_checks_for "$tmp/k4")"
+printf 'modified\t.github/workflows/lint.yml\nadded\ttest/smoke/aggiemap/a.spec.ts\n' >"$tmp/k5"
+expect "a branch touching both calls for both" "actionlint testing-page" "$(ci_checks_for "$tmp/k5" | tr '\n' ' ' | sed 's/ $//')"
+printf 'modified\tlibs/maps/esri/src/x.ts\nmodified\tCLAUDE.md\n' >"$tmp/k6"
+expect "an ordinary branch calls for neither, so it pulls no container it does not need" "" "$(ci_checks_for "$tmp/k6")"
+printf 'modified\t.github/pull_request_template.md\n' >"$tmp/k7"
+expect "a change elsewhere under .github does not, since actionlint lints workflows and actions" "" "$(ci_checks_for "$tmp/k7")"
+
+# The actionlint image is read from actionlint.yml, so the digest is not written down twice (it is pinned by digest
+# because a tag can be moved, and it runs on every pull request that touches a workflow).
+mkdir -p "$tmp/img/.github/workflows"
+printf '            rhysd/actionlint@sha256:abc123 -color\n' >"$tmp/img/.github/workflows/actionlint.yml"
+expect "the actionlint image comes from the workflow, not a second copy of the digest" "rhysd/actionlint@sha256:abc123" "$(actionlint_image "$tmp/img")"
+expect "and is empty when the workflow cannot be read, so the step says so rather than failing" "" "$(actionlint_image "$tmp/nothing-here")"
 # Which suites a change calls for.
 printf 'modified\tscripts/tidy.sh\n' >"$tmp/c1"
 expect "a script change runs the scripts' suites" scripts "$(suites_for "$tmp/c1")"
