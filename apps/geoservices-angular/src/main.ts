@@ -21,8 +21,24 @@ import { AppComponent } from './app/app.component';
 const routes: Routes = [
   {
     path: 'internal',
+    // No guard, and that is recorded rather than an oversight (#1877). AuthGuard exists in
+    // @tamu-gisc/geoservices/data-access and nothing has ever used it: the line below it was commented out in this
+    // app's first commit and carried through two refactors. Enabling it as written would not work, and enabling it at
+    // all is a decision, not a tidy-up:
+    //
+    //   - it redirects a signed-out visitor to `api`, which is not a route here. The paths are `internal`, `docs`
+    //     and `''`, so that redirect matches nothing;
+    //   - there is no sign-in page in this application at all - nothing calls AuthService.login - so there is no
+    //     in-app place to send someone. A session is established on the legacy site and carried here by the cookie;
+    //   - the data is not protected by this guard in any case. Every internal page reads the legacy API with
+    //     `withCredentials`, and AuthService treats its not-logged-in response as signed out, so without a session
+    //     the pages show nothing. The guard would change what a signed-out visitor sees, not what they can read;
+    //   - and AuthService.state falls back to `loggedIn: false` on any error, so a transient legacy-API failure
+    //     would bounce a signed-in user off pages they are entitled to. That is the risk to weigh.
+    //
+    // What a signed-out visitor sees today is an empty account page, which is its own fault; #3919 carries that
+    // decision with the trade-off written down.
     loadChildren: () => import('@tamu-gisc/geoservices/ngx').then((m) => m.geoservicesInternalRoutes)
-    // canActivateChild: [AuthGuard]
   },
   {
     path: 'docs',

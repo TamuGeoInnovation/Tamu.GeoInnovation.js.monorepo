@@ -35,12 +35,19 @@ Closes #
 ## Release notes
 
 <!--
-  Anything with a user-visible result adds its entry to docs/releases/unreleased.md in this pull
-  request, with the before/after images above linked from docs/screenshots/<slug>/. Nobody writes
-  the notes later. See docs/releases/README.md.
+  Anything with a user-visible result adds ONE NEW FILE, docs/releases/unreleased/<issue>-<slug>.md, in
+  this pull request, with the before/after images above linked from docs/screenshots/<slug>/ and its row
+  for "What to test on dev" in the front matter. Nobody writes the notes later.
+
+  A new file, not a line in unreleased.md: two pull requests editing that file at the same line conflicted
+  every time, six in one day, and an entry resolved at speed is how one silently disappears (#2037). A GIS
+  Day entry declares `app: gisday` in its front matter, so it is collated separately.
+
+  docs/releases/unreleased/README.md has the format; docs/releases/README.md has the release sequence.
+  Check it with `node scripts/collate-release-notes.mjs --check`, which CI runs on every entry.
 -->
 
-- [ ] Entry added to `docs/releases/unreleased.md`, with screenshots
+- [ ] Entry added as `docs/releases/unreleased/<issue>-<slug>.md`, with screenshots and its *What to test on dev* row
 - [ ] Not user-visible (tests, CI, internal docs), so no entry needed
 
 ## How it was verified
