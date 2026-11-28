@@ -1,6 +1,67 @@
 # Home machine: current tasks
 
-## Batch a84 (aggiemap: two ordering and overlap faults — #1433, #1828; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
+## Batch a85 (aggiemap: framing and a popup throw — #3907, #1411; 28 November 2026, from `work (aggiemap)`) (Medium) — **now**
+
+### Decided, from a84
+
+- **Both branches are open: [PR 3931](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3931) (#1433) and [PR 3932](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3932) (#1828).** Opened from your commits unchanged, your bodies verbatim, both issues In Progress. Nothing to do on them.
+- **Q-a84-1: A, keep the deletion.** You did the thing that settles it rather than the thing that argues it: you built both ways and read all 62 lists. An unused option kept "in case" is a mechanism nobody has had to justify, and the one use it was being kept for would re-create the disagreement #1433 exists to remove.
+- **Q-a84-2: A, as built.** The reasoning is the part worth keeping: whether the panel is showing is the panel's state and not the service's, so a control reading the service is wrong at exactly the moments that matter (countdown, hover, held behind a modal). A CSS custom property with a `0px` fallback is also the only one of the two shapes that cannot change production, since nothing there sets it.
+- **Q-a84-3: A, and the note is posted** on [#3695](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3695#issuecomment-7238318820) with your symptoms. No code change: a second retry would have got you through today and would also have hidden the new fact, which is that a repeated ENOMEM is now possible on a quiet machine. Your seeding workaround is in the note as a workaround, not as a change to the script.
+- **Your count correction (eleven to thirteen) is the right instinct.** A number you have already reported, corrected the moment you re-measure, costs one line; the same number left standing becomes the one somebody quotes back.
+
+### Task 1: #3907, the first handful of off-centre maps
+
+[#3907](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/3907) is your own a80 measurement, written up: 24 maps open at a centre that cuts off one of their own layers, where the declared zoom would fit it. The issue asks for **a handful of maps per pull request**, so this is the first handful.
+
+**This branch stacks on [PR 3906](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/pull/3906) (#1501), which is still open.** `layer-in-view.spec.ts`, `framing.spec.ts` and `framing-baseline.json` all arrive with it, and #3907's method is written in terms of them. So: branch from `fix/1501-soccer-parking-framing`, merge the latest `development` into it, and say in the body that it is stacked on 3906 and must merge after it. Do not re-create any part of 3906 on your branch.
+
+**The six, chosen because each is cut off at both widths** (the strongest evidence, and the least likely to be one far outlier):
+
+| Map | Layer named in #3907 |
+| --- | --- |
+| `/events/fire-school` | `fire-school-parking-lots` (desktop), `fire-school-road-closures` (phone) |
+| `/events/hs-graduation-2026` | `hs-graduation-traffic-advisories`, both |
+| `/events/phys-eng-fest` | the westbound bus route, pedestrian path and bus dropoff, both; two eastbound layers on the phone as well |
+| `/parking/cross-country-parking` | `cross-country-parking-lots`, both |
+| `/events/muster` | `muster-traffic-flow` (desktop) |
+| `/events/beef-cattle-vendor` | `beef-cattle-no-parking-zones` (desktop) |
+
+**`fish-camp` and `gameday-parking` are deliberately left out of this handful**, even though both are cut off at both widths: PR 3931 edits both of their definition files, and a second branch editing the same files is a conflict for no gain. They go in the next handful once 3931 merges.
+
+**Follow #3907's five steps exactly** — derive the centre from the layer's own extent and comment the derivation beside the numbers, keep the declared zoom unless the layer will not fit 375 pixels at it, add each map as a case to `layer-in-view.spec.ts`, leave `framing-baseline.json` alone (it is refreshed from production after the release, and the *What to test on dev* row says so), and before and after images at both widths.
+
+**A map that turns out to need nothing is a result, not a gap.** The issue says so itself: an extent covers every feature, so one outlier can make a layer look cut off. If one of the six is fine by eye, say so with the measurement and leave it out of the fix — that closes its row in #3907 as surely as a changed centre does.
+
+### Task 2: #1411, the Ring Day popup throw
+
+[#1411](https://github.com/TamuGeoInnovation/Tamu.GeoInnovation.js.monorepo/issues/1411): clicking a Ring Day popup throws a TypeError reading a property of undefined, in `TripPlannerConnectionService.connection`. Production throws it today too. The popup still opens and its copied link is correct, so a visitor sees nothing wrong.
+
+**The decision is made, so you need not come back for it:** find out whether the trip planner is meant to work on event maps at all.
+
+- If **it is not** — event maps have no routing network wired up — then the fix is that the popup does not offer the action on those maps, not a null guard that leaves a dead control behind. A guard alone would turn a thrown error into a button that silently does nothing, which is harder to find next time.
+- If **it is** meant to work, the undefined is missing data or missing setup, and that is the fix.
+- A guard is right **only** if the throw is a race on a connection that does arrive. If you find that, say so and guard it.
+
+**Ask the service before concluding anything about the data** (CLAUDE.md's rule, and the four faults in one week that each looked like a rename). Say in the body which of the three it turned out to be, and what you asked.
+
+**The check must fail first.** The issue suggests the shape: clicking an event map feature raises no page error. A smoke check that watches for page errors while clicking is worth more than a unit test here, because the throw is in a service reached through a real popup.
+
+### Don't touch
+
+Every open pull request's branch, so nothing you build sits on code that is about to change:
+
+`aggiemap-cms-integration`, `fix/3802-dated-branch-volume`, `fix/3622-silent-task-memory`, `ci/3878-typecheck-e2e`, `chore/1899-gisday-501-stubs`, `fix/1848-null-coordinate-tofixed`, `docs/3798-cr-check`, `chore/3807-park-question-types`, `chore/3826-park-unused-ngx-utilities`, `fix/1250-campus-map-gear`, `fix/3802-volume-name-from-issue`, `ci/1748-nightly-timeout-loud`, `fix/3702-pre-pr-check-tracked-body`, `fix/3703-pre-pr-check-closed-issue`, `docs/3714-pr-template-release-notes`, `fix/3622-silent-build-failure`, `fix/3915-pre-pr-check-ci-gaps`, `fix/1877-geoservices-internal-guard`, `fix/3921-ues-duplicate-search-sources`, `test/3364-basemap-requests-settle`, `fix/1936-baseline-error-pages`, `fix/1937-baseline-wait-drawn`, `fix/3910-pre-pr-check-one-closing`, `fix/1704-discover-visible-everywhere`, `fix/1433-layers-in-draw-order`, `fix/1828-acting-as-production-clears-notices`.
+
+**`fix/1501-soccer-parking-framing` is the exception** — task 1 branches from it on purpose.
+
+Also leave `scripts/pre-pr-check.sh` and `scripts/check-in-volume.sh` alone: four open pull requests edit the first, and the second is mine tonight.
+
+### When you are done
+
+Report as usual in `home/reports/2026-11-28-a85.md`, say **branch ready: <names>**, and list anything you filed. Questions go under **Questions for the home session** with options and a recommendation; do not wait on an answer to finish the rest.
+
+## Batch a84 (aggiemap: two ordering and overlap faults — #1433, #1828; 28 November 2026, from `work (aggiemap)`) (Medium) — done, PRs 3931 and 3932
 
 ### Decided, from a83
 
