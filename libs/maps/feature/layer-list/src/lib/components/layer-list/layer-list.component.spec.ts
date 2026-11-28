@@ -13,11 +13,12 @@ interface FakeItem {
 }
 
 /**
- * The list is alphabetical by title, and a layer whose definition gives it no title takes its service's
- * name once it loads (#1939). On ArcGIS 5 the list's items exist before their layers load, so the list
- * was sorted once while most titles were still empty and kept that order: `/parking/ts-main-parking`
- * read "Construction, Route Stop/Start Points, Campus Stops, ..." on dev while production, on 4.27, read
- * them alphabetically.
+ * The list is in the map's draw order, top first, which is the order its view model gives and the order the legend
+ * shows (#1433). It was alphabetical, so the two panels put the same layers in different orders on one screen: Men's
+ * Basketball's Layers read Closures, Icons, Parking above a legend reading Icons, Closures, Parking.
+ *
+ * A layer whose definition gives it no title takes its service's name once it loads (#1939). With no sort, a title
+ * arriving late cannot leave the list in the wrong order, which is what #1939 was.
  */
 describe('LayerListComponent', () => {
   /** The watches the fake reactiveUtils holds. `changed` runs each one, as ArcGIS would after a change. */
@@ -86,7 +87,20 @@ describe('LayerListComponent', () => {
     TestBed.overrideComponent(LayerListComponent, { set: { template: '', imports: [] } });
   });
 
-  it('sorts layers alphabetically once titles that arrive after the list was built are in', async () => {
+  it("keeps the map's draw order, not the titles' alphabetical order (#1433)", async () => {
+    // Men's Basketball, top first, as the map draws them and the legend lists them.
+    items = [
+      { title: 'Basketball Icons', layer: { id: 'icons' } },
+      { title: 'Basketball Closures', layer: { id: 'closures' } },
+      { title: 'Basketball Parking', layer: { id: 'parking' } }
+    ];
+
+    const component = await create();
+
+    expect(titles(component)).toEqual(['Basketball Icons', 'Basketball Closures', 'Basketball Parking']);
+  });
+
+  it('keeps the draw order once titles that arrive after the list was built are in (#1939)', async () => {
     items = [
       { title: 'Construction', layer: { id: 'construction' } },
       { title: '', layer: { id: 'route-points' } },
@@ -95,14 +109,25 @@ describe('LayerListComponent', () => {
 
     const component = await create();
 
-    // Drawn once while two titles are still empty, as the page draws the list before its layers load.
-    expect(titles(component)).toEqual(['', '', 'Construction']);
-
     items[1].title = 'Route Stop/Start Points';
     items[2].title = 'Campus Stops';
     changed();
 
-    expect(titles(component)).toEqual(['Campus Stops', 'Construction', 'Route Stop/Start Points']);
+    expect(titles(component)).toEqual(['Construction', 'Route Stop/Start Points', 'Campus Stops']);
+  });
+
+  it('follows the map when its draw order changes', async () => {
+    items = [
+      { title: 'Lots', layer: { id: 'lots' } },
+      { title: 'Spaces', layer: { id: 'spaces' } }
+    ];
+
+    const component = await create();
+
+    items.reverse();
+    changed();
+
+    expect(titles(component)).toEqual(['Spaces', 'Lots']);
   });
 
   it('lists a layer added after the list was built', async () => {
@@ -112,7 +137,7 @@ describe('LayerListComponent', () => {
 
     expect(titles(component)).toEqual(['Parking Lots']);
 
-    items.push({ title: 'Campus Stops', layer: { id: 'stops' } });
+    items.unshift({ title: 'Campus Stops', layer: { id: 'stops' } });
     changed();
 
     expect(titles(component)).toEqual(['Campus Stops', 'Parking Lots']);
