@@ -11,7 +11,8 @@
 # It runs, in order, and reports every failure rather than stopping at the first:
 #   1. the pull-request checks on the drafted title and body, with the code CI runs: the title (check-pr-title.mjs),
 #      no committed .pr-body.md (as pr-title.yml reads it),
-#      a closing reference to an issue (as require-linked-issue.yml reads it), a release-notes entry or the
+#      a closing reference to an OPEN issue (as require-linked-issue.yml reads it, plus the issue's state), a
+#      release-notes entry or the
 #      no-visible-change label (require-release-notes.mjs), and before/after images for a visible change
 #      (require-screenshots.mjs);
 #   2. the scripts' own test suites when the branch changes scripts/ or a workflow, and the tools' when it changes tools/;
@@ -56,6 +57,17 @@ has_closing_reference() {
   grep -qiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)' "$1"
 }
 
+# Prints every issue number a closing keyword names in <body file>, one per line, in order and without repeats.
+closing_issues_in() {
+  grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)' "$1" |
+    grep -oE '[0-9]+$' | awk '!seen[$0]++'
+}
+
+# Prints OPEN or CLOSED for issue <number>, or nothing when GitHub could not be asked. Nothing is not a failure: a
+# machine with no network must still be able to open a pull request, so the caller carries on and says so.
+issue_state() {
+  gh issue view "$1" --json state --jq .state 2>/dev/null
+}
 # Succeeds when <changed list> shows the branch adding or changing .pr-body.md, which is pr-title.yml's
 # "No drafted body committed" exactly: the pull request's own file list, every status but removed.
 #
@@ -147,13 +159,34 @@ pr_checks() {
       "'
 }
 
+# A closing reference the pull request will be accepted on, naming an issue that is still OPEN. CI's "Has a linked
+# issue" only wants a reference to exist, so a body naming a closed - sometimes retracted - issue passed both it and
+# this script. PR 3697 was drafted with `Closes #3679` while #3679 was open; #3679 was then closed as not-a-fault and
+# retracted, and nothing mechanical noticed. A pull request does not reopen an issue it closes, so the work lands
+# attached to nothing - the same effect as having no issue at all, which is the thing the rule exists to prevent
+# (#1056, #3703).
 linked_issue() {
-  if has_closing_reference "$tmp/body.md"; then
-    echo "   Closes: $(grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*#[0-9]+' "$tmp/body.md" | head -n 3 | tr '\n' ' ')"
-  else
+  local number state bad=0
+
+  if ! has_closing_reference "$tmp/body.md"; then
     echo "   The body has no closing reference (Closes #N): the pull request would fail Has a linked issue."
     return 1
   fi
+
+  for number in $(closing_issues_in "$tmp/body.md"); do
+    state="$(issue_state "$number")"
+    case "$state" in
+      OPEN) echo "   Closes #$number, which is open." ;;
+      CLOSED)
+        echo "   #$number is CLOSED. A pull request does not reopen an issue it closes, so this work would be"
+        echo "   recorded against nothing. Point the body at an issue that states what it actually fixes."
+        bad=1
+        ;;
+      *) echo "   Closes #$number; could not ask GitHub whether it is open, so carrying on." ;;
+    esac
+  done
+
+  return "$bad"
 }
 
 no_tracked_body() {
