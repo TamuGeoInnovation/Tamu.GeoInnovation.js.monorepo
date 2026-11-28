@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a82** (visual baselines: #1936, #1937): started, reading the capture tool, 10:43 PM Central, 27 November.
+- **Batch a82** (visual baselines: #1936, #1937): production capture done (734 captured, 0 failed, 0 unfinished, 171 min); running check-in-volume and pre-pr-check on both branches, 1:41 AM Central, 28 November.
 
 ## Finished
 - **Batch a81** (report `home/reports/2026-11-27-a81.md`, 10:39 PM Central): `ci/1748-nightly-timeout-loud` ready (pre-pr-check Exit 0); #2784 closed as duplicate of #1748; #3908 filed; Q-a81-1, Q-a81-2 asked.
