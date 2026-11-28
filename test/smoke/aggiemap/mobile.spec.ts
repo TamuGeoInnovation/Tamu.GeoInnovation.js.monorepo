@@ -224,6 +224,20 @@ test.describe('on a phone, an event map', () => {
       await expect(page.locator(item.shows).first(), `${item.name} on the tailgating map showed nothing`).toBeVisible({
         timeout: 60_000
       });
+
+      if (item.name === 'Bus Routes') {
+        // A route's page, and back from it, stay on the map too: its back arrow was `map/m/bus`.
+        await page
+          .locator('tamu-gisc-bus-route', { has: page.locator('.route-number', { hasText: /^\s*01\s*$/ }) })
+          .locator('.route-overview')
+          .click();
+        await expect.poll(() => new URL(page.url()).pathname, { timeout: 30_000 }).toBe('/events/tailgating/map/m/bus/01');
+
+        await page.getByRole('button', { name: 'Back' }).click();
+        await expect
+          .poll(() => new URL(page.url()).pathname, { message: "a route's back arrow left the map", timeout: 30_000 })
+          .toBe('/events/tailgating/map/m/bus');
+      }
     });
   }
 });
