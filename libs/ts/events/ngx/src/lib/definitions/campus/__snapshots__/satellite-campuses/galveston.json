@@ -97,7 +97,8 @@
     ],
     "shortApplicationName": "Galveston",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 16
   },
