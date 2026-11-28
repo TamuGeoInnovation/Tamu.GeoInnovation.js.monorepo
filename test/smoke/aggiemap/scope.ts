@@ -132,6 +132,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths: /^libs\/ts\/events\/ngx\/src\/lib\/definitions\/(dining|tailgating|tailgating-kiosk)\.definitions\.ts$/,
     specs: ['kiosk.spec.ts']
   },
+  {
+    // A map's own layer in view when it opens (#1501): the maps it checks.
+    paths: /^libs\/ts\/events\/ngx\/src\/lib\/definitions\/soccer-parking\.definitions\.ts$/,
+    specs: ['layer-in-view.spec.ts', 'framing.spec.ts']
+  },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {
     // The basemap gallery, and the campus maps' side panel that opens it (#1250).
