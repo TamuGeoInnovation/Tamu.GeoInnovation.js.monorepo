@@ -160,7 +160,10 @@ export class AllMapsComponent implements OnInit {
   }
 
   public get allEvents(): InternalDiscoverApplication[] {
+    // Every event, retired ones included, but not a map with `visible: false`: that is in no listing, this one included,
+    // so the undated Move Out is not offered beside its three dated periods here either (#1704).
     return this.allEventApplications
+      .filter((app) => isListed(app, true))
       .filter((app) => app.mapTypes.includes('campus') || app.mapTypes.includes('athletics'))
       .sort((a, b) => a.name.localeCompare(b.name));
   }

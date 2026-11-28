@@ -681,9 +681,9 @@ export interface DiscoverMetadata {
   /**
    * Whether the map is in the listings and search. Defaults to `true` when omitted.
    *
-   * `false` means "not in the listings or search" on **every** environment, development included; the map's link still
-   * works, and dev's All Events list, which keeps every event, still shows it (#1704). It is for a map kept only so old
-   * links resolve, such as the undated Move Out. It once meant "not in production's listings", so development listed
+   * `false` means "not in the listings or search" on **every** environment, development included, dev's All Events
+   * list too; the map's link still works (#1704). It is for a map kept only so old links resolve, such as the undated
+   * Move Out. It once meant "not in production's listings", so development listed
    * what production did not. A map that should be listed on development only is `developmentOnly` instead.
    */
   visible?: boolean;
