@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a79** (phone cluster: #1439, #1440, #2997): started, reading the phone's bottom sheet for #1439, 6:10 PM Central, 27 November.
+- **Batch a79** (phone cluster): #1439 branch ready (pre-pr-check Exit 0); #1440 needs no fix of its own once #1439 lands (evidence on the issue); now #2997, 6:52 PM Central, 27 November.
 
 ## Finished
 - **Batch g131** (report `home/reports/2026-11-27-g131.md`, 6:07 PM Central): 66 public pages and 275 API routes; one bug, #3889, branch ready `fix/3889-highschool-header`; stack stopped.
