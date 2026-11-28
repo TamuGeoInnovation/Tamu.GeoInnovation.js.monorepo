@@ -573,14 +573,6 @@ export class Event extends GuidIdentity {
 }
 
 @Entity({
-  name: 'question_types'
-})
-export class QuestionType extends GuidIdentity {
-  @Column({ nullable: false })
-  public type: string;
-}
-
-@Entity({
   name: 'event_rating_questions'
 })
 export class EventRatingQuestion extends GuidIdentity {
@@ -1505,7 +1497,6 @@ export const GISDAY_ENTITIES = [
   Event,
   EventBroadcast,
   EventLocation,
-  QuestionType,
   EventRatingQuestion,
   EventRatingResponse,
   Organization,
