@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- Nothing: a80 done; listening. Q-a80-1 is with the AggieMap director.
+- **Batch a81** (nightly smoke: #2784, #1748, #2397): started, measuring the runs first, 10:20 PM Central, 27 November.
 
 ## Finished
 - **Batch a80** (report `home/reports/2026-11-27-a80.md`, 10:14 PM Central): `fix/1250-campus-map-gear` and `fix/1501-soccer-parking-framing` ready (pre-pr-check Exit 0 each); #1727 closed, not reproduced; 25 maps counted for #1501; Q-a80-1 asked.
