@@ -18,6 +18,7 @@ The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47
 - **Batch a73** (#3687, park the bus UI the retired API fed): started, reading which of the three components anything live reaches, %s Central, 27 November.
 
 ## Finished
+- **Batch g131** (report `home/reports/2026-11-27-g131.md`, 6:07 PM Central): 66 public pages and 275 API routes; one bug, #3889, branch ready `fix/3889-highschool-header`; stack stopped.
 - GIS Day sign-in: yes (27 November 2026)
 - **Batch g132** (report `home/reports/2026-11-27-g132.md`, 5:27 PM Central): signed in at gisday.local.test as the test admin, no consent screen, reached /admin/dashboards/rsvps.
 - **Batch a73** (report `home/reports/2026-11-26-a73.md`, 5:08 PM Central): branch ready `chore/3687-park-bus-timetable-ui` at `ab7fad385`; bus-switch parked, bus-timetable and bus-timetable-bottom live and kept; bus.spec 25/25 before and after; check and pre-pr-check Exit 0.
