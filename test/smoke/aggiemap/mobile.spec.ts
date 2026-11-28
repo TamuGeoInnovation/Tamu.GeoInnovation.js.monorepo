@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { PHONE_VIEWPORT, expect, test } from './fixtures';
 import { MANIFEST_PATH, MapManifest } from './global-setup';
 import { blockAnalytics } from './analytics';
+import { skipUntilDeployed } from './deployed';
 import { developmentSectionsVisible } from './development-only';
 import { ProbeLayer, waitForMapDrawn, waitForMapReady } from './map-probe';
 
@@ -192,6 +193,53 @@ test.describe('on a phone, an event map', () => {
       'the locate button should be in the column of Legend'
     ).toBeLessThanOrEqual(4);
   });
+
+  /**
+   * The phone menu's Bus Routes and Directions keep the visitor on the event map (#2997).
+   *
+   * The phone menu is one component on every map, but its two items were absolute addresses, `/map/m/bus` and
+   * `/map/m/trip`. So on the tailgating map, Bus Routes threw the visitor onto the main campus map's bus list, which the
+   * event maps had no phone route for, and Directions onto the main map's trip planner. The desktop panel solved the same
+   * drift with one shared route list (#2758); the phone has its own now, and the items are relative.
+   */
+  for (const item of [
+    { name: 'Bus Routes', lands: '/m/bus', shows: 'tamu-gisc-bus-route' },
+    { name: 'Directions', lands: '/m/trip', shows: 'tamu-gisc-trip-planner-bottom, tamu-gisc-trip-planner-top' }
+  ]) {
+    test(`keeps the visitor on the map when ${item.name} is chosen from its menu (#2997)`, async ({ page }) => {
+      test.setTimeout(180_000);
+      // The phone menu's Directions came with #3507; a build from before it has none to choose.
+      if (item.name === 'Directions') skipUntilDeployed('#3507');
+      await blockAnalytics(page);
+      await page.goto('/events/tailgating/map/m/sidebar', { waitUntil: 'domcontentloaded' });
+
+      const link = page.getByRole('link', { name: item.name, exact: true });
+
+      await expect(link, `the tailgating map's phone menu has no ${item.name}`).toBeVisible({ timeout: 90_000 });
+      await link.click();
+
+      await expect
+        .poll(() => new URL(page.url()).pathname, { message: `${item.name} left the tailgating map`, timeout: 30_000 })
+        .toBe(`/events/tailgating/map${item.lands}`);
+      await expect(page.locator(item.shows).first(), `${item.name} on the tailgating map showed nothing`).toBeVisible({
+        timeout: 60_000
+      });
+
+      if (item.name === 'Bus Routes') {
+        // A route's page, and back from it, stay on the map too: its back arrow was `map/m/bus`.
+        await page
+          .locator('tamu-gisc-bus-route', { has: page.locator('.route-number', { hasText: /^\s*01\s*$/ }) })
+          .locator('.route-overview')
+          .click();
+        await expect.poll(() => new URL(page.url()).pathname, { timeout: 30_000 }).toBe('/events/tailgating/map/m/bus/01');
+
+        await page.getByRole('button', { name: 'Back' }).click();
+        await expect
+          .poll(() => new URL(page.url()).pathname, { message: "a route's back arrow left the map", timeout: 30_000 })
+          .toBe('/events/tailgating/map/m/bus');
+      }
+    });
+  }
 });
 
 /** The layer the map draws a chosen feature into, and how many graphics it holds. */
