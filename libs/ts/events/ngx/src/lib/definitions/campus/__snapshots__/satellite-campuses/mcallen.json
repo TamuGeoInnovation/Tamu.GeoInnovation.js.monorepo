@@ -89,7 +89,8 @@
     ],
     "shortApplicationName": "McAllen",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 18
   },
