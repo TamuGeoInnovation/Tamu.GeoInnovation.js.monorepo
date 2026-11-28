@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-- **Batch a83** (#1704, #3908, #1618): started on #1704 (discover.visible on every environment), 2:24 AM Central, 28 November.
+- **Batch a83** (#1704, #3908, #1618): #1704 ready (pre-pr-check Exit 0); #3908 answered (fixed by #3824, not deployed); #1618 before-count running on dev, 3:06 AM Central, 28 November.
 
 ## Finished
 - **Batch a82** (report `home/reports/2026-11-28-a82.md`, 2:18 AM Central): `fix/1936-baseline-error-pages` and `fix/1937-baseline-wait-drawn` (stacked on 1936) ready (pre-pr-check Exit 0 each); full production set 734 captured, 0 failed, 0 unfinished, 171 min.
