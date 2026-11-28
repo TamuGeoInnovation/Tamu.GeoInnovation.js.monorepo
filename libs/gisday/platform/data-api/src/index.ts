@@ -7,7 +7,6 @@ export * from './lib/_base/private-fields.interceptor';
 export * from './lib/check-in/check-in.module';
 export * from './lib/class/class.module';
 export * from './lib/event/event.module';
-export * from './lib/question-type/question-type.module';
 export * from './lib/rsvp-type/rsvp-type.module';
 export * from './lib/speaker/speaker.module';
 export * from './lib/speaker-edit/speaker-edit.module';

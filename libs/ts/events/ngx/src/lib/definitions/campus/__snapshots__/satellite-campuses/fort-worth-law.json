@@ -95,7 +95,8 @@
     ],
     "shortApplicationName": "Fort Worth Law School",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 17
   },

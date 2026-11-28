@@ -14,7 +14,7 @@ import { DesktopGuard, MobileGuard } from '@tamu-gisc/common/utils/device/guards
 
 import { LayerListService } from '@tamu-gisc/maps/feature/layer-list';
 
-import { BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
+import { BASEMAP_GALLERY_OPTIONS, BasemapGalleryOptions, BasemapGalleryService } from '@tamu-gisc/maps/feature/basemap';
 
 import { LegendService } from '@tamu-gisc/maps/feature/legend';
 import { RouterHistoryService } from '@tamu-gisc/common/ngx/router';
@@ -36,12 +36,33 @@ function eventSidebarOptions(): SidebarOptions {
   };
 }
 
+/**
+ * The basemap gallery on this map (#1250): a satellite campus offers the world basemaps only, since College Station's
+ * draw nothing there. Read when the gallery is made, by which time the map's definition has loaded.
+ */
+function eventBasemapGalleryOptions(): BasemapGalleryOptions {
+  const settings = inject(EventSettingsService);
+
+  return {
+    get collegeStation() {
+      return settings.eventConfiguration()?.discover?.type !== 'satellite-campus';
+    }
+  };
+}
+
 export const mapRoutes: Routes = [
   {
     path: '',
     component: MapComponent,
     // The services the map's NgModule used to scope to this lazy route (#1602). Whether each belongs at the root instead is #1603.
-    providers: [LayerListService, LegendService, BasemapGalleryService, RouterHistoryService, TestingService],
+    providers: [
+      LayerListService,
+      LegendService,
+      BasemapGalleryService,
+      { provide: BASEMAP_GALLERY_OPTIONS, useFactory: eventBasemapGalleryOptions },
+      RouterHistoryService,
+      TestingService
+    ],
     children: [
       {
         path: '',

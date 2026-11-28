@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EventConfiguration } from '@tamu-gisc/ts/events/ngx';
 
 import { InternalDiscoverApplication } from '../../interfaces/discover-application.interface';
+import { getApplicationRoute } from '../../components/discover.utils';
 import { DiscoveryService, isListed } from './discovery.service';
 
 describe('DiscoveryService', () => {
@@ -72,8 +73,27 @@ describe('DiscoveryService', () => {
     });
 
     it('lists a development-only map only where development features are on', () => {
-      expect(isListed({ visible: false }, true)).toBe(true);
+      expect(isListed({ developmentOnly: true }, true)).toBe(true);
+      expect(isListed({ developmentOnly: true }, false)).toBe(false);
+    });
+
+    // `visible: false` means "not in the listings", on every environment (#1704). It meant "not in production's
+    // listings", so development offered the undated Move Out beside its three dated periods, which is what #1691 set
+    // out to stop, and development stopped showing what production would.
+    it('never lists a map with visible: false, on either environment (#1704)', () => {
+      expect(isListed({ visible: false }, true)).toBe(false);
       expect(isListed({ visible: false }, false)).toBe(false);
+    });
+
+    it('offers the undated Move Out on neither environment, and its three dated periods on both (#1704)', () => {
+      for (const isTesting of [true, false]) {
+        const listed = service.listedApplications(isTesting).map((app) => getApplicationRoute(app).join('/'));
+
+        expect(listed).not.toContain('/events/move-out');
+        expect(listed).toEqual(
+          expect.arrayContaining(['/events/spring-move-out', '/events/summer-i-move-out', '/events/summer-ii-move-out'])
+        );
+      }
     });
 
     it('gives a development-only map to a listing on development and withholds it on production', () => {
@@ -99,12 +119,13 @@ describe('DiscoveryService', () => {
   });
 
   // Micromobility was the example here until #2895 sent it to production; the NCAA Volleyball map is the
-  // development-only one now. The pair of assertions is what matters: `visible` false, and absent from the
-  // list the public pages render.
+  // development-only one now. The pair of assertions is what matters: marked development-only, and absent from the
+  // list the public pages render. It is not `visible: false`, which would hide it on development too (#1704).
   it('keeps a development-only map off the public lists (#2713)', () => {
     const volleyball = service.getInternalDiscoverApplications().find((app) => app.id === 'ncaa-volleyball');
 
-    expect(volleyball?.visible).toBe(false);
+    expect(volleyball?.developmentOnly).toBe(true);
+    expect(volleyball?.visible).toBe(true);
     expect(service.getVisibleInternalDiscoverApplications().map((app) => app.id)).not.toContain('ncaa-volleyball');
   });
 

@@ -95,7 +95,8 @@
     ],
     "shortApplicationName": "HSC Corpus Christi",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 18
   },

@@ -13,19 +13,18 @@ import {
   DEVELOPMENT_ONLY_PAGES,
   DEVELOPMENT_ONLY_ALL_MAPS_TILES,
   DEVELOPMENT_ONLY_CONTROLS,
-  DEVELOPMENT_ONLY_SERVICES,
-  LISTINGS_HIDDEN_FROM_PRODUCTION
+  DEVELOPMENT_ONLY_SERVICES
 } from '../../../../../../test/smoke/aggiemap/development-only';
 import { getApplicationRoute } from './components/discover.utils';
 import { VISIT_MAPS_TILES } from './components/visit-maps-nav/visit-maps-nav.component';
 import { discoverRoutes } from './discover.routes';
-import { DiscoveryService } from './services/discovery/discovery.service';
+import { DiscoveryService, isListed } from './services/discovery/discovery.service';
 
 /**
  * The two ways to keep something off production, and the smoke suite's lists that prove them, agree (#2753).
  *
  * The rule: **a thing that reads a service is left out of a production build** (`DEVELOPMENT_ONLY_LAYER_SOURCES`, or
- * `developmentOnly` on a map); **structure is gated at run time** with `TestingService` (`visible: false` on a listing,
+ * `developmentOnly` on a map); **structure is gated at run time** with `TestingService` (`developmentOnly` on a listing,
  * `isTesting` in a template). The smoke suite's lists in `test/smoke/aggiemap/development-only.ts` are what asserts each
  * gate worked on a deployed build. Until this, the two sides were kept together by comments ("take it out of here and
  * out of the smoke suite's list together"), which is #1090's shape: the gate existed and nothing asserted it.
@@ -50,7 +49,10 @@ interface BuildSide {
    * suite opens its own address and requires it to land under `/map` on production (#2769).
    */
   developmentOnlyMaps: Array<{ route: string; urls: string[] }>;
-  /** Maps listed on development and not on production (`visible: false`), by route. */
+  /**
+   * Maps listed on development and not on production, by route: the listing rule (`isListed`) asked both ways. A map
+   * with `visible: false` is listed on neither, so it is not here (#1704).
+   */
   hiddenListings: string[];
   /** All Maps tiles rendered only on development (`isDev`), by label. */
   developmentOnlyTiles: string[];
@@ -62,7 +64,6 @@ interface BuildSide {
 interface SuiteSide {
   services: Record<string, { pages: string[]; runTimeGate?: string }>;
   controls: Array<{ name: string; selector: string }>;
-  hiddenForOtherReasons: Record<string, string>;
   /**
    * The addresses the smoke suite's development-only map check opens, expecting the main map on production
    * (`development-only.spec.ts`, #2742, #2767). It covers every map `developmentOnly` marks, read from
@@ -113,13 +114,12 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
     const asserted =
       services.some(([, service]) => service.pages.includes(route)) ||
       suite.checkedMaps.includes(route) ||
-      linkedRoutes.includes(route) ||
-      route in suite.hiddenForOtherReasons;
+      linkedRoutes.includes(route);
 
     if (!asserted) {
       problems.push(
-        `${route} is hidden from production's listings (visible: false), but the suite checks it nowhere: list its route ` +
-          `in a service's pages, add a DEVELOPMENT_ONLY_CONTROLS link to it, or say why in LISTINGS_HIDDEN_FROM_PRODUCTION`
+        `${route} is listed on development and not on production, but the suite checks it nowhere: list its route ` +
+          `in a service's pages, or add a DEVELOPMENT_ONLY_CONTROLS link to it`
       );
     }
   }
@@ -144,15 +144,7 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
 
   for (const route of linkedRoutes) {
     if (!build.hiddenListings.includes(route)) {
-      problems.push(
-        `a DEVELOPMENT_ONLY_CONTROLS link to ${route} expects it hidden on production, but its listing is not visible: false`
-      );
-    }
-  }
-
-  for (const route of Object.keys(suite.hiddenForOtherReasons)) {
-    if (!build.hiddenListings.includes(route)) {
-      problems.push(`LISTINGS_HIDDEN_FROM_PRODUCTION names ${route}, which is not hidden: take it out`);
+      problems.push(`a DEVELOPMENT_ONLY_CONTROLS link to ${route} expects it hidden on production, but it is listed there`);
     }
   }
 
@@ -162,7 +154,9 @@ function disagreements(build: BuildSide, suite: SuiteSide): string[] {
     [build.developmentOnlyPages, suite.pages, 'developmentOnly in its route data', 'DEVELOPMENT_ONLY_PAGES']
   ] as const) {
     for (const name of gated.filter((name) => !checked.includes(name))) {
-      problems.push(`${name} is development-only (${gate}), but ${list} does not name it, so nothing proves it off production`);
+      problems.push(
+        `${name} is development-only (${gate}), but ${list} does not name it, so nothing proves it off production`
+      );
     }
 
     for (const name of checked.filter((name) => !gated.includes(name))) {
@@ -199,9 +193,13 @@ function buildSide(): BuildSide {
         urls: urlsOf(event.sources)
       };
     }),
-    hiddenListings: listings.filter((app) => app.visible === false).map((app) => getApplicationRoute(app).join('/')),
+    hiddenListings: listings
+      .filter((app) => isListed(app, true) && !isListed(app, false))
+      .map((app) => getApplicationRoute(app).join('/')),
     developmentOnlyTiles: VISIT_MAPS_TILES.filter((tile) => tile.isDev).map((tile) => tile.label),
-    developmentOnlyPages: discoverRoutes.filter((route) => route.data?.['developmentOnly']).map((route) => `/all-maps/${route.path}`)
+    developmentOnlyPages: discoverRoutes
+      .filter((route) => route.data?.['developmentOnly'])
+      .map((route) => `/all-maps/${route.path}`)
   };
 }
 
@@ -212,7 +210,6 @@ const DECLARED: Record<string, { address?: string }> = JSON.parse(
 const SUITE: SuiteSide = {
   services: DEVELOPMENT_ONLY_SERVICES,
   controls: DEVELOPMENT_ONLY_CONTROLS,
-  hiddenForOtherReasons: LISTINGS_HIDDEN_FROM_PRODUCTION,
   checkedMaps: Object.values(DECLARED).flatMap((map) => (map.address ? [map.address] : [])),
   tiles: DEVELOPMENT_ONLY_ALL_MAPS_TILES,
   pages: Object.keys(DEVELOPMENT_ONLY_PAGES).filter((address) => address.startsWith('/all-maps/'))
@@ -242,7 +239,7 @@ describe('development-only gates and the smoke suite agree (#2753)', () => {
 
 /**
  * The check itself, on small cases. The first is the shape of the bus map (#2743): a listing gated at run time
- * (`visible: false`), with no service of its own, asserted by a `DEVELOPMENT_ONLY_CONTROLS` link rather than by the
+ * (`developmentOnly`), with no service of its own, asserted by a `DEVELOPMENT_ONLY_CONTROLS` link rather than by the
  * services list - the choice that entry made among four lists, which the check has to be able to express.
  */
 describe('the cross-check', () => {
@@ -253,7 +250,7 @@ describe('the cross-check', () => {
     developmentOnlyTiles: [],
     developmentOnlyPages: []
   };
-  const empty: SuiteSide = { services: {}, controls: [], hiddenForOtherReasons: {}, checkedMaps: [], tiles: [], pages: [] };
+  const empty: SuiteSide = { services: {}, controls: [], checkedMaps: [], tiles: [], pages: [] };
 
   it('fails an All Maps tile or page gated in the code that the suite does not check, and the reverse (#2788)', () => {
     expect(disagreements({ ...none, developmentOnlyTiles: ['Transportation'] }, empty)).toEqual([
@@ -268,7 +265,9 @@ describe('the cross-check', () => {
   it("accepts a development-only map the smoke suite's map check opens, whose service is on no list (#2767)", () => {
     const build: BuildSide = {
       ...none,
-      developmentOnlyMaps: [{ route: '/transportation/sustainable-transportation', urls: ['https://example.com/TS/BikeMap/MapServer/1'] }],
+      developmentOnlyMaps: [
+        { route: '/transportation/sustainable-transportation', urls: ['https://example.com/TS/BikeMap/MapServer/1'] }
+      ],
       hiddenListings: ['/transportation/sustainable-transportation']
     };
 
@@ -282,7 +281,7 @@ describe('the cross-check', () => {
 
   it('fails a hidden listing that nothing in the suite checks', () => {
     expect(disagreements({ ...none, hiddenListings: ['/map/d/bus'] }, empty)).toEqual([
-      expect.stringContaining('/map/d/bus is hidden from production')
+      expect.stringContaining('/map/d/bus is listed on development and not on production')
     ]);
   });
 
@@ -330,11 +329,5 @@ describe('the cross-check', () => {
         { ...empty, services: { 'Hosted/NatureRx_view': { pages: [], runTimeGate: 'somewhere' } } }
       )
     ).toEqual([expect.stringContaining('one of them is stale')]);
-  });
-
-  it('fails a reason kept for a listing that is no longer hidden', () => {
-    expect(disagreements(none, { ...empty, hiddenForOtherReasons: { '/events/move-out': 'because' } })).toEqual([
-      expect.stringContaining('/events/move-out, which is not hidden')
-    ]);
   });
 });
