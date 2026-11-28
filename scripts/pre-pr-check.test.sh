@@ -80,7 +80,8 @@ cat >"$ghbin/gh" <<'STUB'
 case "$3" in
   3696) echo OPEN ;;
   3679) echo CLOSED ;;
-  *) echo "no such issue" >&2; exit 1 ;;
+  9999999) echo "GraphQL: Could not resolve to an issue or pull request with the number of 9999999. (repository.issue)" >&2; exit 1 ;;
+  *) echo "dial tcp: lookup api.github.com: no such host" >&2; exit 1 ;;
 esac
 STUB
 chmod +x "$ghbin/gh"
@@ -88,6 +89,9 @@ state() { PATH="$ghbin:$PATH" bash -c '. "$1"; issue_state "$2"' _ "$(dirname $0
 expect "an open issue reads OPEN" OPEN "$(state 3696)"
 expect "a closed one reads CLOSED, which is the case that must fail" CLOSED "$(state 3679)"
 expect "a gh that cannot answer gives nothing, and nothing is not CLOSED" "" "$(state 99999)"
+# An issue that does not exist is a typo in the body, not a network failure, and gh says so differently. Without
+# this the two were the same answer and a typo'd number passed the check - met on a body naming #3923.
+expect "an issue that does not exist reads MISSING, which is a failure rather than 'could not check'" MISSING "$(state 9999999)"
 # A committed .pr-body.md, which pr-title.yml fails and this script did not look for (#3702). PR 3697 opened
 # with pre-pr-check: Exit 0 and failed that check at once.
 printf 'added\t.pr-body.md\n' >"$tmp/b1"

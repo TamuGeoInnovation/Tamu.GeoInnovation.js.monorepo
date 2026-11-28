@@ -63,10 +63,23 @@ closing_issues_in() {
     grep -oE '[0-9]+$' | awk '!seen[$0]++'
 }
 
-# Prints OPEN or CLOSED for issue <number>, or nothing when GitHub could not be asked. Nothing is not a failure: a
-# machine with no network must still be able to open a pull request, so the caller carries on and says so.
+# Prints OPEN, CLOSED, MISSING (there is no such issue), or nothing when GitHub could not be asked at all.
+#
+# Nothing is not a failure: a machine with no network must still be able to open a pull request, so the caller carries
+# on and says so. MISSING is, because a body naming an issue that does not exist is a typo, and a typo that reads as
+# "could not check" is the hole this exists to close - found by walking into it, on a body naming #3923.
+# gh says "Could not resolve to an issue or pull request with the number of N" for a number that is not there, which
+# is how the two are told apart.
 issue_state() {
-  gh issue view "$1" --json state --jq .state 2>/dev/null
+  local out status
+  out="$(gh issue view "$1" --json state --jq .state 2>&1)"
+  status=$?
+
+  if [ "$status" -eq 0 ]; then
+    echo "$out"
+  elif printf '%s' "$out" | grep -qF 'Could not resolve to an issue or pull request'; then
+    echo MISSING
+  fi
 }
 # Succeeds when <changed list> shows the branch adding or changing .pr-body.md, which is pr-title.yml's
 # "No drafted body committed" exactly: the pull request's own file list, every status but removed.
@@ -180,6 +193,11 @@ linked_issue() {
       CLOSED)
         echo "   #$number is CLOSED. A pull request does not reopen an issue it closes, so this work would be"
         echo "   recorded against nothing. Point the body at an issue that states what it actually fixes."
+        bad=1
+        ;;
+      MISSING)
+        echo "   There is no issue #$number in this repository. Check the number: a body naming an issue that does"
+        echo "   not exist records the work against nothing, exactly as a closed one does."
         bad=1
         ;;
       *) echo "   Closes #$number; could not ask GitHub whether it is open, so carrying on." ;;
