@@ -167,47 +167,6 @@ export function cleanPortalJSONLayer(layer: IPortalLayer, url: string): Autocast
   }
 }
 
-export class CoordinateConverter {
-  private modules: {
-    point?: typeof esri.Point;
-    spatialReference?: typeof esri.SpatialReference;
-    webMercatorUtils?: esri.webMercatorUtils;
-  } = {};
-
-  constructor() {
-    Promise.all([
-      import('@arcgis/core/geometry/Point.js'),
-      import('@arcgis/core/geometry/SpatialReference.js'),
-      import('@arcgis/core/geometry/support/webMercatorUtils.js')
-    ])
-      .then(([{ default: p }, { default: s }, u]) => {
-        this.modules.point = p;
-        this.modules.spatialReference = s;
-        this.modules.webMercatorUtils = u;
-      })
-      .catch(() => {
-        throw new Error('Could not load CoordinateConverter modules.');
-      });
-  }
-
-  public webMercatorToGeographic(latitude: number, longitude: number) {
-    const { point, spatialReference, webMercatorUtils } = this.modules;
-
-    // Called before its modules have loaded, this threw a TypeError reading them; it still throws, saying why (#3804).
-    if (!point || !spatialReference || !webMercatorUtils) {
-      throw new TypeError('CoordinateConverter: its modules have not loaded yet.');
-    }
-
-    return webMercatorUtils.webMercatorToGeographic(
-      new point({
-        y: latitude,
-        x: longitude,
-        spatialReference: spatialReference.WebMercator
-      })
-    ) as esri.Point;
-  }
-}
-
 export type FeatureUnion = esri.Geometry | esri.Polygon | esri.Multipoint | esri.Point | esri.Polyline | Point;
 
 export enum PORTAL_LAYER_TYPES {
