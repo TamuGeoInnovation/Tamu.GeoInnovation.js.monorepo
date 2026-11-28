@@ -1,7 +1,5 @@
-import { Controller, Get, Param, Delete, NotImplementedException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { SeasonDayService } from './season-day.service';
-
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
 @Controller('season-days')
 export class SeasonDayController {
@@ -22,13 +20,6 @@ export class SeasonDayController {
     return this.sd.find();
   }
 
-  // POST and PATCH, which only answered 501, were removed (#3796); the tag parked/season-day-writes keeps them. DELETE
-  // is not decided yet (#3793 question 7).
-  @Permissions(['delete:season-days'])
-  @UseGuards(JwtGuard, PermissionsGuard)
-  @Delete(':guid')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public remove(@Param('guid') guid: string) {
-    throw new NotImplementedException();
-  }
+  // POST, PATCH and DELETE, which only answered 501, were removed (#3796, #3896); the tag parked/season-day-writes
+  // keeps them.
 }

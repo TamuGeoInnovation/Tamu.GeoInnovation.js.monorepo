@@ -1,4 +1,4 @@
-import { Controller, Get, NotImplementedException, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 
 import { MapService } from './map.service';
 
@@ -27,10 +27,5 @@ export class MapController {
   @Get('seasons/:guid')
   public getFeatureCollectionForSeason(@Param('guid') guid, @Query('format') format) {
     return this.service.getLocationsForSeasonId(guid, format);
-  }
-
-  @Get()
-  public getLocations() {
-    throw new NotImplementedException();
   }
 }

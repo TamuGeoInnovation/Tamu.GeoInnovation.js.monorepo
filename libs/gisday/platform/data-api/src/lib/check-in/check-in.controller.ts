@@ -1,17 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Request,
-  Body,
-  UseGuards,
-  Param,
-  Delete,
-  Patch,
-  NotImplementedException,
-  Req,
-  BadRequestException
-} from '@nestjs/common';
+import { Controller, Get, Post, Request, Body, UseGuards, Param, Delete, Req, BadRequestException } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 import { siteHost } from '../_base/site-of-request';
@@ -128,12 +115,6 @@ export class CheckInController {
     }
 
     return this.provider.insertAttendeeCheckin(eventGuid, userGuid);
-  }
-
-  @UseGuards(JwtGuard)
-  @Patch(':guid')
-  public async updateEntity() {
-    throw new NotImplementedException();
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
