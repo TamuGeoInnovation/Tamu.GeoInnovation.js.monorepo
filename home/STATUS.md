@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-_Idle, listening._
+- **Batch a84** (#1433, #1828): started on #1433 (layer list and legend in draw order), 3:22 AM Central, 28 November.
 
 ## Finished
 - **Batch a83** (report `home/reports/2026-11-28-a83.md`, 3:20 AM Central): `fix/1704-discover-visible-everywhere` at `1ff2279a8` ready (pre-pr-check Exit 0); #3908 needs no change (fixed by #3824, not deployed); #1618 not reproduced (0 of 20 on dev, 0 of 20 local); #3927 filed; Q-a83-1 to 4 asked.
