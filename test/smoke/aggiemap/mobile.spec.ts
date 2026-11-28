@@ -208,11 +208,17 @@ function selected(layers: ProbeLayer[]): number {
  * the map and nothing in the box (#3655, for #71).
  *
  * #71 has been open since August 2020 and was confirmed on 25 November 2026: the phone's search box never shows its
- * right-hand (clear) action, because the omnisearch does not give it one, and the phone's popup has no close control,
- * so nothing on a phone clears a selection. Until #71 is fixed this is an expected failure. Everything up to the
- * selection is asserted first, so the test is marked as failing only once it has reached what #71 is about; a search
- * that never answered fails it for real. Playwright fails an expected failure that passes, so the day #71 is fixed the
- * suite says so, and that pull request removes the mark.
+ * right-hand (clear) action, because the omnisearch does not give it one, so nothing on a phone clears a selection.
+ * Until #71 is fixed this is an expected failure. Everything up to the selection is asserted first, so the test is
+ * marked as failing only once it has reached what #71 is about; a search that never answered fails it for real.
+ * Playwright fails an expected failure that passes, so the day #71 is fixed the suite says so, and that pull request
+ * removes the mark.
+ *
+ * The second half of that reasoning is gone as of #1439: the phone's sheet now has a close control and a working drag
+ * handle. The mark stays because it is the **search box's** clear action that #71 is about, and that is still missing —
+ * and because this suite runs against deployed environments, which will not carry #1439 until it is released. **Once
+ * it is deployed, check whether this test now passes**: if a visitor can clear a selection by closing the sheet, the
+ * expected failure is wrong and comes off, whatever is left of #71.
  */
 test.describe('on a phone, the main map', () => {
   test.use({ viewport: { width: MOBILE_WIDTH, height: MOBILE_HEIGHT }, isMobile: true, hasTouch: true });
