@@ -278,7 +278,7 @@ describe('the cross-check', () => {
 
   it('fails a hidden listing that nothing in the suite checks', () => {
     expect(disagreements({ ...none, hiddenListings: ['/map/d/bus'] }, empty)).toEqual([
-      expect.stringContaining('/map/d/bus is hidden from production')
+      expect.stringContaining('/map/d/bus is listed on development and not on production')
     ]);
   });
 
