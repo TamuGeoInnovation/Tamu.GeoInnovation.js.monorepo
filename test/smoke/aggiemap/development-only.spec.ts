@@ -403,7 +403,8 @@ test.describe('acting as production', () => {
         test.setTimeout(180_000);
         await blockAnalytics(page);
         await page.setViewportSize({ width, height });
-        await page.clock.setFixedTime(new Date('2026-11-14T12:00:00-06:00'));
+        // Started at the game day and left running: a clock held still keeps the map from ever reporting ready.
+        await page.clock.install({ time: new Date('2026-11-14T12:00:00-06:00') });
         await mainMap(page);
 
         const stepper = page.locator('tamu-gisc-notification-grouped .grouped-stepper');
