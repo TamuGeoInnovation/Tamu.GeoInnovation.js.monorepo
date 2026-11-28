@@ -59,6 +59,23 @@ printf 'Refs #1977\n\nThe first step of the epic.\n' >"$tmp/body3"
 has_closing_reference "$tmp/body3" && r=yes || r=no
 expect "Refs #N is not (PR 3499 opened with only this, and failed Has a linked issue)" no "$r"
 
+# A committed .pr-body.md, which pr-title.yml fails and this script did not look for (#3702). PR 3697 opened
+# with pre-pr-check: Exit 0 and failed that check at once.
+printf 'added\t.pr-body.md\n' >"$tmp/b1"
+tracked_body_in "$tmp/b1" && r=yes || r=no
+expect "a branch that adds .pr-body.md has a committed body" yes "$r"
+printf 'modified\t.pr-body.md\n' >"$tmp/b2"
+tracked_body_in "$tmp/b2" && r=yes || r=no
+expect "so does one that changes a copy already committed" yes "$r"
+printf 'removed\t.pr-body.md\n' >"$tmp/b3"
+tracked_body_in "$tmp/b3" && r=yes || r=no
+expect "a branch that removes it again does not, which is how a draft is cleaned up" no "$r"
+printf 'modified\tscripts/tidy.sh\n' >"$tmp/b4"
+tracked_body_in "$tmp/b4" && r=yes || r=no
+expect "nor does a branch with no body at all - the usual case, drafted on disk only" no "$r"
+printf 'added\tdocs/.pr-body.md\n' >"$tmp/b5"
+tracked_body_in "$tmp/b5" && r=yes || r=no
+expect "and the name must be exactly .pr-body.md at the top, as CI greps for it" no "$r"
 # Which suites a change calls for.
 printf 'modified\tscripts/tidy.sh\n' >"$tmp/c1"
 expect "a script change runs the scripts' suites" scripts "$(suites_for "$tmp/c1")"

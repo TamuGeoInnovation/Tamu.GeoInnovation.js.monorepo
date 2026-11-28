@@ -10,6 +10,7 @@
 #
 # It runs, in order, and reports every failure rather than stopping at the first:
 #   1. the pull-request checks on the drafted title and body, with the code CI runs: the title (check-pr-title.mjs),
+#      no committed .pr-body.md (as pr-title.yml reads it),
 #      a closing reference to an issue (as require-linked-issue.yml reads it), a release-notes entry or the
 #      no-visible-change label (require-release-notes.mjs), and before/after images for a visible change
 #      (require-screenshots.mjs);
@@ -53,6 +54,17 @@ changed_files() {
 # issue URL. A body with none fails "Has a linked issue" on the pull request.
 has_closing_reference() {
   grep -qiE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*(#[0-9]+|https://github\.com/[^/]+/[^/]+/issues/[0-9]+)' "$1"
+}
+
+# Succeeds when <changed list> shows the branch adding or changing .pr-body.md, which is pr-title.yml's
+# "No drafted body committed" exactly: the pull request's own file list, every status but removed.
+#
+# The file is MEANT to exist on disk uncommitted - that is how a body is drafted, and this script takes it as an
+# argument - so only a committed copy is the fault. A listener commits its draft to its branch on purpose, and
+# the commit is dropped when the pull request's branch is made; this is the step that notices when it was not.
+# PR 3697 opened with pre-pr-check: Exit 0 and failed that check at once, on two commits (#3702).
+tracked_body_in() {
+  awk -F'	' '$2 == ".pr-body.md" && $1 != "removed" { found = 1 } END { exit !found }' "$1"
 }
 
 # Prints which of the scripts' and tools' suites <changed list> calls for: `scripts` when a script or a workflow
@@ -144,6 +156,14 @@ linked_issue() {
   fi
 }
 
+no_tracked_body() {
+  if tracked_body_in "$tmp/changed.tsv"; then
+    echo "   $branch commits .pr-body.md: the pull request would fail No drafted body committed."
+    echo "   Remove it in a commit on this branch, keeping one branch per pull request (CLAUDE.md):"
+    echo "     git rm .pr-body.md && git commit -m 'chore: Remove the drafted pull request body'"
+    return 1
+  fi
+}
 suite() { # scripts | tools
   case "$1" in
     # In node:24.22.3, as tools-tests.yml and scripts-tests.yml run them (these machines have no host Node), on a clone of
@@ -158,6 +178,7 @@ suite() { # scripts | tools
 
 echo "Checking $branch as its pull request will be checked: $(grep -c . "$tmp/changed.tsv") file(s) changed since $base."
 step "Has a linked issue" linked_issue
+step "No drafted body committed" no_tracked_body
 step "Pull request title, release notes and images" pr_checks
 for s in $(suites_for "$tmp/changed.tsv"); do
   step "The $s test suites" suite "$s"
