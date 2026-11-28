@@ -54,6 +54,6 @@ export class BusTimetableBottomComponent implements OnInit, OnDestroy {
 
   public routeReturn() {
     // Back to this map's own bus list (#2997), from the primary outlet's route, as bus-route goes forward (#3150).
-    this.router.navigate(['../bus'], { relativeTo: primaryOutletRoute(this.route) });
+    this.router.navigate(['..'], { relativeTo: primaryOutletRoute(this.route) });
   }
 }
