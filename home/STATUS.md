@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-_Idle, listening._
+- **Batch a86** (#1615, #1267): started on #1615 (selection highlight race), 6:03 AM Central, 28 November.
 
 ## Finished
 - **Batch a85** (report `home/reports/2026-11-28-a85.md`, 5:59 AM Central): `fix/3907-framing-first-six` at `606a61030` ready (pre-pr-check Exit 0), stacked on PR 3906; #1411 not reproduced; Q-a85-1 to 3 asked.
