@@ -134,6 +134,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {
+    // The phone layout's routes and menu, shared by every map that has one (#2997).
+    paths: /^libs\/aggiemap\/ngx\/ui\/mobile\//,
+    specs: ['mobile.spec.ts', 'bus.spec.ts']
+  },
+  {
     paths:
       /^libs\/(ui-kits\/ngx\/forms\/src\/lib\/components\/autocomplete|aggiemap\/ngx\/discover\/src\/lib\/components\/all-maps)\//,
     specs: ['all-maps-search.spec.ts']
@@ -144,6 +149,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths:
       /^libs\/(maps\/esri\/src\/lib\/services\/map\/fit\.ts|aggiemap\/ngx\/ui\/desktop\/src\/lib\/modules\/sidebar\/|maps\/feature\/trip-planner\/src\/lib\/services\/transportation\/bus\/)/,
     specs: ['bus-route-fit.spec.ts', 'directions.spec.ts']
+  },
+  {
+    // The phone's sheets: a building's sheet closes by its handle or its close control (#1439).
+    paths: /^libs\/(ui-kits\/ngx\/interactions\/draggable|maps\/feature\/popup\/src\/lib\/containers\/mobile)\//,
+    specs: ['phone-sheet.spec.ts', 'mobile.spec.ts']
   }
 ];
 
