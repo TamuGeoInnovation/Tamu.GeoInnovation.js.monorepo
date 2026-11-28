@@ -139,6 +139,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
   },
   { paths: /^libs\/maps\/esri\/src\/lib\/services\/map\/(selection-layer|hit-order)\.ts$/, specs: ['selection.spec.ts'] },
   {
+    // The basemap gallery, and the campus maps' side panel that opens it (#1250).
+    paths: /^libs\/(maps\/feature\/basemap\/|ts\/events\/ngx\/src\/lib\/definitions\/campus\/satellite-campus\.ts$)/,
+    specs: ['campus-basemaps.spec.ts', 'basemap-gallery.spec.ts']
+  },
+  {
     // The phone layout's routes and menu, shared by every map that has one (#2997).
     paths: /^libs\/aggiemap\/ngx\/ui\/mobile\//,
     specs: ['mobile.spec.ts', 'bus.spec.ts']

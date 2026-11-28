@@ -96,7 +96,8 @@
     ],
     "shortApplicationName": "HSC College of Dentistry",
     "sidebarTabs": [
-      "features"
+      "features",
+      "settings"
     ],
     "zoom": 18
   },

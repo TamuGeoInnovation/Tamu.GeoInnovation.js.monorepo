@@ -19,8 +19,10 @@ export const FEATURED_PARKING_ID = 'ts-main-parking';
 /**
  * Whether a listing shows this map, given whether development-only features are on (#3470).
  *
- * A map with `visible: false` - which is also how a `developmentOnly` map arrives here (#2712) - is listed only where
- * those features are on. This was written four ways across three pages, and the fourth was a bug: the Parking &
+ * A `developmentOnly` map (#2712) is listed only where those features are on. A map with `visible: false` is listed
+ * nowhere, on any environment (#1704): it meant "not in production's listings", so development offered the undated Move
+ * Out beside its three dated periods and stopped showing what production would. A development-only map used to arrive
+ * here as `visible: false` too, which is why the two are now separate fields. This was written four ways across three pages, and the fourth was a bug: the Parking &
  * Transportation page took the visible-filtered list, which hides a development-only map on development too. That is
  * exactly what #2449 fixed on the category pages, and it was latent here only because no development-only parking map
  * exists yet.
@@ -29,8 +31,8 @@ export const FEATURED_PARKING_ID = 'ts-main-parking';
  * Deliberately not `readsDevelopmentGisServer()`, which answers a different question - which GIS server to read, with
  * localhost counting as production - and would hide them from anyone running the application locally.
  */
-export function isListed(application: { visible?: boolean }, isTesting: boolean): boolean {
-  return isTesting || application.visible !== false;
+export function isListed(application: { visible?: boolean; developmentOnly?: boolean }, isTesting: boolean): boolean {
+  return application.visible !== false && (isTesting || !application.developmentOnly);
 }
 
 @Injectable({
@@ -63,8 +65,9 @@ export class DiscoveryService {
       ],
       parkingCategory: event.discover?.parkingCategory,
       columnKey: event.discover?.columnKey ?? event.discover?.parkingCategory,
-      // A development-only map is listed where development-only features are on, as `visible: false` is (#2712).
-      visible: !event.developmentOnly && (event.discover?.visible ?? true),
+      visible: event.discover?.visible ?? true,
+      // Listed where development-only features are on, and nowhere else (#2712, #1704).
+      developmentOnly: Boolean(event.developmentOnly),
       showInQuickLinks: event.discover?.showInQuickLinks,
       quickLinkOrder: event.discover?.quickLinkOrder,
       status: event.discover?.status,

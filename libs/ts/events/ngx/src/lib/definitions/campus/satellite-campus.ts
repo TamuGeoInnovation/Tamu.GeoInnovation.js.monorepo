@@ -154,7 +154,9 @@ export function satelliteCampus(campus: SatelliteCampus): SatelliteCampusMap {
       mapCenter: campus.center,
       zoom: campus.zoom,
       hideLayerToggle: true,
-      sidebarTabs: ['features'],
+      // The gear too (#1250): with no Settings tab a campus map's basemap could not be changed. Its gallery offers only
+      // the world basemaps, since College Station's draw nothing here (`BASEMAP_GALLERY_OPTIONS`).
+      sidebarTabs: ['features', 'settings'],
       buildingPopup: {
         layerId: buildings.id,
         title: buildings.popupTitle ?? [fields.name, fields.abbreviation],
