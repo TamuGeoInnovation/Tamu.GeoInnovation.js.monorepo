@@ -94,7 +94,7 @@ describe('EventMapsComponent development-only maps', () => {
     id: 'fort-worth-law',
     type: 'satellite-campus',
     mapTypes: ['campus'],
-    visible: false
+    developmentOnly: true
   };
 
   const discoveryStub = discoveryServiceStub({

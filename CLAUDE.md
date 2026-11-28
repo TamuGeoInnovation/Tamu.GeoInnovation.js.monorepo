@@ -516,10 +516,11 @@ The maintainer decides when it moves to production. See #1229. When a section mo
 **Which gate: a thing that reads a service is left out of the build; structure is gated at run time** (#2753).
 Layer sources and search sources go in `DEVELOPMENT_ONLY_LAYER_SOURCES`, and a map in `developmentOnly`, so a
 production build does not contain them. Routes, tabs, tiles, listings and controls are gated with `TestingService`
-(`visible: false` on a listing, `DevelopmentOnlyMapGuard` on a route), so `?as=production` keeps working.
+(`developmentOnly` on a listing, `DevelopmentOnlyMapGuard` on a route), so `?as=production` keeps working.
+`discover.visible: false` is not a gate: it keeps a map out of the listings on every environment (#1704).
 `development-only-gates.spec.ts` in `aggiemap-ngx-discover` fails when that and the smoke suite's lists disagree: a
-thing kept off production that no list checks, a service the suite watches that nothing gates, or a map hidden from
-production's listings with neither a check nor a reason in `LISTINGS_HIDDEN_FROM_PRODUCTION`. A gate inside a template
+thing kept off production that no list checks, a service the suite watches that nothing gates, or a map listed on
+development and not on production that no check opens. A gate inside a template
 cannot be listed, so a service gated that way says where in `runTimeGate`, and only the smoke run proves it.
 
 **Reuse before building; build to be reused.** No one-offs: not components, not services, not
