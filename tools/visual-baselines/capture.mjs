@@ -66,6 +66,7 @@ import { execFileSync } from 'child_process';
 import { commitFields, releaseCommit, releaseLine } from './release-commit.mjs';
 import { centralNow } from './central.mjs';
 import { matchesOnly, slugFor } from './slug.mjs';
+import { whyNotRendered } from './rendered.mjs';
 
 const arg = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
@@ -85,6 +86,8 @@ if (app !== 'aggiemap' && app !== 'gisday') {
 }
 
 const gisday = app === 'gisday';
+/** The element the app draws itself into: a page without it, or with it empty, is not the app (#1936). */
+const appRoot = gisday ? 'tamu-gisc-root' : 'tamu-gisc-aggiemap-app-root';
 /** GIS Day, local only: the auth0-dev.local.env to sign in with, for the pages behind the sign-in (#1998). */
 const signedInFile = arg('signed-in', '');
 
@@ -442,7 +445,7 @@ async function settle(page) {
       { timeout: 30000 }
     );
   } catch {
-    // Captured anyway: a page that never rendered is itself worth seeing in the comparison.
+    // Not photographed: the caller judges whether the app rendered at all (`whyNotRendered`, #1936).
   }
 
   let why = null;
@@ -625,20 +628,36 @@ async function settle(page) {
 
         try {
           let result = { settled: false };
+          let notRendered = null;
 
-          // Two tries for a map that does not finish: a slow service is often slow only once.
+          // Two tries for a map that does not finish: a slow service is often slow only once. Likewise a page the
+          // app did not render, such as IIS's 404 during a blip (#1936).
           for (let attempt = 1; attempt <= 2 && !result.settled; attempt += 1) {
             const session = await open();
 
             try {
               await session.page.setViewportSize(job.viewport);
-              await session.page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
+              const response = await session.page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
 
               if (signedInContext) {
                 await throughSignIn(session.page);
               }
 
               result = await settle(session.page);
+
+              // Only a page the app rendered is a picture of the app. Anything else is not photographed: a file on
+              // disk counts as done when a run resumes, so a 404 written here would never be taken again.
+              notRendered = whyNotRendered({
+                status: response ? response.status() : null,
+                rootContent: await session.page
+                  .evaluate((selector) => document.querySelector(selector)?.children.length ?? null, appRoot)
+                  .catch(() => null)
+              });
+
+              if (notRendered) {
+                result = { settled: false };
+                continue;
+              }
 
               if (result.settled || attempt === 2) {
                 // A GIS Day page scrolls, so the whole page is the picture; a map is one screen.
@@ -647,6 +666,10 @@ async function settle(page) {
             } finally {
               await close(session);
             }
+          }
+
+          if (notRendered) {
+            throw new Error('not a picture of the app, twice: ' + notRendered);
           }
 
           if (result.settled) {
