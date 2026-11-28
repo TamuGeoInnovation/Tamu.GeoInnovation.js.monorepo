@@ -102,7 +102,10 @@ for (const { name, viewport, isMobile } of VIEWPORTS) {
         const round = (n: number) => Math.round(n);
 
         expect(
-          extent.left >= clear.left && extent.right <= clear.right && extent.top >= clear.top && extent.bottom <= clear.bottom,
+          extent.left >= clear.left &&
+            extent.right <= clear.right &&
+            extent.top >= clear.top &&
+            extent.bottom <= clear.bottom,
           `${path} opens with ${layer} from x ${round(extent.left)} to ${round(extent.right)} and y ${round(extent.top)} ` +
             `to ${round(extent.bottom)}, but the clear map is x ${round(clear.left)} to ${round(clear.right)} and y ` +
             `${round(clear.top)} to ${round(clear.bottom)}`
