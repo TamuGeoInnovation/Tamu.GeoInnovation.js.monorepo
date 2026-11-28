@@ -1,5 +1,8 @@
-<div class="popup draggable" [ngClass]="{ hidden: (show | async) === false }" draggable [draggableIdentifier]="identifier">
+<!-- Closed by dragging the handle down, or by the close control, as the desktop popup is: a drag alone cannot be done with
+a single tap (WCAG 2.2, 2.5.7), and the handle promised a gesture that did nothing (#1439). -->
+<div class="popup draggable" [ngClass]="{ hidden: (show | async) === false }" draggable [draggableIdentifier]="identifier" (dismissed)="close()">
   <div class="handle"></div>
+  <div class="close material-icons" title="Close" aria-label="Close" tabindex="0" role="button" (click)="close()" (keydown.enter)="close()" (keydown.space)="close(); $event.preventDefault()">close</div>
 
   <ng-template render-host></ng-template>
 </div>

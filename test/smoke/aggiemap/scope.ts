@@ -144,6 +144,11 @@ const FEATURES: { paths: RegExp; specs: string[] }[] = [
     paths:
       /^libs\/(maps\/esri\/src\/lib\/services\/map\/fit\.ts|aggiemap\/ngx\/ui\/desktop\/src\/lib\/modules\/sidebar\/|maps\/feature\/trip-planner\/src\/lib\/services\/transportation\/bus\/)/,
     specs: ['bus-route-fit.spec.ts', 'directions.spec.ts']
+  },
+  {
+    // The phone's sheets: a building's sheet closes by its handle or its close control (#1439).
+    paths: /^libs\/(ui-kits\/ngx\/interactions\/draggable|maps\/feature\/popup\/src\/lib\/containers\/mobile)\//,
+    specs: ['phone-sheet.spec.ts', 'mobile.spec.ts']
   }
 ];
 
