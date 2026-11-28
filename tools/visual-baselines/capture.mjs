@@ -107,7 +107,10 @@ const routesOnly = flag('routes-only');
  */
 const recheck = flag('recheck');
 /** Comma-separated substrings; only routes containing one are captured. For asking a narrow question. */
-const only = (arg('only', '') || '').split(',').map((part) => part.trim()).filter(Boolean);
+const only = (arg('only', '') || '')
+  .split(',')
+  .map((part) => part.trim())
+  .filter(Boolean);
 const concurrency = Number(arg('concurrency', '3'));
 /** `production` to capture a development host as production renders it (#1885); empty otherwise. */
 const actingAs = arg('as', '');
@@ -118,8 +121,7 @@ if (actingAs !== '' && actingAs !== 'production') {
 }
 
 /** The address of a route, carrying `?as=production` when the set is captured as production. */
-const addressOf = (route) =>
-  baseUrl + route + (actingAs ? (route.includes('?') ? '&' : '?') + 'as=' + actingAs : '');
+const addressOf = (route) => baseUrl + route + (actingAs ? (route.includes('?') ? '&' : '?') + 'as=' + actingAs : '');
 
 /** Hides the "acting as production" control, which production itself does not have. */
 const HIDE_ACTING_AS = () => {
@@ -192,7 +194,10 @@ function resolveRelease(fallbackBundle) {
       cwd: REPO,
       encoding: 'utf8'
     });
-    const newest = tags.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)[0];
+    const newest = tags
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)[0];
 
     if (newest) {
       return newest;
@@ -345,7 +350,9 @@ async function signedInRoutesToCapture(page) {
   await throughSignIn(page);
   await page.waitForTimeout(3000);
 
-  const session = (await page.$$eval('a[href]', (anchors) => anchors.map((a) => a.getAttribute('href')))).find((href) => href && href.startsWith('/sessions/details/'));
+  const session = (await page.$$eval('a[href]', (anchors) => anchors.map((a) => a.getAttribute('href')))).find(
+    (href) => href && href.startsWith('/sessions/details/')
+  );
 
   if (session) routes.push(session);
 
@@ -425,7 +432,9 @@ async function settle(page) {
   if (gisday) {
     // No map and no notices: the page is ready once the app has drawn and its data has arrived.
     try {
-      await page.waitForFunction(() => (document.querySelector('tamu-gisc-root')?.children.length ?? 0) > 0, { timeout: 30000 });
+      await page.waitForFunction(() => (document.querySelector('tamu-gisc-root')?.children.length ?? 0) > 0, {
+        timeout: 30000
+      });
     } catch {
       // Captured anyway, as for AggieMap.
     }
@@ -529,7 +538,11 @@ async function settle(page) {
   await probePage.close();
 
   const release = resolveRelease(build);
-  const setName = (gisday ? 'gisday-' : '') + (actingAs ? envName + '-as-' + actingAs : envName) + (signedInFile ? '-signed-in' : '') + (recheck ? '-recheck' : '');
+  const setName =
+    (gisday ? 'gisday-' : '') +
+    (actingAs ? envName + '-as-' + actingAs : envName) +
+    (signedInFile ? '-signed-in' : '') +
+    (recheck ? '-recheck' : '');
   const outDir = path.join(outRoot, setName, release);
   const manifestPath = path.join(outDir, 'manifest.json');
 
@@ -637,7 +650,10 @@ async function settle(page) {
 
             try {
               await session.page.setViewportSize(job.viewport);
-              const response = await session.page.goto(addressOf(job.route), { waitUntil: 'domcontentloaded', timeout: 60000 });
+              const response = await session.page.goto(addressOf(job.route), {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000
+              });
 
               if (signedInContext) {
                 await throughSignIn(session.page);
@@ -692,7 +708,6 @@ async function settle(page) {
           console.log('  ' + done + '/' + todo.length + ' captured, ' + failed + ' failed, about ' + left + ' min left');
         }
       }
-
     })
   );
 
@@ -706,7 +721,14 @@ async function settle(page) {
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
   console.log(
-    '\ndone: ' + (done - failed) + ' captured, ' + failed + ' failed, ' + Object.keys(unsettled).length + ' unfinished, ' +
-      Math.round((Date.now() - started) / 60000) + ' min'
+    '\ndone: ' +
+      (done - failed) +
+      ' captured, ' +
+      failed +
+      ' failed, ' +
+      Object.keys(unsettled).length +
+      ' unfinished, ' +
+      Math.round((Date.now() - started) / 60000) +
+      ' min'
   );
 })();
