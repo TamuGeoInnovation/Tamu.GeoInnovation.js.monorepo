@@ -70,8 +70,8 @@ describe('SeasonDayController (#3796)', () => {
     expect(await (await fetch(`${url}/season-days/d-1/events`)).json()).toEqual([{ guid: 'e-1' }]);
   });
 
-  // DELETE is not decided yet (#3793 question 7), so it stays as it is.
-  it('keeps DELETE as it was', async () => {
-    expect((await fetch(`${url}/season-days/d-1`, { method: 'DELETE' })).status).toBe(501);
+  // DELETE only answered 501 too, and goes with them (#3793 question 7A, #3896).
+  it('has no DELETE route', async () => {
+    expect((await fetch(`${url}/season-days/d-1`, { method: 'DELETE' })).status).toBe(404);
   });
 });

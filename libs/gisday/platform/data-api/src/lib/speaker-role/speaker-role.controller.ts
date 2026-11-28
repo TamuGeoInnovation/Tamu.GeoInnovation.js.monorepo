@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotImplementedException, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
 
@@ -26,16 +26,6 @@ export class SpeakerRoleController {
     });
 
     return this.provider.insertRoles(_roles);
-  }
-
-  @Post()
-  public async insertEntity() {
-    throw new NotImplementedException();
-  }
-
-  @Patch(':guid')
-  public async updateEntity() {
-    throw new NotImplementedException();
   }
 
   @Permissions(['delete:speakers'])

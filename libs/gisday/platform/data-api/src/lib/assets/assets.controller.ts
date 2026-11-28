@@ -1,6 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Delete, NotImplementedException, UseGuards } from '@nestjs/common';
-
-import { JwtGuard, Permissions, PermissionsGuard } from '@tamu-gisc/common/nest/auth';
+import { Controller, Get, Param } from '@nestjs/common';
 
 import { AssetsService } from './assets.service';
 
@@ -8,34 +6,9 @@ import { AssetsService } from './assets.service';
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
+  // The listing, create, update and delete routes were never built and only answered 501; they were removed (#3896).
   @Get(':guid')
   public getAsset(@Param('guid') guid: string) {
     return this.assetsService.findOne(guid);
-  }
-
-  @Get()
-  public getAssets() {
-    return new NotImplementedException();
-  }
-
-  @Permissions(['create:assets'])
-  @UseGuards(JwtGuard, PermissionsGuard)
-  @Post()
-  public createAsset() {
-    return new NotImplementedException();
-  }
-
-  @Permissions(['update:assets'])
-  @UseGuards(JwtGuard, PermissionsGuard)
-  @Patch(':guid')
-  public updateAsset() {
-    return new NotImplementedException();
-  }
-
-  @Permissions(['delete:assets'])
-  @UseGuards(JwtGuard, PermissionsGuard)
-  @Delete(':guid')
-  public deleteAsset() {
-    return new NotImplementedException();
   }
 }
