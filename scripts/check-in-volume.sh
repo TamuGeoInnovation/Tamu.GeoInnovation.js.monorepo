@@ -15,8 +15,9 @@
 # volume. See "Why checks run in a volume" in CLAUDE.md.
 #
 # How it works:
-#   - Each branch gets its own volume, tamu-js-<the first number in the branch name>, or
-#     tamu-js-<branch> when the name has none. Docker creates it on first use.
+#   - Each issue gets its own volume, tamu-js-<issue>, shared by every branch for that issue; a branch
+#     that names no issue gets tamu-js-<branch>. scripts/volume-name.sh decides which, and says why
+#     a date in a branch name is not an issue number (#3802). Docker creates the volume on first use.
 #   - The main checkout is mounted read-only at /src. Not a worktree: a worktree's .git is a file
 #     pointing at a Windows path the container cannot follow. A worktree's branches live in the main
 #     repository's refs anyway, so fetching the branch by name from the main checkout finds them.
@@ -256,6 +257,9 @@ log_label() {
   printf '%s-of-%s-projects-%s\n' "$(printf '%s' "${1%%,*}" | tr -c 'A-Za-z0-9_.-' '-' | cut -c1-40)" "$count" "$sum"
 }
 
+# shellcheck source=volume-name.sh
+. "$(dirname "${BASH_SOURCE[0]}")/volume-name.sh"
+
 [ "${BASH_SOURCE[0]}" = "$0" ] || return 0
 
 set -euo pipefail
@@ -282,8 +286,7 @@ git -C "$main" rev-parse --verify -q "refs/heads/$branch" >/dev/null || {
   exit 2
 }
 
-issue="$(printf '%s' "$branch" | grep -o '[0-9]\+' | head -n 1 || true)"
-volume="tamu-js-${issue:-$(printf '%s' "$branch" | tr -c 'A-Za-z0-9_.-' '-')}"
+volume="$(volume_for_branch "$branch")"
 log="${3:-$here/check-$volume-$(log_label "$mode").log}"
 
 if [ "$(git -C "$here" rev-parse --abbrev-ref HEAD)" = "$branch" ] && [ -n "$(git -C "$here" status --porcelain)" ]; then
