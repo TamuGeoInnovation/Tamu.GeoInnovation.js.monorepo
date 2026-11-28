@@ -81,9 +81,13 @@ export class DragDirective implements AfterViewInit, AfterViewChecked, OnDestroy
 
   public ngAfterViewChecked() {
     // Store the initial offset which will be used to set the base snap point.
-    if (this.el.nativeElement.innerText.trim() !== '' && this.initialOffset === undefined) {
+    // Measured once the sheet is drawn: a hidden sheet has no box, and a sheet with a close control has text while it
+    // is still hidden, so text alone no longer says it is showing (#1439).
+    const drawn = this.draggable.getRect(this.el.nativeElement);
+
+    if (this.el.nativeElement.innerText.trim() !== '' && this.initialOffset === undefined && drawn) {
       this.deviceHeight = window.innerHeight > 0 ? window.innerHeight : window.outerHeight;
-      this.initialOffset = this.deviceHeight - this.draggable.getRect(this.el.nativeElement).top;
+      this.initialOffset = this.deviceHeight - drawn.top;
     }
 
     // Handle inner content changes that would cause a dragged element to float if the new height is less than the last
