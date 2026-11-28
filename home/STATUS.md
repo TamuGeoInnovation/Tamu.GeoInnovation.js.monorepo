@@ -14,7 +14,7 @@ Written only by the home session, while it listens (see `DIRECTOR.md`).
 The lab has started branching `chore/2564-remove-unused-dependencies` too (10:47 AM), the same name as home's pushed branch: **a push from it would collide with home's on the fork.**
 
 ## Running now
-_Idle, listening._
+- **Batch a85** (#3907 first six, #1411): started on #3907, 5:08 AM Central, 28 November.
 
 ## Finished
 - **Batch a84** (report `home/reports/2026-11-28-a84.md`, 5:03 AM Central): `fix/1433-layers-in-draw-order` at `78236437d` and `fix/1828-acting-as-production-clears-notices` at `578eb5c7f` ready (pre-pr-check Exit 0 each); Q-a84-1 to 3 asked.
