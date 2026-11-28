@@ -202,6 +202,42 @@ memory_kills() {
   echo "$n"
 }
 
+# Prints the tasks a check log says failed, one per line: the names under Nx's `Failed tasks:`. Tested by
+# scripts/check-in-volume.test.sh.
+failed_tasks() {
+  awk '/^Failed tasks:/ { on = 1; next } on && /^[[:space:]]*-[[:space:]]/ { sub(/^[[:space:]]*-[[:space:]]*/, ""); print; next } on && NF == 0 { next } on { on = 0 }' "$1"
+}
+
+# Succeeds when a check failed and its log explains nothing: no memory kill, and no line carrying an error, a bundle
+# budget, a TypeScript code or a missing module. A task that produces not one line and then fails is a resource kill
+# until proved otherwise, and saying nothing is what makes it read as the branch's fault (#3622).
+#
+# The pattern is the grep #3622 ran over the real log, which returned nothing while nine sibling tasks succeeded and
+# ts-events-angular:build:production failed after printing only `Building...`. Nx's own summary lines (`... failed`,
+# `Failed tasks:`) are deliberately not in it: they are always there when a check fails and would match every time.
+silent_failure() {
+  local log="$1" code="$2"
+  [ "$code" -ne 0 ] || return 1
+  memory_kills "$log" >/dev/null && return 1
+  grep -qiE 'error|budget|exceeded|cannot find|TS[0-9]{4}' "$log" && return 1
+  # A failing test explains itself without the word "error": Jest and Vitest print a summary line and the test's own
+  # name. Found by this function's own test, on the fixture a sibling case uses - a spec whose name contains "Killed".
+  grep -qE 'Tests:|Test Files|Test Suites:|FAIL[[:space:]]' "$log" && return 1
+  return 0
+}
+
+# Prints, for a check that failed with nothing in its log to say why, that this is a resource kill until proved
+# otherwise, which tasks it was, and what to do; nothing otherwise (#3622). On 25 November 2026 a branch that was
+# green on CI minutes earlier failed here at CHECK_MEMORY=8g CHECK_PARALLEL=4 - the settings CLAUDE.md prescribes for
+# sharing a machine - with no error, no stack, no `Killed` and no mention of memory anywhere in the log.
+silent_failure_advice() {
+  local log="$1" code="$2" tasks
+  silent_failure "$log" "$code" || return 0
+  tasks="$(failed_tasks "$log" | awk '{ printf "%s%s", (NR > 1 ? ", " : ""), $0 }')"
+  echo "This failure has no explanation in its log: no error, no bundle budget, no TypeScript code, no missing module and no memory kill."
+  echo "A task that fails having printed nothing is a resource kill until proved otherwise, not a fault in the code${tasks:+ (failed: $tasks)}."
+  echo "Run it again at the defaults (CHECK_MEMORY=16g CHECK_PARALLEL=8) with nothing else checking on this machine, or run the failed projects alone, before changing a line of the branch."
+}
 # Prints, for a check that failed and whose log shows a memory kill, that the failure was memory and what to set, so a
 # kill is not read as the code's fault; nothing otherwise (#3000). A GIS Day-wide affected set is killed at the
 # defaults; docs/build-times.md has the measurements.
@@ -442,7 +478,16 @@ code=$?
 set -e
 grep "^unknown project: " "$log" | sed "s/^unknown project: /No such project: /" >&2 || true
 echo "Exit $code ($branch, $mode). Log: $log"
+
+# A failed run's log is evidence, and the log name has only the branch and the mode in it, so the next run of the same
+# branch truncates it. On 25 November 2026 that is what happened to the only record of the failure in #3622: it was
+# re-run at the defaults to see whether the branch was really broken, which erased what it was being compared with.
+if [ "$code" -ne 0 ]; then
+  kept="${log%.log}-failed-$(printf '%s' "$started" | tr ' :' '--').log"
+  cp "$log" "$kept" 2>/dev/null && echo "Kept this failed run's log, which the next run of this branch would truncate: $kept"
+fi
 memory_advice "$log" "$code" >&2
+silent_failure_advice "$log" "$code" >&2
 setup_advice "$log" "$code" >&2
 run_times_record "$here/docs/build-times/runs" "$started" check "$branch $mode" "$code" \
   "$(run_times_check_summary "$log")" "$SECONDS" "$(run_times_check_setup "$log")"

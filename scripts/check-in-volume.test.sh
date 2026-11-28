@@ -212,6 +212,33 @@ expect "a passing check says nothing" "" "$(memory_advice "$logs/sigkill.log" 0)
 expect "a failure with no kill says nothing" "" "$(memory_advice "$logs/clean.log" 1)"
 grep -q 'memory_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
 expect "the check gives that advice after its run" "yes" "$r"
+
+# #3622: a check that failed with nothing in its log to say why. The silent log is the shape of the real one from
+# 25 November 2026 - nine tasks green, ts-events-angular:build:production printing only Building... and then failing,
+# with no error, no stack, no Killed and no mention of memory anywhere.
+printf '%s\n' "> nx run ts-events-angular:build:production" "  Building..." " NX   Running target build for 6 projects and 4 tasks they depend on failed" "" "Failed tasks:" "- ts-events-angular:build:production" >"$logs/silent.log"
+printf '%s\n' "ERROR: bundle initial exceeded maximum budget" "Failed tasks:" "- correction-lite-angular:build:production" >"$logs/budget.log"
+expect "the failed tasks are read from Nx's list" "ts-events-angular:build:production" "$(failed_tasks "$logs/silent.log")"
+silent_failure "$logs/silent.log" 1 && r=yes || r=no
+expect "a failure whose log explains nothing is a silent failure" yes "$r"
+silent_failure "$logs/silent.log" 0 && r=yes || r=no
+expect "a passing run is not, whatever its log says" no "$r"
+silent_failure "$logs/budget.log" 1 && r=yes || r=no
+expect "a bundle budget explains itself, so it is not" no "$r"
+silent_failure "$logs/killed.log" 1 && r=yes || r=no
+expect "nor is a memory kill, which memory_advice already names" no "$r"
+silent_failure "$logs/clean.log" 1 && r=yes || r=no
+expect "nor is a failing test, which says Tests: 1 failed" no "$r"
+advice="$(silent_failure_advice "$logs/silent.log" 1)"
+case "$advice" in *"resource kill"*"ts-events-angular:build:production"*"CHECK_PARALLEL=8"*) r=yes ;; *) r=no ;; esac
+expect "it says resource kill until proved otherwise, names the task and gives the defaults" yes "$r"
+expect "and says nothing for a failure that did explain itself" "" "$(silent_failure_advice "$logs/budget.log" 1)"
+grep -q 'silent_failure_advice "$log" "$code"' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "the check gives that advice after its run too" yes "$r"
+
+# #3622: a failed run's log is kept, because the next run of the same branch truncates it.
+grep -q 'kept="${log%.log}-failed-' "$(dirname "$0")/check-in-volume.sh" && r=yes || r=no
+expect "a failed run's log is copied to a stamped name" yes "$r"
 rm -rf "$logs"
 
 # #3695: a read of the checkout that fails once with "Cannot allocate memory" is tried again, not reported as exit 3.
