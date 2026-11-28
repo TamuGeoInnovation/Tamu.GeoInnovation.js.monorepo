@@ -205,8 +205,9 @@ export class BasemapGalleryService {
               // Dev also offers every published raster version, to compare them (#1582).
               // Only where they draw: a satellite campus offers the world basemaps alone (#1250).
               const collegeStation = this.options?.collegeStation ?? true;
-              const campusBasemaps = (collegeStation ? aggiemapGalleryBasemaps(this.ts.isTesting) : []).map((campusBasemap) =>
-                makeGalleryBasemap(campusBasemap, Basemap, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer })
+              const campusBasemaps = (collegeStation ? aggiemapGalleryBasemaps(this.ts.isTesting) : []).map(
+                (campusBasemap) =>
+                  makeGalleryBasemap(campusBasemap, Basemap, { TileLayer, VectorTileLayer, WMSLayer, FeatureLayer })
               );
 
               // Which of them a 3D scene cannot draw is known only once each has read its service.
